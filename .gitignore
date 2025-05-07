@@ -40,4 +40,5 @@ out/
 
 ### Custom ###
 defaults.properties
+privateKey
 .kotlin

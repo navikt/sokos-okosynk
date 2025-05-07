@@ -15,7 +15,7 @@ object PropertiesConfig {
             mapOf(
                 "NAIS_APP_NAME" to "sokos-okosynk",
                 "NAIS_NAMESPACE" to "okonomi",
-                "USE_AUTHENTICATION" to "true",
+                "SCHEDULER_ENABLED" to "true",
             ),
         )
 
@@ -23,7 +23,7 @@ object PropertiesConfig {
         ConfigurationMap(
             mapOf(
                 "APPLICATION_PROFILE" to Profile.LOCAL.toString(),
-                "USE_AUTHENTICATION" to "false",
+                "SCHEDULER_CRON_EXPRESSION" to "0 * * * * *",
             ),
         )
 
@@ -48,7 +48,6 @@ object PropertiesConfig {
     data class Configuration(
         val naisAppName: String = get("NAIS_APP_NAME"),
         val profile: Profile = Profile.valueOf(get("APPLICATION_PROFILE")),
-        val useAuthentication: Boolean = get("USE_AUTHENTICATION").toBoolean(),
         val azureAdProperties: AzureAdProperties = AzureAdProperties(),
     )
 
@@ -59,12 +58,26 @@ object PropertiesConfig {
         val clientSecret: String = getOrEmpty("AZURE_APP_CLIENT_SECRET"),
     )
 
+    data class SchedulerProperties(
+        val enabled: Boolean = get("SCHEDULER_ENABLED").toBoolean(),
+        val cronExpression: String = getOrEmpty("SCHEDULER_CRON_EXPRESSION"),
+    )
+
     data class SftpProperties(
         val host: String = getOrEmpty("SFTP_SERVER"),
-        val username: String = getOrEmpty("SPK_SFTP_USERNAME"),
-        val privateKey: String = getOrEmpty("SFTP_PRIVATE_KEY_FILE_PATH"),
-        val privateKeyPassword: String = getOrEmpty("SPK_SFTP_PASSWORD"),
+        val username: String = getOrEmpty("SFTP_USERNAME"),
+        val privateKey: String = getOrEmpty("SFTP_PRIVATE_KEY"),
         val port: Int = getOrEmpty("SFTP_PORT").toInt(),
+    )
+
+    data class PdlProperties(
+        val pdlUrl: String = getOrEmpty("PDL_URL"),
+        val pdlScope: String = getOrEmpty("PDL_SCOPE"),
+    )
+
+    data class OppgaveProperties(
+        val oppgaveUrl: String = getOrEmpty("OPPGAVE_URL"),
+        val oppgaveScope: String = getOrEmpty("OPPGAVE_SCOPE"),
     )
 
     enum class Profile {

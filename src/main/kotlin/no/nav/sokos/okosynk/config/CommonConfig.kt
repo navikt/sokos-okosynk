@@ -28,6 +28,8 @@ import org.slf4j.event.Level
 
 import no.nav.sokos.okosynk.metrics.Metrics
 
+const val SECURE_LOGGER = "secureLogger"
+
 fun Application.commonConfig() {
     install(CallId) {
         header(HttpHeaders.XCorrelationId)

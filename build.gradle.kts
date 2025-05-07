@@ -1,3 +1,7 @@
+import kotlinx.kover.gradle.plugin.dsl.tasks.KoverReport
+
+import com.expediagroup.graphql.plugin.gradle.config.GraphQLSerializer
+import com.expediagroup.graphql.plugin.gradle.tasks.GraphQLGenerateClientTask
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 import org.gradle.api.tasks.testing.logging.TestLogEvent
@@ -6,9 +10,11 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     kotlin("jvm") version "2.1.20"
     kotlin("plugin.serialization") version "2.1.20"
+    id("com.expediagroup.graphql") version "8.4.0"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("org.jlleitschuh.gradle.ktlint") version "12.2.0"
     id("org.jetbrains.kotlinx.kover") version "0.9.1"
+    id("org.openapi.generator") version "7.12.0"
 }
 
 group = "no.nav.sokos.okosynk"
@@ -23,13 +29,20 @@ val jschVersion = "0.2.26"
 val logbackVersion = "1.5.18"
 val logstashVersion = "8.1"
 val micrometerVersion = "1.14.6"
+val graphqlClientVersion = "8.4.0"
+
 val kotlinLoggingVersion = "3.0.5"
 val janionVersion = "3.1.12"
 val natpryceVersion = "1.6.10.0"
 val kotestVersion = "5.9.1"
 val kotlinxSerializationVersion = "1.8.1"
+val kotlinxDatetimeVersion = "0.6.2"
+val cronUtilsVersion = "9.2.1"
+
 val mockOAuth2ServerVersion = "2.1.10"
 val mockkVersion = "1.14.2"
+val wiremockVersion = "3.12.1"
+val testcontainersVersion = "1.20.6"
 
 dependencies {
 
@@ -68,12 +81,22 @@ dependencies {
     // Config
     implementation("com.natpryce:konfig:$natpryceVersion")
 
+    // Cron Utils
+    implementation("com.cronutils:cron-utils:$cronUtilsVersion")
+
+    // GraphQL
+    implementation("com.expediagroup:graphql-kotlin-ktor-client:$graphqlClientVersion") {
+        exclude("com.expediagroup:graphql-kotlin-client-jackson")
+    }
+
     // Test
     testImplementation("io.ktor:ktor-server-test-host-jvm:$ktorVersion")
     testImplementation("io.kotest:kotest-assertions-core-jvm:$kotestVersion")
     testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
     testImplementation("io.mockk:mockk:$mockkVersion")
     testImplementation("no.nav.security:mock-oauth2-server:$mockOAuth2ServerVersion")
+    testImplementation("org.testcontainers:testcontainers:$testcontainersVersion")
+    testImplementation("org.wiremock:wiremock:$wiremockVersion")
 }
 
 // Vulnerability fix because of id("org.jlleitschuh.gradle.ktlint") version "12.1.2"
@@ -95,10 +118,57 @@ kotlin {
     }
 }
 
+openApiGenerate {
+    generatorName.set("kotlin")
+    inputSpec.set("$projectDir/src/main/resources/openapi/oppgave.yaml")
+    outputDir.set("${layout.buildDirectory.get()}/generated")
+    generateModelDocumentation.set(false)
+    generateModelTests.set(false)
+    packageName.set("no.nav.oppgave")
+    globalProperties.set(mapOf("models" to ""))
+    configOptions.set(
+        mapOf(
+            "serializationLibrary" to "kotlinx_serialization",
+        ),
+    )
+}
+
 tasks {
+    named("runKtlintCheckOverMainSourceSet").configure {
+        dependsOn("graphqlGenerateClient")
+        dependsOn("openApiGenerate")
+    }
+
+    named("runKtlintFormatOverMainSourceSet").configure {
+        dependsOn("graphqlGenerateClient")
+        dependsOn("openApiGenerate")
+    }
 
     withType<KotlinCompile>().configureEach {
         dependsOn("ktlintFormat")
+        dependsOn("graphqlGenerateClient")
+        dependsOn("openApiGenerate")
+    }
+
+    withType<GraphQLGenerateClientTask>().configureEach {
+        packageName.set("no.nav.pdl")
+        schemaFile.set(file("$projectDir/src/main/resources/graphql/schema.graphql"))
+        queryFileDirectory.set(file("$projectDir/src/main/resources/graphql"))
+        serializer = GraphQLSerializer.KOTLINX
+    }
+
+    withType<KoverReport>().configureEach {
+        kover {
+            reports {
+                filters {
+                    excludes {
+                        // exclusion rules - classes to exclude from report
+                        classes("no.nav.pdl.*")
+                        classes("no.nav.oppgave.*")
+                    }
+                }
+            }
+        }
     }
 
     withType<ShadowJar>().configureEach {
