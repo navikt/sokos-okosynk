@@ -34,10 +34,8 @@ spec:
   prometheus:
     enabled: true
     path: /internal/metrics
-  azure:
-    application:
-      enabled: true
-      tenant: trygdeetaten.no
+  secureLogs:
+    enabled: true
   filesFrom:
     - secret: okosynk-sftp-private-key
       mountPath: /var/run/secrets/okosynk-sftp-private-key
