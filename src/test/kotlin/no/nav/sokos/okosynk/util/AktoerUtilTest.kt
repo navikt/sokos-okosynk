@@ -12,6 +12,7 @@ class AktoerUtilTest : FunSpec({
     }
 
     test("isDnr should return false for invalid Dnr") {
+        "20000000000".isDnr() shouldBe false
         "30000000000".isDnr() shouldBe false
         "4000000000".isDnr() shouldBe false
     }
@@ -21,7 +22,8 @@ class AktoerUtilTest : FunSpec({
     }
 
     test("isBnr should return false for invalid Bnr") {
-        "12301100000".isBnr() shouldBe false
-        "12300000000".isBnr() shouldBe false
+        "12201100000".isBnr() shouldBe false
+        "12330000000".isBnr() shouldBe false
+        "1230210000".isBnr() shouldBe false
     }
 })

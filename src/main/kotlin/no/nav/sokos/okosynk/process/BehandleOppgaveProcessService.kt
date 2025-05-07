@@ -11,6 +11,7 @@ import no.nav.oppgave.models.Oppgave
 import no.nav.oppgave.models.OpprettOppgaveRequest
 import no.nav.oppgave.models.OpprettOppgaveRequest.Prioritet
 import no.nav.oppgave.models.PatchOppgaveRequest
+import no.nav.sokos.okosynk.config.SECURE_LOGGER
 import no.nav.sokos.okosynk.domain.BatchType
 import no.nav.sokos.okosynk.domain.MeldingOppgave
 import no.nav.sokos.okosynk.integration.ENHET_ID_FOR_ANDRE_EKSTERNE
@@ -20,6 +21,7 @@ import no.nav.sokos.okosynk.metrics.Metrics
 import no.nav.sokos.okosynk.service.BatchTypeContext
 
 private val logger = KotlinLogging.logger {}
+private val secureLogger = KotlinLogging.logger(SECURE_LOGGER)
 private const val BATCH_SIZE = 1000
 
 class BehandleOppgaveProcessService(
@@ -37,8 +39,8 @@ class BehandleOppgaveProcessService(
         runCatching {
             val oppgaveList = hentOppgaveList(batchType)
 
-            oppdaterOppgaveState(oppgaveList, meldingOppgaveList, batchType)
             opprettOppgave(oppgaveList, meldingOppgaveList, batchType)
+            oppdaterOppgaveState(oppgaveList, meldingOppgaveList, batchType)
 
             logger.info { "Oppretter: ${opprettCounter.get()}, Oppdater: ${oppdaterCounter.get()}, Ferdigstilt: ${ferdigstiltCounter.get()} oppgaver" }
         }.onFailure { exception ->
@@ -72,34 +74,33 @@ class BehandleOppgaveProcessService(
         meldingOppgaveList: List<MeldingOppgave>,
         batchType: BatchType,
     ) {
-        val oppgave =
-            runBlocking {
-                meldingOppgaveList
-                    .filterNot { meldingOppgave -> oppgaveList.any { oppgave -> oppgave.matches(meldingOppgave) } }
-                    .map { meldingOppgave ->
-                        val request =
-                            OpprettOppgaveRequest(
-                                aktivDato = LocalDate.now(),
-                                behandlingstema = meldingOppgave.behandlingstema,
-                                behandlingstype = meldingOppgave.behandlingstype,
-                                fristFerdigstillelse = LocalDate.now(),
-                                oppgavetype = meldingOppgave.oppgavetype,
-                                opprettetAvEnhetsnr = meldingOppgave.opprettetAvEnhetsnr,
-                                orgnr = meldingOppgave.orgnr,
-                                personident = meldingOppgave.aktoerId ?: meldingOppgave.personIdent,
-                                prioritet = Prioritet.LAV,
-                                tema = TEMA_OKONOMI_KODE,
-                                tildeltEnhetsnr = meldingOppgave.tildeltEnhetsnr,
-                                beskrivelse = meldingOppgave.beskrivelse,
-                            )
-                        // oppgaveClientService.opprettOppgave(request)
+        runBlocking {
+            meldingOppgaveList
+                .filterNot { meldingOppgave -> oppgaveList.any { oppgave -> oppgave.matches(meldingOppgave) } }
+                .forEach { meldingOppgave ->
+                    val request =
+                        OpprettOppgaveRequest(
+                            aktivDato = LocalDate.now(),
+                            behandlingstema = meldingOppgave.behandlingstema,
+                            behandlingstype = meldingOppgave.behandlingstype,
+                            fristFerdigstillelse = LocalDate.now(),
+                            oppgavetype = meldingOppgave.oppgavetype,
+                            opprettetAvEnhetsnr = meldingOppgave.opprettetAvEnhetsnr,
+                            orgnr = meldingOppgave.orgnr,
+                            personident = meldingOppgave.aktoerId ?: meldingOppgave.personIdent,
+                            prioritet = Prioritet.LAV,
+                            tema = TEMA_OKONOMI_KODE,
+                            tildeltEnhetsnr = meldingOppgave.tildeltEnhetsnr,
+                            beskrivelse = meldingOppgave.beskrivelse,
+                        )
+
+                    runCatching {
+                        oppgaveClientService.opprettOppgave(request)
                         opprettCounter.incrementAndGet()
                         Metrics.counter("opprett_oppgave_${batchType.opprettetAv}").inc()
-                        request
-                    }
-            }
-
-        // logger.info { "Oppretter oppgaver: ${json.encodeToString(oppgave)}" }
+                    }.onFailure { exception -> secureLogger.error(exception) { "Feil ved opprettelse av oppgave: $request" } }
+                }
+        }
     }
 
     private fun oppdaterOppgaveState(
@@ -107,8 +108,8 @@ class BehandleOppgaveProcessService(
         meldingOppgaveList: List<MeldingOppgave>,
         batchType: BatchType,
     ) {
-        return runBlocking {
-            oppgaveList.map { oppgave ->
+        runBlocking {
+            oppgaveList.forEach { oppgave ->
                 val ferdigstilt = !meldingOppgaveList.any { meldingOppgave -> oppgave.matches(meldingOppgave) }
 
                 val request =
@@ -117,15 +118,18 @@ class BehandleOppgaveProcessService(
                         versjon = oppgave.versjon,
                         status = if (ferdigstilt) PatchOppgaveRequest.Status.FERDIGSTILT else null,
                     )
-                // oppgaveClientService.oppdaterOppgave(oppgave.id, request)
 
-                if (ferdigstilt) {
-                    ferdigstiltCounter.incrementAndGet()
-                    Metrics.counter("ferdigstilt_oppgave_${batchType.opprettetAv}").inc()
-                } else {
-                    oppdaterCounter.incrementAndGet()
-                    Metrics.counter("oppdater_oppgave_${batchType.opprettetAv}").inc()
-                }
+                runCatching {
+                    oppgaveClientService.oppdaterOppgave(oppgave.id, request)
+
+                    if (ferdigstilt) {
+                        ferdigstiltCounter.incrementAndGet()
+                        Metrics.counter("ferdigstilt_oppgave_${batchType.opprettetAv}").inc()
+                    } else {
+                        oppdaterCounter.incrementAndGet()
+                        Metrics.counter("oppdater_oppgave_${batchType.opprettetAv}").inc()
+                    }
+                }.onFailure { exception -> secureLogger.error(exception) { "Feil ved oppdatering av oppgaveId: ${oppgave.id}, request: $request" } }
             }
         }
     }

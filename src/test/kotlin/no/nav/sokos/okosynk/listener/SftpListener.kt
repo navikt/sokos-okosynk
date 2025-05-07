@@ -98,18 +98,18 @@ object SftpListener : TestListener {
     }
 
     fun createFile(
-        fileName: String,
+        filename: String,
         directory: Directories,
         content: String,
     ) {
         val sftpConfig = SftpConfig(sftpProperties)
         sftpConfig.channel { connector ->
-            val path = "${directory.value}/$fileName"
+            val path = "${directory.value}/$filename"
             runCatching {
                 connector.put(content.toByteArray().inputStream(), path)
-                logger.debug { "$fileName ble opprettet i mappen $path" }
+                logger.debug { "$filename ble opprettet i mappen $path" }
             }.onFailure { exception ->
-                logger.error { "$fileName ble ikke opprettet i mappen $path. Feilmelding: ${exception.message}" }
+                logger.error { "$filename ble ikke opprettet i mappen $path. Feilmelding: ${exception.message}" }
                 throw SFtpException("SFtp-feil: $exception")
             }
         }

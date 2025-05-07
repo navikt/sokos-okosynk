@@ -40,14 +40,8 @@ class BatchService(
         val meldingFile = ftpService.downloadFiles(fileName = batchType.fileName)
 
         when {
-            meldingFile.isEmpty() -> {
-                logger.info { "Ingen fil med filnavn: ${batchType.fileName} fins til behandling" }
-            }
-
-            meldingFile.size > MAX_ANTALL_LINJER -> {
-                logger.error { "Fil ${batchType.fileName} overskrider maks antall linjer: ($MAX_ANTALL_LINJER)" }
-            }
-
+            meldingFile.isEmpty() -> logger.info { "Ingen fil med filnavn: ${batchType.fileName} fins til behandling, synking avsluttes" }
+            meldingFile.size > MAX_ANTALL_LINJER -> logger.error { "Fil ${batchType.fileName} overskrider maks antall linjer: ($MAX_ANTALL_LINJER)" }
             else -> {
                 logger.info { "Start synk ${batchType.fileName} med Oppgave" }
 
@@ -57,13 +51,14 @@ class BatchService(
                     .run { behandleMeldingProcessService.process(this) }
                     .run { behandleOppgaveProcessService.process(this) }
 
+                ftpService.renameFile(
+                    oldFilename = "${Directories.INBOUND.value}/${batchType.fileName}",
+                    newFilename = "${Directories.INBOUND.value}/${batchType.fileName}.${LocalDateTime.now().toISO()}",
+                )
+
                 logger.info { "Ferdig synk ${batchType.fileName} med Oppgave" }
             }
         }
-        ftpService.renameFile(
-            oldFilename = "${Directories.INBOUND}/${batchType.fileName}",
-            newFilename = "${Directories.INBOUND}/${batchType.fileName}.${LocalDateTime.now().toISO()}",
-        )
     }
 }
 

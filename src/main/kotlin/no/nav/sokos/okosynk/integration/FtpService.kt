@@ -28,15 +28,15 @@ class FtpService(
                 connector.rename(oldFilename, newFilename)
                 logger.debug { "Filen endre navn fra $oldFilename til $oldFilename" }
             }.onFailure { exception ->
-                logger.error { "Feil til endre navn fra $oldFilename til $newFilename. Feil: ${exception.message}" }
+                logger.error { "Feil til endre filnavn fra $oldFilename til $newFilename. Feil: ${exception.message}" }
                 throw SFtpException("SFTP-feil: $exception")
             }
         }
     }
 
     fun downloadFiles(
-        directory: Directories = Directories.INBOUND,
         fileName: String,
+        directory: Directories = Directories.INBOUND,
     ): List<String> {
         return sftpConfig.channel { connector ->
             try {
@@ -46,7 +46,7 @@ class FtpService(
                         .filter { it.filename == fileName }
 
                 if (files.isEmpty()) {
-                    logger.info { "Ingen filer med navn $fileName funnet i mappen ${directory.value}" }
+                    logger.debug { "Ingen fil med navn $fileName funnet i mappen ${directory.value}" }
                     return@channel emptyList()
                 }
 

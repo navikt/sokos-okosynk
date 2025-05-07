@@ -10,6 +10,7 @@ import io.ktor.client.request.parameter
 import io.ktor.client.request.patch
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
@@ -76,15 +77,19 @@ class OppgaveClientService(
             val accessToken = accessTokenClient.getSystemToken()
             logger.debug { "Opprett en ny oppgave" }
 
-            client.post("$oppgaveUrl/api/v1/oppgaver") {
-                header(HttpHeaders.Authorization, "Bearer $accessToken")
-                header(HttpHeaders.XCorrelationId, UUID.randomUUID())
-                contentType(ContentType.Application.Json)
-                setBody(request)
-            }.body<Oppgave>()
+            val response =
+                client.post("$oppgaveUrl/api/v1/oppgaver") {
+                    header(HttpHeaders.Authorization, "Bearer $accessToken")
+                    header(HttpHeaders.XCorrelationId, UUID.randomUUID())
+                    contentType(ContentType.Application.Json)
+                    setBody(request)
+                }
+
+            response.status.isSuccess() || throw OppgaveException("Feil ved opprettelse av oppgave. Status: ${response.status}, melding: ${response.bodyAsText()}")
+            response.body<Oppgave>()
         }.fold(
-            onSuccess = { response -> response.also { logger.info { "Oppgave opprettet med id: ${response.id}" } } },
-            onFailure = { e -> throw OppgaveException("Feil ved opprettelse av oppgave", e) },
+            onSuccess = { response -> response.also { logger.debug { "Oppgave opprettet med id: ${response.id}" } } },
+            onFailure = { exception -> throw exception },
         )
     }
 
@@ -96,15 +101,19 @@ class OppgaveClientService(
             val accessToken = accessTokenClient.getSystemToken()
             logger.debug { "Oppdater en eksisterende oppgave" }
 
-            client.patch("$oppgaveUrl/api/v1/oppgaver/$id") {
-                header(HttpHeaders.Authorization, "Bearer $accessToken")
-                header(HttpHeaders.XCorrelationId, UUID.randomUUID())
-                contentType(ContentType.Application.Json)
-                setBody(request)
-            }.body<Oppgave>()
+            val response =
+                client.patch("$oppgaveUrl/api/v1/oppgaver/$id") {
+                    header(HttpHeaders.Authorization, "Bearer $accessToken")
+                    header(HttpHeaders.XCorrelationId, UUID.randomUUID())
+                    contentType(ContentType.Application.Json)
+                    setBody(request)
+                }
+
+            response.status.isSuccess() || throw OppgaveException("Feil ved oppdater av oppgave. Status: ${response.status}, melding: ${response.bodyAsText()}")
+            response.body<Oppgave>()
         }.fold(
-            onSuccess = { response -> response.also { logger.info { "Oppgave oppdater med id: $id" } } },
-            onFailure = { e -> throw OppgaveException("Feil ved oppdatering av oppgave", e) },
+            onSuccess = { response -> response.also { logger.debug { "Oppgave oppdater med id: $id" } } },
+            onFailure = { exception -> throw exception },
         )
     }
 }
