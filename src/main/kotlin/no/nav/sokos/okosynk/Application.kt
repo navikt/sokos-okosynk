@@ -10,7 +10,6 @@ import no.nav.sokos.okosynk.config.PropertiesConfig
 import no.nav.sokos.okosynk.config.applicationLifecycleConfig
 import no.nav.sokos.okosynk.config.commonConfig
 import no.nav.sokos.okosynk.config.routingConfig
-import no.nav.sokos.okosynk.config.securityConfig
 import no.nav.sokos.okosynk.service.SchedulerService
 
 fun main() {
@@ -18,13 +17,11 @@ fun main() {
 }
 
 fun Application.module() {
-    val useAuthentication = PropertiesConfig.Configuration().useAuthentication
     val applicationState = ApplicationState()
 
     commonConfig()
     applicationLifecycleConfig(applicationState)
-    securityConfig(useAuthentication)
-    routingConfig(useAuthentication, applicationState)
+    routingConfig(applicationState)
 
     if (PropertiesConfig.SchedulerProperties().enabled) {
         val scheduler = SchedulerService()

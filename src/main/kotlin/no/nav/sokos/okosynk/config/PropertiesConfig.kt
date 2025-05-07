@@ -15,7 +15,6 @@ object PropertiesConfig {
             mapOf(
                 "NAIS_APP_NAME" to "sokos-okosynk",
                 "NAIS_NAMESPACE" to "okonomi",
-                "USE_AUTHENTICATION" to "true",
                 "SCHEDULER_ENABLED" to "true",
             ),
         )
@@ -24,7 +23,6 @@ object PropertiesConfig {
         ConfigurationMap(
             mapOf(
                 "APPLICATION_PROFILE" to Profile.LOCAL.toString(),
-                "USE_AUTHENTICATION" to "false",
                 "SCHEDULER_CRON_EXPRESSION" to "0 * * * * *",
             ),
         )
@@ -50,7 +48,6 @@ object PropertiesConfig {
     data class Configuration(
         val naisAppName: String = get("NAIS_APP_NAME"),
         val profile: Profile = Profile.valueOf(get("APPLICATION_PROFILE")),
-        val useAuthentication: Boolean = get("USE_AUTHENTICATION").toBoolean(),
         val azureAdProperties: AzureAdProperties = AzureAdProperties(),
     )
 
