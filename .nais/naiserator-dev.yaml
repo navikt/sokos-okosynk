@@ -37,6 +37,7 @@ spec:
   azure:
     application:
       enabled: true
+      tenant: trygdeetaten.no
   filesFrom:
     - secret: okosynk-sftp-private-key
       mountPath: /var/run/secrets/okosynk-sftp-private-key
