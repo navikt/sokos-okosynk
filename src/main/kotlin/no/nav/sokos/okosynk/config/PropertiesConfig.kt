@@ -16,6 +16,7 @@ object PropertiesConfig {
                 "NAIS_APP_NAME" to "sokos-okosynk",
                 "NAIS_NAMESPACE" to "okonomi",
                 "USE_AUTHENTICATION" to "true",
+                "SCHEDULER_ENABLED" to "true",
             ),
         )
 
@@ -24,6 +25,7 @@ object PropertiesConfig {
             mapOf(
                 "APPLICATION_PROFILE" to Profile.LOCAL.toString(),
                 "USE_AUTHENTICATION" to "false",
+                "SCHEDULER_CRON_EXPRESSION" to "0 * * * * *",
             ),
         )
 
@@ -59,6 +61,11 @@ object PropertiesConfig {
         val clientSecret: String = getOrEmpty("AZURE_APP_CLIENT_SECRET"),
     )
 
+    data class SchedulerProperties(
+        val enabled: Boolean = get("SCHEDULER_ENABLED").toBoolean(),
+        val cronExpression: String = getOrEmpty("SCHEDULER_CRON_EXPRESSION"),
+    )
+
     data class SftpProperties(
         val host: String = getOrEmpty("SFTP_SERVER"),
         val username: String = getOrEmpty("SFTP_USERNAME"),
@@ -74,8 +81,6 @@ object PropertiesConfig {
     data class OppgaveProperties(
         val oppgaveUrl: String = getOrEmpty("OPPGAVE_URL"),
         val oppgaveScope: String = getOrEmpty("OPPGAVE_SCOPE"),
-        val username: String = getOrEmpty("OPPGAVE_USERNAME"),
-        val password: String = getOrEmpty("OPPGAVE_PASSWORD"),
     )
 
     enum class Profile {

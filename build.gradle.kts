@@ -37,9 +37,12 @@ val natpryceVersion = "1.6.10.0"
 val kotestVersion = "5.9.1"
 val kotlinxSerializationVersion = "1.8.1"
 val kotlinxDatetimeVersion = "0.6.2"
+val cronUtilsVersion = "9.2.1"
 
 val mockOAuth2ServerVersion = "2.1.10"
 val mockkVersion = "1.14.0"
+val wiremockVersion = "3.12.1"
+val testcontainersVersion = "1.20.6"
 
 dependencies {
 
@@ -78,6 +81,9 @@ dependencies {
     // Config
     implementation("com.natpryce:konfig:$natpryceVersion")
 
+    // Cron Utils
+    implementation("com.cronutils:cron-utils:$cronUtilsVersion")
+
     // GraphQL
     implementation("com.expediagroup:graphql-kotlin-ktor-client:$graphqlClientVersion") {
         exclude("com.expediagroup:graphql-kotlin-client-jackson")
@@ -89,6 +95,8 @@ dependencies {
     testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
     testImplementation("io.mockk:mockk:$mockkVersion")
     testImplementation("no.nav.security:mock-oauth2-server:$mockOAuth2ServerVersion")
+    testImplementation("org.testcontainers:testcontainers:$testcontainersVersion")
+    testImplementation("org.wiremock:wiremock:$wiremockVersion")
 }
 
 // Vulnerability fix because of id("org.jlleitschuh.gradle.ktlint") version "12.1.2"
@@ -119,7 +127,9 @@ openApiGenerate {
     packageName.set("no.nav.oppgave")
     globalProperties.set(mapOf("models" to ""))
     configOptions.set(
-        mapOf("serializationLibrary" to "kotlinx_serialization"),
+        mapOf(
+            "serializationLibrary" to "kotlinx_serialization",
+        ),
     )
 }
 

@@ -5,17 +5,13 @@ import io.ktor.server.auth.authenticate
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.routing
 
-import no.nav.sokos.okosynk.api.dummyApi
-
 fun Application.routingConfig(
     useAuthentication: Boolean,
     applicationState: ApplicationState,
 ) {
     routing {
         internalNaisRoutes(applicationState)
-        authenticate(useAuthentication, AUTHENTICATION_NAME) {
-            dummyApi()
-        }
+        authenticate(useAuthentication, AUTHENTICATION_NAME) {}
     }
 }
 

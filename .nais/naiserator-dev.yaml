@@ -37,21 +37,15 @@ spec:
   azure:
     application:
       enabled: true
-      tenant: trygdeetaten.no
-  accessPolicy:
-    inbound:
-      rules:
-        - application: azure-token-generator
-          namespace: nais
-          cluster: dev-gcp
-  envFrom:
-    - secret: sokos-okosynk-oppgave-credentials
   filesFrom:
     - secret: okosynk-sftp-private-key
       mountPath: /var/run/secrets/okosynk-sftp-private-key
   env:
     - name: USE_AUTHENTICATION
       value: "true"
+
+    - name: SCHEDULER_CRON_EXPRESSION
+      value: "0 0 4 * * *"
 
     # PDL
     - name: PDL_URL
@@ -61,7 +55,7 @@ spec:
 
     # OPPGAVE
     - name: OPPGAVE_URL
-      value: "https://pdl-api-q1.dev.intern.nav.no"
+      value: "https://oppgave-q1.dev.intern.nav.no"
     - name: OPPGAVE_SCOPE
       value: "api://dev-fss.oppgavehandtering.oppgave-q1/.default"
 

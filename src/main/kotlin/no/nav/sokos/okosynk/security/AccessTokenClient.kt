@@ -56,7 +56,7 @@ class AccessTokenClient(
                     token.accessToken
                 }
 
-                else -> token.accessToken.also { logger.info { "Henter accesstoken fra cache" } }
+                else -> token.accessToken.also { logger.debug { "Henter accesstoken fra cache" } }
             }
         }
     }

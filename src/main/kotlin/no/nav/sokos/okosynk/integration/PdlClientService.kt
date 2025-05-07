@@ -15,7 +15,6 @@ import mu.KotlinLogging
 import org.slf4j.MDC
 
 import no.nav.pdl.HentIdenter
-import no.nav.pdl.hentidenter.IdentInformasjon
 import no.nav.sokos.okosynk.config.PropertiesConfig
 import no.nav.sokos.okosynk.config.httpClient
 import no.nav.sokos.okosynk.exception.PdlException
@@ -30,13 +29,13 @@ class PdlClientService(
     private val client: HttpClient = httpClient,
     private val accessTokenClient: AccessTokenClient = AccessTokenClient(azureAdScope = pdlScope),
 ) {
-    suspend fun hentIdenter(ident: List<String>): Map<String, List<IdentInformasjon>> {
+    suspend fun hentIdenter(ident: String): String? {
         val request = HentIdenter(HentIdenter.Variables(ident))
 
-        logger.info { "Henter accesstoken for oppslag mot PDL" }
+        logger.debug { "Henter accesstoken for oppslag mot PDL" }
         val accessToken = accessTokenClient.getSystemToken()
 
-        logger.info { "Henter ident fra PDL" }
+        logger.debug { "Henter identer fra PDL" }
         val response =
             client.post("$pdlUrl/graphql") {
                 header(HttpHeaders.Authorization, "Bearer $accessToken")
@@ -52,12 +51,7 @@ class PdlClientService(
                 if (result.errors?.isNotEmpty() == true) {
                     handleErrors(result.errors)
                 }
-                result.data
-                    ?.hentIdenterBolk
-                    ?.map { item -> item.ident to (item.identer ?: emptyList()) }
-                    ?.groupBy({ it.first }, { it.second })
-                    ?.mapValues { entry -> entry.value.flatten() }
-                    .orEmpty()
+                result.data?.hentIdenter?.identer?.firstOrNull()?.ident
             }
 
             else -> throw ClientRequestException(response, "Noe gikk galt ved oppslag mot PDL")

@@ -1,6 +1,5 @@
-query($identer: [ID!]!) {
-    hentIdenterBolk(identer: $identer, historikk: false, grupper: [AKTORID]) {
-        ident,
+query($ident: ID!) {
+    hentIdenter(ident: $ident, historikk: false, grupper: [AKTORID]) {
         identer {
             ident,
             gruppe
