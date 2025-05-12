@@ -7,7 +7,7 @@ import no.nav.sokos.okosynk.util.CopyBookType
 import no.nav.sokos.okosynk.util.Utils.toNorwegianDate
 
 data class UrMelding(
-    @CopyBookField(startIndex = 0, endIndex = 11, type = CopyBookType.STRING)
+    @CopyBookField(startIndex = 0, endIndex = 11, type = CopyBookType.GJERLDER_ID)
     override val gjelderId: String,
     @CopyBookField(startIndex = 11, endIndex = 23, type = CopyBookType.STRING)
     val gjelderIdType: String,

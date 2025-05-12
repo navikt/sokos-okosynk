@@ -12,7 +12,6 @@ import no.nav.oppgave.models.OpprettOppgaveRequest
 import no.nav.oppgave.models.OpprettOppgaveRequest.Prioritet
 import no.nav.oppgave.models.PatchOppgaveRequest
 import no.nav.sokos.okosynk.config.SECURE_LOGGER
-import no.nav.sokos.okosynk.domain.BatchType
 import no.nav.sokos.okosynk.domain.MeldingOppgave
 import no.nav.sokos.okosynk.integration.ENHET_ID_FOR_ANDRE_EKSTERNE
 import no.nav.sokos.okosynk.integration.OppgaveClientService
@@ -30,17 +29,17 @@ class BehandleOppgaveProcessService(
     private val ferdigstiltCounter = AtomicInteger(0)
     private val oppdaterCounter = AtomicInteger(0)
     private val opprettCounter = AtomicInteger(0)
+    private val batchType = BatchTypeContext.get()
 
     override fun process(meldingOppgaveList: List<MeldingOppgave>) {
         resetCounters()
-        val batchType = BatchTypeContext.get()!!
 
         logger.info { "Start BehandleOppgaveProcessService " }
         runCatching {
-            val oppgaveList = hentOppgaveList(batchType)
+            val oppgaveList = hentOppgaveList()
 
-            opprettOppgave(oppgaveList, meldingOppgaveList, batchType)
-            oppdaterOppgaveState(oppgaveList, meldingOppgaveList, batchType)
+            opprettOppgave(oppgaveList, meldingOppgaveList)
+            oppdaterOppgaveState(oppgaveList, meldingOppgaveList)
 
             logger.info { "Oppretter: ${opprettCounter.get()}, Oppdater: ${oppdaterCounter.get()}, Ferdigstilt: ${ferdigstiltCounter.get()} oppgaver" }
         }.onFailure { exception ->
@@ -48,7 +47,7 @@ class BehandleOppgaveProcessService(
         }
     }
 
-    private fun hentOppgaveList(batchType: BatchType): List<Oppgave> {
+    private fun hentOppgaveList(): List<Oppgave> {
         return runBlocking {
             logger.info { "Starter søk og evt. inkrementell henting av oppgaver av type: ${batchType.oppgaveType}" }
 
@@ -72,7 +71,6 @@ class BehandleOppgaveProcessService(
     private fun opprettOppgave(
         oppgaveList: List<Oppgave>,
         meldingOppgaveList: List<MeldingOppgave>,
-        batchType: BatchType,
     ) {
         runBlocking {
             meldingOppgaveList
@@ -98,7 +96,10 @@ class BehandleOppgaveProcessService(
                         oppgaveClientService.opprettOppgave(request)
                         opprettCounter.incrementAndGet()
                         Metrics.counter("opprett_oppgave_${batchType.opprettetAv}").inc()
-                    }.onFailure { exception -> secureLogger.error(exception) { "Feil ved opprettelse av oppgave: $request" } }
+                    }.onFailure { exception ->
+                        logger.error(exception) { "Feil ved opprettelse av oppgave, sjekk secureLogger" }
+                        secureLogger.error(exception) { "Feil ved opprettelse av oppgave: $request" }
+                    }
                 }
         }
     }
@@ -106,9 +107,17 @@ class BehandleOppgaveProcessService(
     private fun oppdaterOppgaveState(
         oppgaveList: List<Oppgave>,
         meldingOppgaveList: List<MeldingOppgave>,
-        batchType: BatchType,
     ) {
         runBlocking {
+            val duplicates =
+                oppgaveList
+                    .groupBy { it.id }
+                    .filter { (_, group) -> group.size > 1 }
+
+            if (duplicates.isNotEmpty()) {
+                secureLogger.error { "Duplicate oppgaver found: ${duplicates.values.flatten()}" }
+            }
+
             oppgaveList.forEach { oppgave ->
                 val ferdigstilt = !meldingOppgaveList.any { meldingOppgave -> oppgave.matches(meldingOppgave) }
 
@@ -129,7 +138,10 @@ class BehandleOppgaveProcessService(
                         oppdaterCounter.incrementAndGet()
                         Metrics.counter("oppdater_oppgave_${batchType.opprettetAv}").inc()
                     }
-                }.onFailure { exception -> secureLogger.error(exception) { "Feil ved oppdatering av oppgaveId: ${oppgave.id}, request: $request" } }
+                }.onFailure { exception ->
+                    logger.error(exception) { "Feil ved oppdatering av oppgaveId: ${oppgave.id}, sjekk secureLogger" }
+                    secureLogger.error(exception) { "Feil ved oppdatering av oppgaveId: ${oppgave.id}, request: $request" }
+                }
             }
         }
     }

@@ -14,7 +14,7 @@ private val logger = KotlinLogging.logger {}
 
 class FileProcessService() : Chain<List<String>, List<Melding>> {
     override fun process(meldingList: List<String>): List<Melding> {
-        val batchType = BatchTypeContext.get()!!
+        val batchType = BatchTypeContext.get()
 
         logger.info { "Start FileProcessService " }
         return when (batchType.fileName) {

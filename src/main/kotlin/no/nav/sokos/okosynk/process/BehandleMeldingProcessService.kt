@@ -18,7 +18,7 @@ import no.nav.sokos.okosynk.integration.ENHET_ID_FOR_ANDRE_EKSTERNE
 import no.nav.sokos.okosynk.integration.PdlClientService
 import no.nav.sokos.okosynk.metrics.Metrics
 import no.nav.sokos.okosynk.service.BatchTypeContext
-import no.nav.sokos.okosynk.util.AktoerUtil.isDnr
+import no.nav.sokos.okosynk.util.IdentUtil.isDnr
 
 private val logger = KotlinLogging.logger { }
 private val secureLogger = KotlinLogging.logger(SECURE_LOGGER)
@@ -26,17 +26,17 @@ private val secureLogger = KotlinLogging.logger(SECURE_LOGGER)
 class BehandleMeldingProcessService(
     private val pdlClientService: PdlClientService = PdlClientService(),
 ) : Chain<List<Melding>, List<MeldingOppgave>> {
-    override fun process(meldingList: List<Melding>): List<MeldingOppgave> {
-        val batchType = BatchTypeContext.get()!!
+    private val batchType = BatchTypeContext.get()
 
-        logger.info { "Start BehandleMeldingProcessService " }
+    override fun process(meldingList: List<Melding>): List<MeldingOppgave> {
+        logger.info { "${batchType.oppgaveType} - Start BehandleMeldingProcessService " }
         val regelverkMap = if (batchType == BatchType.OS) RegelverkConfig.regelverkOSMap else RegelverkConfig.regelverkURMap
         val meldingOppgaveList =
             meldingList
                 .sortedByDescending { melding -> melding.sammenligningsDato() }
                 .filter { melding -> regelverkMap[melding.ruleKey()] != null }
                 .groupBy { melding -> MeldingKriterier(melding) }
-                .mapNotNull { (_, value) -> opprettOppgave(value, batchType, regelverkMap) }
+                .mapNotNull { (_, value) -> opprettOppgave(value, regelverkMap) }
                 .distinct()
                 .also { oppgave ->
                     logger.info { "Antall konvertert oppgaver for batchType: $batchType: ${oppgave.size}" }
@@ -44,7 +44,7 @@ class BehandleMeldingProcessService(
                 }
 
         meldingOppgaveList.filter { it.personIdent?.isDnr() ?: false }
-            .forEach { secureLogger.info { "dnr found in the batch file: ${it.personIdent?.take(6)}*****" } }
+            .forEach { secureLogger.info { "dnr found in the batch file: ${it.personIdent}" } }
 
         return meldingOppgaveList
     }
@@ -52,12 +52,10 @@ class BehandleMeldingProcessService(
     private fun hentAktoer(gjelderId: String): String? {
         return runBlocking {
             runCatching {
-                pdlClientService.hentIdenter(gjelderId) ?: run {
-                    secureLogger.error { "Kunne ikke hente aktørid: $gjelderId" }
-                    null
-                }
+                pdlClientService.hentIdenter(gjelderId)
             }.getOrElse { exception ->
-                secureLogger.error(exception) { "Feil ved henting av aktørid: $gjelderId" }
+                logger.error { "Feil ved henting av aktørid, sjekk secureLogger" }
+                secureLogger.error(exception) { "Feil ved henting av aktørid for gjelderId: $gjelderId" }
                 null
             }
         }
@@ -65,7 +63,6 @@ class BehandleMeldingProcessService(
 
     private fun opprettOppgave(
         meldingList: List<Melding>,
-        batchType: BatchType,
         regelverkMap: Map<String, Regelverk>,
     ): MeldingOppgave? {
         val melding = meldingList.first()
@@ -87,27 +84,28 @@ class BehandleMeldingProcessService(
             else -> meldingOppgave.copy(personIdent = melding.gjelderId)
         }
     }
+}
 
-    private fun Melding.beskrivelse(meldingList: List<Melding>): String? {
-        return when (this) {
-            is OsMelding -> {
-                val osMeldingList = meldingList.filterIsInstance<OsMelding>()
-                val totalNettoBelop = osMeldingList.sumOf { it.totalNettoBelop }
-                val minFomPeriode = osMeldingList.minOf { it.fomPeriode }
-                val maxTomPeriode = osMeldingList.maxOf { it.tomPeriode }
-                return this.beskrivelseInfo(totalNettoBelop, minFomPeriode, maxTomPeriode)
-            }
+fun Melding.beskrivelse(meldingList: List<Melding>): String? {
+    return when (this) {
+        is OsMelding -> {
+            val osMeldingList = meldingList.filterIsInstance<OsMelding>()
+            val totalNettoBelop = osMeldingList.sumOf { it.totalNettoBelop }
+            val minFomPeriode = osMeldingList.minOf { it.fomPeriode }
+            val maxTomPeriode = osMeldingList.maxOf { it.tomPeriode }
+            return this.beskrivelseInfo(totalNettoBelop, minFomPeriode, maxTomPeriode)
+        }
 
-            is UrMelding -> {
-                val urMeldingList = meldingList.filterIsInstance<UrMelding>()
-                val totalNettoBelop = urMeldingList.sumOf { it.totalNettoBelop }
-                return this.beskrivelseInfo(totalNettoBelop)
-            }
+        is UrMelding -> {
+            val urMeldingList = meldingList.filterIsInstance<UrMelding>()
+            val totalNettoBelop = urMeldingList.sumOf { it.totalNettoBelop }
+            return this.beskrivelseInfo(totalNettoBelop)
+        }
 
-            else -> {
-                secureLogger.error { "Ukjent meldingstype: $this" }
-                null
-            }
+        else -> {
+            logger.error { "Ukjent meldingstype, sjekk secureLogger" }
+            secureLogger.error { "Ukjent meldingstype: $this" }
+            null
         }
     }
 }

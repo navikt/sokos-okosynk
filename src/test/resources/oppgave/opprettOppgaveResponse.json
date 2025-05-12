@@ -1,0 +1,26 @@
+{
+  "id": 375144350,
+  "tildeltEnhetsnr": "4151",
+  "opprettetAvEnhetsnr": "9999",
+  "aktoerId": "1000068345109",
+  "beskrivelse": "AVAV",
+  "tema": "OKO",
+  "behandlingstype": "ae0215",
+  "behandlingstema": "ab0270",
+  "oppgavetype": "OKO_OS",
+  "versjon": 1,
+  "mappeId": 100030736,
+  "opprettetAv": "okosynkos",
+  "endretAv": "sokos-okosynk",
+  "prioritet": "LAV",
+  "status": "OPPRETTET",
+  "metadata": {},
+  "fristFerdigstillelse": "2024-09-28",
+  "aktivDato": "2024-09-21",
+  "opprettetTidspunkt": "2024-09-21T06:02:35.546Z",
+  "endretTidspunkt": "2025-05-08T10:30:37.189Z",
+  "bruker": {
+    "ident": "1000068345109",
+    "type": "PERSON"
+  }
+}

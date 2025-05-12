@@ -1,6 +1,6 @@
 package no.nav.sokos.okosynk.domain
 
-import no.nav.sokos.okosynk.util.AktoerUtil.isBnr
+import no.nav.sokos.okosynk.util.IdentUtil.isBnr
 
 private const val TSS_PREFIX_1 = '8'
 private const val TSS_PREFIX_2 = '9'

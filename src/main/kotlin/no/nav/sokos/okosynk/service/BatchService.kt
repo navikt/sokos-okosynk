@@ -67,7 +67,7 @@ object BatchTypeContext {
 
     fun set(batchType: BatchType) = threadLocalBatchType.set(batchType)
 
-    fun get(): BatchType? = threadLocalBatchType.get()
+    fun get(): BatchType = threadLocalBatchType.get() ?: BatchType.UNKOWN
 
     fun clear() = threadLocalBatchType.remove()
 }

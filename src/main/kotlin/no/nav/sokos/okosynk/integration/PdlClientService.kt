@@ -60,7 +60,7 @@ class PdlClientService(
 
     private fun handleErrors(errors: List<GraphQLClientError>) {
         val errorMessage = errors.joinToString { it.message }
-        val exceptionMessage = "Message: $errorMessage"
+        val exceptionMessage = errorMessage
         throw PdlException(exceptionMessage)
     }
 }
