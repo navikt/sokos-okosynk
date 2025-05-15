@@ -25,10 +25,10 @@ spec:
     timeout: 5
   resources:
     limits:
-      memory: 4096Mi
+      memory: 1024Mi
     requests:
-      cpu: 2000m
-      memory: 4096Mi
+      cpu: 1000m
+      memory: 1024Mi
   ingresses:
     - https://sokos-okosynk.intern.dev.nav.no
   prometheus:

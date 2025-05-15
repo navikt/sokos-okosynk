@@ -3,8 +3,10 @@ package no.nav.sokos.okosynk.service
 import java.time.LocalDateTime
 
 import FileProcessService
+import mu.KotlinLogging
 
 import no.nav.sokos.okosynk.domain.BatchType
+import no.nav.sokos.okosynk.domain.BatchTypeContext
 import no.nav.sokos.okosynk.integration.Directories
 import no.nav.sokos.okosynk.integration.FtpService
 import no.nav.sokos.okosynk.metrics.Metrics
@@ -12,7 +14,7 @@ import no.nav.sokos.okosynk.process.BehandleMeldingProcessService
 import no.nav.sokos.okosynk.process.BehandleOppgaveProcessService
 import no.nav.sokos.okosynk.util.Utils.toISO
 
-private val logger = mu.KotlinLogging.logger {}
+private val logger = KotlinLogging.logger {}
 private const val MAX_ANTALL_LINJER = 25000
 
 class BatchService(
@@ -21,9 +23,9 @@ class BatchService(
     private val behandleMeldingProcessService: BehandleMeldingProcessService = BehandleMeldingProcessService(),
     private val behandleOppgaveProcessService: BehandleOppgaveProcessService = BehandleOppgaveProcessService(),
 ) {
-    private val batchTypeList = BatchType.entries
-
     fun run() {
+        val batchTypeList = BatchType.entries.filter { it != BatchType.UNKOWN }
+
         runCatching {
             batchTypeList.forEach { batchType ->
                 Metrics.timer("batch_${batchType.opprettetAv}").recordCallable { processBatch(batchType) }
@@ -60,14 +62,4 @@ class BatchService(
             }
         }
     }
-}
-
-object BatchTypeContext {
-    private val threadLocalBatchType = ThreadLocal<BatchType>()
-
-    fun set(batchType: BatchType) = threadLocalBatchType.set(batchType)
-
-    fun get(): BatchType? = threadLocalBatchType.get()
-
-    fun clear() = threadLocalBatchType.remove()
 }

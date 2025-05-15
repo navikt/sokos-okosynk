@@ -10,11 +10,11 @@ import io.ktor.client.request.parameter
 import io.ktor.client.request.patch
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
-import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
+import mu.KLogger
 import mu.KotlinLogging
 
 import no.nav.oppgave.models.Oppgave
@@ -26,11 +26,10 @@ import no.nav.sokos.okosynk.config.httpClient
 import no.nav.sokos.okosynk.exception.OppgaveException
 import no.nav.sokos.okosynk.security.AccessTokenClient
 
-private val logger = KotlinLogging.logger {}
-
 const val TEMA_OKONOMI_KODE = "OKO"
 const val ENHET_ID_FOR_ANDRE_EKSTERNE = "9999"
 private const val STATUSKATEGORI_AAPEN = "AAPEN"
+private val logger: KLogger = KotlinLogging.logger {}
 
 class OppgaveClientService(
     private val oppgaveUrl: String = PropertiesConfig.OppgaveProperties().oppgaveUrl,
@@ -85,7 +84,7 @@ class OppgaveClientService(
                     setBody(request)
                 }
 
-            response.status.isSuccess() || throw OppgaveException("Feil ved opprettelse av oppgave. Status: ${response.status}, melding: ${response.bodyAsText()}")
+            response.status.isSuccess() || throw OppgaveException("Feil ved opprettelse av oppgave. Status: ${response.status}")
             response.body<Oppgave>()
         }.fold(
             onSuccess = { response -> response.also { logger.debug { "Oppgave opprettet med id: ${response.id}" } } },
@@ -109,7 +108,7 @@ class OppgaveClientService(
                     setBody(request)
                 }
 
-            response.status.isSuccess() || throw OppgaveException("Feil ved oppdater av oppgave. Status: ${response.status}, melding: ${response.bodyAsText()}")
+            response.status.isSuccess() || throw OppgaveException("Feil ved oppdater av oppgave. Status: ${response.status}")
             response.body<Oppgave>()
         }.fold(
             onSuccess = { response -> response.also { logger.debug { "Oppgave oppdater med id: $id" } } },

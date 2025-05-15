@@ -11,7 +11,7 @@ import no.nav.sokos.okosynk.security.AccessTokenClient
 
 private const val WIREMOCK_SERVER_PORT = 9001
 
-object WiremockListener : TestListener {
+object WireMockListener : TestListener {
     val wiremock = WireMockServer(WIREMOCK_SERVER_PORT)
     val accessTokenClient = mockk<AccessTokenClient>()
 

@@ -1,0 +1,105 @@
+{
+  "antallTreffTotalt": 4,
+  "oppgaver": [
+    {
+      "id": 347497137,
+      "tildeltEnhetsnr": "4819",
+      "opprettetAvEnhetsnr": "9999",
+      "aktoerId": "1000091768276",
+      "tilordnetRessurs": "K152285",
+      "beskrivelse": "AVVE;;   6150kr;   beregningsdato/id:06.01.25/580109615;   periode:01.01.25-31.01.25;   feilkonto: ;   statusdato:07.01.25;   ;   UtbTil:42126902896;   TOB2181\n\nAVVE;   8785kr;   beregningsdato/id:02.12.24/576167246;   periode:01.12.24-31.12.24;   feilkonto: ;   statusdato:03.12.24;   ;   UtbTil:42126902896;   TOB2181\n\nAVVE;   6150kr;   beregningsdato/id:06.11.24/572631044;   periode:01.11.24-30.11.24;   feilkonto: ;   statusdato:07.11.24;   ;   UtbTil:42126902896;   TOB2181\n\nAVVE;   6150kr;   beregningsdato/id:04.10.24/568760472;   periode:01.10.24-31.10.24;   feilkonto: ;   statusdato:05.10.24;   ;   UtbTil:42126902896;   TOB2181\n\nAVVE;   6150kr;   beregningsdato/id:06.09.24/565196450;   periode:01.09.24-30.09.24;   feilkonto: ;   statusdato:07.09.24;   ;   UtbTil:42126902896;   TOB2181\n\nAVVE;   6150kr;   beregningsdato/id:06.08.24/561315646;   periode:01.08.24-31.08.24;   feilkonto: ;   statusdato:07.08.24;   ;   UtbTil:42126902896;   TOB2181\n\nAVVE;   6150kr;   beregningsdato/id:05.07.24/557776341;   periode:01.07.24-31.07.24;   feilkonto: ;   statusdato:06.07.24;   ;   UtbTil:42126902896;   TOB2181\n\nAVVE;   12300kr;   beregningsdato/id:31.05.24/553299291;   periode:01.05.24-30.06.24;   feilkonto: ;   statusdato:01.06.24;   ;   UtbTil:42126902896;   K231B262\n\nAVVE;   5883kr;   beregningsdato/id:05.04.24/545396784;   periode:01.04.24-30.04.24;   feilkonto: ;   statusdato:06.04.24;   ;   UtbTil:42126902896;   TOB2181\n\nAVVE;   5883kr;   beregningsdato/id:06.03.24/541734114;   periode:01.03.24-31.03.24;   feilkonto: ;   statusdato:07.03.24;   ;   UtbTil:42126902896;   H124085\n\nAVVE;   5883kr;   beregningsdato/id:09.02.24/538267294;   periode:01.02.24-29.02.24;   feilkonto: ;   statusdato:09.02.24;   ;   UtbTil:42126902896;   E124093\n\nAVVE;   5883kr;   beregningsdato/id:02.02.24/536298679;   periode:01.01.24-31.01.24;   feilkonto: ;   statusdato:02.02.24;   ;   UtbTil:42126902896;   J104478\n\nAVVE;   7143kr;   beregningsdato/id:29.11.23/529909914;   periode:01.12.23-31.12.23;   feilkonto: ;   statusdato:01.12.23;   ;   UtbTil:42126902896;   TOB2181\n\nAVVE;   7143kr;   beregningsdato/id:06.11.23/526451172;   periode:01.11.23-30.11.23;   feilkonto: ;   statusdato:08.11.23;   ;   UtbTil:42126902896;   TOB2181\n\nAVVE;   7143kr;   beregningsdato/id:06.10.23/522603267;   periode:01.10.23-31.10.23;   feilkonto: ;   statusdato:10.10.23;   ;   UtbTil:42126902896;   TOB2181\n\nAVVE;   7143kr;   beregningsdato/id:06.09.23/518871956;   periode:01.09.23-30.09.23;   feilkonto: ;   statusdato:09.09.23;   ;   UtbTil:42126902896;   TOB2181\n\nAVVE;   105696kr;   beregningsdato/id:29.08.23/517131715;   periode:01.10.21-31.08.23;   feilkonto: ;   statusdato:29.08.23;   ;   UtbTil:42126902896;   J104478",
+      "tema": "OKO",
+      "oppgavetype": "OKO_OS",
+      "behandlingstype": "ae0216",
+      "versjon": 887,
+      "opprettetAv": "okosynkos",
+      "endretAv": "sokos-okosynk",
+      "prioritet": "LAV",
+      "status": "AAPNET",
+      "metadata": {},
+      "fristFerdigstillelse": "2023-12-31",
+      "aktivDato": "2022-03-08",
+      "opprettetTidspunkt": "2022-03-08T05:06:45.916Z",
+      "endretTidspunkt": "2025-05-08T10:30:36.961Z",
+      "bruker": {
+        "ident": "42126902896",
+        "type": "PERSON"
+      }
+    },
+    {
+      "id": 349335333,
+      "tildeltEnhetsnr": "4819",
+      "opprettetAvEnhetsnr": "9999",
+      "aktoerId": "1000010121748",
+      "tilordnetRessurs": "K152285",
+      "beskrivelse": "AVVE;;   3126kr;   beregningsdato/id:06.01.25/579839504;   periode:01.01.25-31.01.25;   feilkonto: ;   statusdato:07.01.25;   ;   UtbTil:13015519732;   H124085\n\nAVVE;   3126kr;   beregningsdato/id:02.12.24/575879842;   periode:01.12.24-31.12.24;   feilkonto: ;   statusdato:03.12.24;   ;   UtbTil:13015519732;   H124085\n\nAVVE;   3126kr;   beregningsdato/id:06.11.24/572356217;   periode:01.11.24-30.11.24;   feilkonto: ;   statusdato:07.11.24;   ;   UtbTil:13015519732;   H124085\n\nAVVE;   3126kr;   beregningsdato/id:04.10.24/568500251;   periode:01.10.24-31.10.24;   feilkonto: ;   statusdato:07.10.24;   ;   UtbTil:13015519732;   H124085\n\nAVVE;   3126kr;   beregningsdato/id:06.09.24/564909028;   periode:01.09.24-30.09.24;   feilkonto: ;   statusdato:09.09.24;   ;   UtbTil:13015519732;   M106272\n\nAVVE;   3126kr;   beregningsdato/id:06.08.24/561028709;   periode:01.08.24-31.08.24;   feilkonto: ;   statusdato:07.08.24;   ;   UtbTil:13015519732;   H124085\n\nAVVE;   3126kr;   beregningsdato/id:05.07.24/557369643;   periode:01.07.24-31.07.24;   feilkonto: ;   statusdato:08.07.24;   ;   UtbTil:13015519732;   M106272\n\nAVVE;   6252kr;   beregningsdato/id:31.05.24/553013093;   periode:01.05.24-30.06.24;   feilkonto: ;   statusdato:01.06.24;   ;   UtbTil:13015519732;   K231B262\n\nAVVE;   3042kr;   beregningsdato/id:05.04.24/545113702;   periode:01.04.24-30.04.24;   feilkonto: ;   statusdato:08.04.24;   ;   UtbTil:13015519732;   H124085\n\nAVVE;   3042kr;   beregningsdato/id:06.03.24/541547981;   periode:01.03.24-31.03.24;   feilkonto: ;   statusdato:07.03.24;   ;   UtbTil:13015519732;   H124085\n\nAVVE;   3042kr;   beregningsdato/id:06.02.24/537694440;   periode:01.02.24-29.02.24;   feilkonto: ;   statusdato:07.02.24;   ;   UtbTil:13015519732;   H124085\n\nAVVE;   3042kr;   beregningsdato/id:05.01.24/533769087;   periode:01.01.24-31.01.24;   feilkonto: ;   statusdato:08.01.24;   ;   UtbTil:13015519732;   H124085\n\nAVVE;   3042kr;   beregningsdato/id:06.12.23/530514564;   periode:01.12.23-31.12.23;   feilkonto: ;   statusdato:06.12.23;   ;   UtbTil:13015519732;   H124085\n\nAVVE;   3042kr;   beregningsdato/id:06.10.23/522337748;   periode:01.10.23-31.10.23;   feilkonto: ;   statusdato:09.10.23;   ;   UtbTil:13015519732;   H124085\n\nAVVE;   3042kr;   beregningsdato/id:06.09.23/518620232;   periode:01.09.23-30.09.23;   feilkonto: ;   statusdato:07.09.23;   ;   UtbTil:13015519732;   M106272\n\nAVVE;   3042kr;   beregningsdato/id:04.08.23/515016891;   periode:01.08.23-31.08.23;   feilkonto: ;   statusdato:21.08.23;   ;   UtbTil:13015519732;   H124085\n\nAVVE;   3042kr;   beregningsdato/id:06.07.23/511481926;   periode:01.07.23-31.07.23;   feilkonto: ;   statusdato:24.07.23;   ;   UtbTil:13015519732;   J104478\n\nAVVE;   6084kr;   beregningsdato/id:02.06.23/506638952;   periode:01.05.23-30.06.23;   feilkonto: ;   statusdato:06.06.23;   ;   UtbTil:13015519732;   J104478\n\nAVVE;   2802kr;   beregningsdato/id:04.04.23/498505186;   periode:01.04.23-30.04.23;   feilkonto: ;   statusdato:25.04.23;   ;   UtbTil:13015519732;   J104478\n\nAVVE;   8406kr;   beregningsdato/id:06.03.23/494801703;   periode:01.01.23-31.03.23;   feilkonto: ;   statusdato:07.03.23;   ;   UtbTil:13015519732;   K231B262\n\nAVVE;   8406kr;   beregningsdato/id:23.01.23/489218572;   periode:01.10.22-31.12.22;   feilkonto: ;   statusdato:23.01.23;   ;   UtbTil:13015519732;   J104478\n\nAVVE;   5604kr;   beregningsdato/id:31.10.22/479683474;   periode:01.08.22-30.09.22;   feilkonto: ;   statusdato:31.10.22;   ;   UtbTil:13015519732;   J104478\n\nAVVE;   8406kr;   beregningsdato/id:02.09.22/473499389;   periode:01.05.22-31.07.22;   feilkonto: ;   statusdato:02.09.22;   ;   UtbTil:13015519732;   J104478\n\nAVVE;   2682kr;   beregningsdato/id:29.04.22/459508472;   periode:01.04.22-30.04.22;   feilkonto: ;   statusdato:29.04.22;   ;   UtbTil:13015519732;   K124096",
+      "tema": "OKO",
+      "oppgavetype": "OKO_OS",
+      "behandlingstype": "ae0216",
+      "versjon": 847,
+      "opprettetAv": "okosynkos",
+      "endretAv": "sokos-okosynk",
+      "prioritet": "LAV",
+      "status": "AAPNET",
+      "metadata": {},
+      "fristFerdigstillelse": "2023-12-31",
+      "aktivDato": "2022-04-30",
+      "opprettetTidspunkt": "2022-04-30T06:03:11.855Z",
+      "endretTidspunkt": "2025-05-08T10:30:36.984Z",
+      "bruker": {
+        "ident": "13015519732",
+        "type": "PERSON"
+      }
+    },
+    {
+      "id": 347547791,
+      "tildeltEnhetsnr": "4819",
+      "opprettetAvEnhetsnr": "9999",
+      "aktoerId": "1000045346097",
+      "tilordnetRessurs": "K152285",
+      "beskrivelse": "AVVE;;   2505kr;   beregningsdato/id:04.10.24/568932599;   periode:01.10.24-31.10.24;   feilkonto: ;   statusdato:05.10.24;   ;   UtbTil:16123635756;   TOB2181\n\nAVVE;   2505kr;   beregningsdato/id:06.09.24/565365849;   periode:01.09.24-30.09.24;   feilkonto: ;   statusdato:07.09.24;   ;   UtbTil:16123635756;   TOB2181\n\nAVVE;   2505kr;   beregningsdato/id:06.08.24/561487489;   periode:01.08.24-31.08.24;   feilkonto: ;   statusdato:07.08.24;   ;   UtbTil:16123635756;   TOB2181\n\nAVVE;   2505kr;   beregningsdato/id:05.07.24/557836315;   periode:01.07.24-31.07.24;   feilkonto: ;   statusdato:06.07.24;   ;   UtbTil:16123635756;   TOB2181\n\nAVVE;   5010kr;   beregningsdato/id:31.05.24/553479744;   periode:01.05.24-30.06.24;   feilkonto: ;   statusdato:01.06.24;   ;   UtbTil:16123635756;   K231B262\n\nAVVE;   2438kr;   beregningsdato/id:05.04.24/545578380;   periode:01.04.24-30.04.24;   feilkonto: ;   statusdato:06.04.24;   ;   UtbTil:16123635756;   TOB2181\n\nAVVE;   2438kr;   beregningsdato/id:06.03.24/541913823;   periode:01.03.24-31.03.24;   feilkonto: ;   statusdato:07.03.24;   ;   UtbTil:16123635756;   TOB2181\n\nAVVE;   2438kr;   beregningsdato/id:09.02.24/538267146;   periode:01.02.24-29.02.24;   feilkonto: ;   statusdato:09.02.24;   ;   UtbTil:16123635756;   E124093\n\nAVVE;   2438kr;   beregningsdato/id:05.01.24/534236192;   periode:01.01.24-31.01.24;   feilkonto: ;   statusdato:09.01.24;   ;   UtbTil:16123635756;   TOB2181\n\nAVVE;   2438kr;   beregningsdato/id:29.11.23/530130739;   periode:01.12.23-31.12.23;   feilkonto: ;   statusdato:01.12.23;   ;   UtbTil:16123635756;   TOB2181\n\nAVVE;   2438kr;   beregningsdato/id:06.11.23/526675460;   periode:01.11.23-30.11.23;   feilkonto: ;   statusdato:08.11.23;   ;   UtbTil:16123635756;   TOB2181\n\nAVVE;   2438kr;   beregningsdato/id:06.10.23/522834008;   periode:01.10.23-31.10.23;   feilkonto: ;   statusdato:10.10.23;   ;   UtbTil:16123635756;   TOB2181\n\nAVVE;   2438kr;   beregningsdato/id:06.09.23/519113916;   periode:01.09.23-30.09.23;   feilkonto: ;   statusdato:09.09.23;   ;   UtbTil:16123635756;   TOB2181\n\nAVVE;   2438kr;   beregningsdato/id:04.08.23/515480716;   periode:01.08.23-31.08.23;   feilkonto: ;   statusdato:08.08.23;   ;   UtbTil:16123635756;   TOB2181\n\nAVVE;   2438kr;   beregningsdato/id:06.07.23/511986494;   periode:01.07.23-31.07.23;   feilkonto: ;   statusdato:10.07.23;   ;   UtbTil:16123635756;   TOB2181\n\nAVVE;   4876kr;   beregningsdato/id:02.06.23/507134628;   periode:01.05.23-30.06.23;   feilkonto: ;   statusdato:03.06.23;   ;   UtbTil:16123635756;   K231B262\n\nAVVE;   2246kr;   beregningsdato/id:04.04.23/498990563;   periode:01.04.23-30.04.23;   feilkonto: ;   statusdato:12.04.23;   ;   UtbTil:16123635756;   TOB2181\n\nAVVE;   2246kr;   beregningsdato/id:06.03.23/495312833;   periode:01.03.23-31.03.23;   feilkonto: ;   statusdato:08.03.23;   ;   UtbTil:16123635756;   TOB2181\n\nAVVE;   2246kr;   beregningsdato/id:06.02.23/491432230;   periode:01.02.23-28.02.23;   feilkonto: ;   statusdato:08.02.23;   ;   UtbTil:16123635756;   TOB2181\n\nAVVE;   2246kr;   beregningsdato/id:06.01.23/488071967;   periode:01.01.23-31.01.23;   feilkonto: ;   statusdato:10.01.23;   ;   UtbTil:16123635756;   TOB2181\n\nAVVE;   2246kr;   beregningsdato/id:29.11.22/484601965;   periode:01.12.22-31.12.22;   feilkonto: ;   statusdato:01.12.22;   ;   UtbTil:16123635756;   TOB2181\n\nAVVE;   2246kr;   beregningsdato/id:04.11.22/481550358;   periode:01.11.22-30.11.22;   feilkonto: ;   statusdato:08.11.22;   ;   UtbTil:16123635756;   TOB2181\n\nAVVE;   2246kr;   beregningsdato/id:06.10.22/478285148;   periode:01.10.22-31.10.22;   feilkonto: ;   statusdato:10.10.22;   ;   UtbTil:16123635756;   TOB2181\n\nAVVE;   2246kr;   beregningsdato/id:06.09.22/475189117;   periode:01.09.22-30.09.22;   feilkonto: ;   statusdato:08.09.22;   ;   UtbTil:16123635756;   TOB2181\n\nAVVE;   2246kr;   beregningsdato/id:05.08.22/472144157;   periode:01.08.22-31.08.22;   feilkonto: ;   statusdato:09.08.22;   ;   UtbTil:16123635756;   TOB2181\n\nAVVE;   2246kr;   beregningsdato/id:06.07.22/469018838;   periode:01.07.22-31.07.22;   feilkonto: ;   statusdato:08.07.22;   ;   UtbTil:16123635756;   TOB2181\n\nAVVE;   4492kr;   beregningsdato/id:03.06.22/465423962;   periode:01.05.22-30.06.22;   feilkonto: ;   statusdato:04.06.22;   ;   UtbTil:16123635756;   K231B262\n\nAVVE;   2170kr;   beregningsdato/id:01.04.22/457985099;   periode:01.04.22-30.04.22;   feilkonto: ;   statusdato:04.04.22;   ;   UtbTil:16123635756;   K124096\n\nAVVE;   2170kr;   beregningsdato/id:04.03.22/454854577;   periode:01.03.22-31.03.22;   feilkonto: ;   statusdato:08.03.22;   ;   UtbTil:16123635756;   K124096",
+      "tema": "OKO",
+      "oppgavetype": "OKO_OS",
+      "behandlingstype": "ae0216",
+      "versjon": 879,
+      "opprettetAv": "okosynkos",
+      "endretAv": "sokos-okosynk",
+      "prioritet": "LAV",
+      "status": "AAPNET",
+      "metadata": {},
+      "fristFerdigstillelse": "2023-12-31",
+      "aktivDato": "2022-03-09",
+      "opprettetTidspunkt": "2022-03-09T05:04:22.331Z",
+      "endretTidspunkt": "2025-05-08T10:30:37.008Z",
+      "bruker": {
+        "ident": "16123635756",
+        "type": "PERSON"
+      }
+    },
+    {
+      "id": 347547733,
+      "tildeltEnhetsnr": "4819",
+      "opprettetAvEnhetsnr": "9999",
+      "aktoerId": "1000031360862",
+      "tilordnetRessurs": "K152285",
+      "beskrivelse": "AVVE;;   3571kr;   beregningsdato/id:06.01.25/579434691;   periode:01.01.25-31.01.25;   feilkonto: ;   statusdato:07.01.25;   ;   UtbTil:10075122948;   TOB2181\n\nAVVE;   3571kr;   beregningsdato/id:02.12.24/575506929;   periode:01.12.24-31.12.24;   feilkonto: ;   statusdato:03.12.24;   ;   UtbTil:10075122948;   TOB2181\n\nAVVE;   3571kr;   beregningsdato/id:06.11.24/571978542;   periode:01.11.24-30.11.24;   feilkonto: ;   statusdato:07.11.24;   ;   UtbTil:10075122948;   TOB2181\n\nAVVE;   3571kr;   beregningsdato/id:04.10.24/568098884;   periode:01.10.24-31.10.24;   feilkonto: ;   statusdato:05.10.24;   ;   UtbTil:10075122948;   TOB2181\n\nAVVE;   3571kr;   beregningsdato/id:06.09.24/564526786;   periode:01.09.24-30.09.24;   feilkonto: ;   statusdato:07.09.24;   ;   UtbTil:10075122948;   TOB2181\n\nAVVE;   3571kr;   beregningsdato/id:06.08.24/560652317;   periode:01.08.24-31.08.24;   feilkonto: ;   statusdato:07.08.24;   ;   UtbTil:10075122948;   TOB2181\n\nAVVE;   3571kr;   beregningsdato/id:05.07.24/557027218;   periode:01.07.24-31.07.24;   feilkonto: ;   statusdato:06.07.24;   ;   UtbTil:10075122948;   TOB2181\n\nAVVE;   7142kr;   beregningsdato/id:31.05.24/552643425;   periode:01.05.24-30.06.24;   feilkonto: ;   statusdato:01.06.24;   ;   UtbTil:10075122948;   K231B262\n\nAVVE;   3474kr;   beregningsdato/id:05.04.24/544742699;   periode:01.04.24-30.04.24;   feilkonto: ;   statusdato:06.04.24;   ;   UtbTil:10075122948;   TOB2181\n\nAVVE;   3474kr;   beregningsdato/id:06.03.24/541157635;   periode:01.03.24-31.03.24;   feilkonto: ;   statusdato:07.03.24;   ;   UtbTil:10075122948;   TOB2181\n\nAVVE;   3474kr;   beregningsdato/id:09.02.24/538267100;   periode:01.02.24-29.02.24;   feilkonto: ;   statusdato:09.02.24;   ;   UtbTil:10075122948;   E124093\n\nAVVE;   3474kr;   beregningsdato/id:05.01.24/533403592;   periode:01.01.24-31.01.24;   feilkonto: ;   statusdato:09.01.24;   ;   UtbTil:10075122948;   TOB2181\n\nAVVE;   3474kr;   beregningsdato/id:29.11.23/529296322;   periode:01.12.23-31.12.23;   feilkonto: ;   statusdato:01.12.23;   ;   UtbTil:10075122948;   TOB2181\n\nAVVE;   3474kr;   beregningsdato/id:06.11.23/525828649;   periode:01.11.23-30.11.23;   feilkonto: ;   statusdato:08.11.23;   ;   UtbTil:10075122948;   TOB2181\n\nAVVE;   3474kr;   beregningsdato/id:06.10.23/521991057;   periode:01.10.23-31.10.23;   feilkonto: ;   statusdato:10.10.23;   ;   UtbTil:10075122948;   TOB2181\n\nAVVE;   3474kr;   beregningsdato/id:06.09.23/518274233;   periode:01.09.23-30.09.23;   feilkonto: ;   statusdato:09.09.23;   ;   UtbTil:10075122948;   TOB2181\n\nAVVE;   3474kr;   beregningsdato/id:04.08.23/514674093;   periode:01.08.23-31.08.23;   feilkonto: ;   statusdato:08.08.23;   ;   UtbTil:10075122948;   TOB2181\n\nAVVE;   3474kr;   beregningsdato/id:06.07.23/511136725;   periode:01.07.23-31.07.23;   feilkonto: ;   statusdato:10.07.23;   ;   UtbTil:10075122948;   TOB2181\n\nAVVE;   6948kr;   beregningsdato/id:02.06.23/506286417;   periode:01.05.23-30.06.23;   feilkonto: ;   statusdato:03.06.23;   ;   UtbTil:10075122948;   K231B262\n\nAVVE;   3202kr;   beregningsdato/id:04.04.23/498163813;   periode:01.04.23-30.04.23;   feilkonto: ;   statusdato:12.04.23;   ;   UtbTil:10075122948;   TOB2181\n\nAVVE;   3202kr;   beregningsdato/id:06.03.23/494484001;   periode:01.03.23-31.03.23;   feilkonto: ;   statusdato:08.03.23;   ;   UtbTil:10075122948;   TOB2181\n\nAVVE;   3202kr;   beregningsdato/id:06.02.23/490609852;   periode:01.02.23-28.02.23;   feilkonto: ;   statusdato:08.02.23;   ;   UtbTil:10075122948;   TOB2181\n\nAVVE;   3202kr;   beregningsdato/id:06.01.23/487259578;   periode:01.01.23-31.01.23;   feilkonto: ;   statusdato:10.01.23;   ;   UtbTil:10075122948;   TOB2181\n\nAVVE;   3202kr;   beregningsdato/id:29.11.22/483769580;   periode:01.12.22-31.12.22;   feilkonto: ;   statusdato:01.12.22;   ;   UtbTil:10075122948;   TOB2181\n\nAVVE;   3202kr;   beregningsdato/id:04.11.22/480723002;   periode:01.11.22-30.11.22;   feilkonto: ;   statusdato:08.11.22;   ;   UtbTil:10075122948;   TOB2181\n\nAVVE;   3202kr;   beregningsdato/id:06.10.22/477458872;   periode:01.10.22-31.10.22;   feilkonto: ;   statusdato:10.10.22;   ;   UtbTil:10075122948;   TOB2181\n\nAVVE;   3202kr;   beregningsdato/id:06.09.22/474358961;   periode:01.09.22-30.09.22;   feilkonto: ;   statusdato:08.09.22;   ;   UtbTil:10075122948;   TOB2181\n\nAVVE;   3202kr;   beregningsdato/id:05.08.22/471336201;   periode:01.08.22-31.08.22;   feilkonto: ;   statusdato:09.08.22;   ;   UtbTil:10075122948;   TOB2181\n\nAVVE;   3202kr;   beregningsdato/id:06.07.22/468201166;   periode:01.07.22-31.07.22;   feilkonto: ;   statusdato:08.07.22;   ;   UtbTil:10075122948;   TOB2181\n\nAVVE;   6404kr;   beregningsdato/id:03.06.22/464666399;   periode:01.05.22-30.06.22;   feilkonto: ;   statusdato:04.06.22;   ;   UtbTil:10075122948;   K231B262\n\nAVVE;   3093kr;   beregningsdato/id:01.04.22/457167195;   periode:01.04.22-30.04.22;   feilkonto: ;   statusdato:04.04.22;   ;   UtbTil:10075122948;   K124096\n\nAVVE;   3093kr;   beregningsdato/id:04.03.22/454028226;   periode:01.03.22-31.03.22;   feilkonto: ;   statusdato:08.03.22;   ;   UtbTil:10075122948;   K124096",
+      "tema": "OKO",
+      "oppgavetype": "OKO_OS",
+      "behandlingstype": "ae0216",
+      "versjon": 883,
+      "opprettetAv": "okosynkos",
+      "endretAv": "sokos-okosynk",
+      "prioritet": "LAV",
+      "status": "AAPNET",
+      "metadata": {},
+      "fristFerdigstillelse": "2023-12-31",
+      "aktivDato": "2022-03-09",
+      "opprettetTidspunkt": "2022-03-09T05:04:19.664Z",
+      "endretTidspunkt": "2025-05-08T10:30:37.037Z",
+      "bruker": {
+        "ident": "10075122948",
+        "type": "PERSON"
+      }
+    }
+  ]
+}

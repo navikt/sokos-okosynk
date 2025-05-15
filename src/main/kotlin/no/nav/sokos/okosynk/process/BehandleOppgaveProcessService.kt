@@ -5,6 +5,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 import kotlinx.coroutines.runBlocking
 
+import mu.KLogger
 import mu.KotlinLogging
 
 import no.nav.oppgave.models.Oppgave
@@ -12,16 +13,16 @@ import no.nav.oppgave.models.OpprettOppgaveRequest
 import no.nav.oppgave.models.OpprettOppgaveRequest.Prioritet
 import no.nav.oppgave.models.PatchOppgaveRequest
 import no.nav.sokos.okosynk.config.SECURE_LOGGER
-import no.nav.sokos.okosynk.domain.BatchType
+import no.nav.sokos.okosynk.domain.BatchTypeContext
 import no.nav.sokos.okosynk.domain.MeldingOppgave
 import no.nav.sokos.okosynk.integration.ENHET_ID_FOR_ANDRE_EKSTERNE
 import no.nav.sokos.okosynk.integration.OppgaveClientService
 import no.nav.sokos.okosynk.integration.TEMA_OKONOMI_KODE
 import no.nav.sokos.okosynk.metrics.Metrics
-import no.nav.sokos.okosynk.service.BatchTypeContext
 
-private val logger = KotlinLogging.logger {}
 private val secureLogger = KotlinLogging.logger(SECURE_LOGGER)
+private val logger: KLogger = KotlinLogging.logger {}
+
 private const val BATCH_SIZE = 1000
 
 class BehandleOppgaveProcessService(
@@ -33,26 +34,26 @@ class BehandleOppgaveProcessService(
 
     override fun process(meldingOppgaveList: List<MeldingOppgave>) {
         resetCounters()
-        val batchType = BatchTypeContext.get()!!
 
         logger.info { "Start BehandleOppgaveProcessService " }
         runCatching {
-            val oppgaveList = hentOppgaveList(batchType)
+            val oppgaveList = hentOppgaveList()
 
-            opprettOppgave(oppgaveList, meldingOppgaveList, batchType)
-            oppdaterOppgaveState(oppgaveList, meldingOppgaveList, batchType)
+            opprettOppgave(oppgaveList, meldingOppgaveList)
+            oppdaterOppgaveState(oppgaveList, meldingOppgaveList)
 
             logger.info { "Oppretter: ${opprettCounter.get()}, Oppdater: ${oppdaterCounter.get()}, Ferdigstilt: ${ferdigstiltCounter.get()} oppgaver" }
         }.onFailure { exception ->
-            logger.error(exception) { "Feil ved behandling av oppgaver av type: ${batchType.oppgaveType}" }
+            logger.error(exception) { "Feil ved behandling av oppgaver av type: ${BatchTypeContext.get().oppgaveType}" }
         }
     }
 
-    private fun hentOppgaveList(batchType: BatchType): List<Oppgave> {
+    private fun hentOppgaveList(): Set<Oppgave> {
+        val batchType = BatchTypeContext.get()
         return runBlocking {
             logger.info { "Starter søk og evt. inkrementell henting av oppgaver av type: ${batchType.oppgaveType}" }
 
-            val oppgaveList: MutableList<Oppgave> = mutableListOf()
+            val oppgaveList: MutableSet<Oppgave> = mutableSetOf()
             var offset = 0
 
             while (true) {
@@ -65,14 +66,14 @@ class BehandleOppgaveProcessService(
             }
             logger.info { "Total: ${oppgaveList.size} oppgaver av type: ${batchType.oppgaveType} funnet" }
             logger.info { "Antall duplikater oppgaver: ${findDuplicateOppgave(oppgaveList)}" }
+
             oppgaveList
         }
     }
 
     private fun opprettOppgave(
-        oppgaveList: List<Oppgave>,
+        oppgaveList: Set<Oppgave>,
         meldingOppgaveList: List<MeldingOppgave>,
-        batchType: BatchType,
     ) {
         runBlocking {
             meldingOppgaveList
@@ -97,17 +98,21 @@ class BehandleOppgaveProcessService(
                     runCatching {
                         oppgaveClientService.opprettOppgave(request)
                         opprettCounter.incrementAndGet()
-                        Metrics.counter("opprett_oppgave_${batchType.opprettetAv}").inc()
-                    }.onFailure { exception -> secureLogger.error(exception) { "Feil ved opprettelse av oppgave: $request" } }
+                        Metrics.counter("opprett_oppgave_${BatchTypeContext.get().opprettetAv}").inc()
+                    }.onFailure { exception ->
+                        logger.error(exception) { "Feil ved opprettelse av oppgave, sjekk secureLogger" }
+                        secureLogger.error(exception) { "Feil ved opprettelse av oppgave: $request" }
+                    }
                 }
         }
     }
 
     private fun oppdaterOppgaveState(
-        oppgaveList: List<Oppgave>,
+        oppgaveList: Set<Oppgave>,
         meldingOppgaveList: List<MeldingOppgave>,
-        batchType: BatchType,
     ) {
+        val batchType = BatchTypeContext.get()
+
         runBlocking {
             oppgaveList.forEach { oppgave ->
                 val ferdigstilt = !meldingOppgaveList.any { meldingOppgave -> oppgave.matches(meldingOppgave) }
@@ -129,7 +134,10 @@ class BehandleOppgaveProcessService(
                         oppdaterCounter.incrementAndGet()
                         Metrics.counter("oppdater_oppgave_${batchType.opprettetAv}").inc()
                     }
-                }.onFailure { exception -> secureLogger.error(exception) { "Feil ved oppdatering av oppgaveId: ${oppgave.id}, request: $request" } }
+                }.onFailure { exception ->
+                    logger.error(exception) { "Feil ved oppdatering av oppgaveId: ${oppgave.id}, sjekk secureLogger" }
+                    secureLogger.error(exception) { "Feil ved oppdatering av oppgaveId: ${oppgave.id}, request: $request" }
+                }
             }
         }
     }
@@ -149,7 +157,7 @@ class BehandleOppgaveProcessService(
             this.orgnr == meldingOppgave.orgnr
     }
 
-    fun findDuplicateOppgave(oppgaveList: List<Oppgave>): Int {
+    fun findDuplicateOppgave(oppgaveList: Set<Oppgave>): Int {
         val duplicates =
             oppgaveList.groupBy { oppgave ->
                 listOf(

@@ -114,4 +114,22 @@ object SftpListener : TestListener {
             }
         }
     }
+
+    fun searchFile(
+        prefix: String,
+        directory: Directories = Directories.INBOUND,
+    ): Boolean {
+        val sftpConfig = SftpConfig(sftpProperties)
+        return sftpConfig.channel { connector ->
+            try {
+                connector
+                    .ls("${directory.value}/*")
+                    .map { it.filename }
+                    .any { it.startsWith(prefix) }
+            } catch (exception: Exception) {
+                logger.error { "Error searching files with prefix $prefix: ${exception.message}" }
+                false
+            }
+        }
+    }
 }

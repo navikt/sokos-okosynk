@@ -4,8 +4,8 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
-import no.nav.sokos.okosynk.util.AktoerUtil.isBnr
-import no.nav.sokos.okosynk.util.AktoerUtil.isDnr
+import no.nav.sokos.okosynk.util.IdentUtil.isBnr
+import no.nav.sokos.okosynk.util.IdentUtil.isDnr
 
 class IdentUtilTest : FunSpec({
     context("isDnr") {
