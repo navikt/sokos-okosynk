@@ -12,52 +12,33 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import org.apache.http.entity.ContentType.APPLICATION_JSON
 
+import no.nav.sokos.okosynk.WireMockTestData.hentPersonWireMock
 import no.nav.sokos.okosynk.exception.PdlException
-import no.nav.sokos.okosynk.listener.WiremockListener
-import no.nav.sokos.okosynk.listener.WiremockListener.wiremock
+import no.nav.sokos.okosynk.listener.WireMockListener
+import no.nav.sokos.okosynk.listener.WireMockListener.wiremock
 import no.nav.sokos.okosynk.util.Utils.readFromResource
 
 private const val AKTORID = "70078749472"
 
 class PdlClientServiceTest : FunSpec({
-    extensions(WiremockListener)
+    extensions(WireMockListener)
 
     val pdlClientService: PdlClientService by lazy {
         PdlClientService(
             pdlUrl = wiremock.baseUrl(),
-            accessTokenClient = WiremockListener.accessTokenClient,
+            accessTokenClient = WireMockListener.accessTokenClient,
         )
     }
 
     test("hentPerson should return person response with aktorId") {
-        val hentPersonResponse = "pdl/hentPersonResponse.json".readFromResource()
-
-        wiremock.stubFor(
-            post(urlEqualTo("/graphql"))
-                .willReturn(
-                    aResponse()
-                        .withHeader(HttpHeaders.ContentType, APPLICATION_JSON.mimeType)
-                        .withStatus(HttpStatusCode.OK.value)
-                        .withBody(hentPersonResponse),
-                ),
-        )
+        hentPersonWireMock()
 
         val response = pdlClientService.hentIdenter(AKTORID)
         response shouldBe "2305469522806"
     }
 
     test("hentPerson should throw PdlException with not found person") {
-        val hentPersonResponse = "pdl/hentPersonNotFoundResponse.json".readFromResource()
-
-        wiremock.stubFor(
-            post(urlEqualTo("/graphql"))
-                .willReturn(
-                    aResponse()
-                        .withHeader(HttpHeaders.ContentType, APPLICATION_JSON.mimeType)
-                        .withStatus(HttpStatusCode.OK.value)
-                        .withBody(hentPersonResponse),
-                ),
-        )
+        hentPersonWireMock(response = "pdl/hentPersonNotFoundResponse.json".readFromResource())
 
         val exception =
             shouldThrow<PdlException> {
@@ -67,17 +48,7 @@ class PdlClientServiceTest : FunSpec({
     }
 
     test("hentPerson should throw PdlException with not authorized") {
-        val hentPersonResponse = "pdl/hentPersonNotAuthorizedResponse.json".readFromResource()
-
-        wiremock.stubFor(
-            post(urlEqualTo("/graphql"))
-                .willReturn(
-                    aResponse()
-                        .withHeader(HttpHeaders.ContentType, APPLICATION_JSON.mimeType)
-                        .withStatus(HttpStatusCode.OK.value)
-                        .withBody(hentPersonResponse),
-                ),
-        )
+        hentPersonWireMock(response = "pdl/hentPersonNotAuthorizedResponse.json".readFromResource())
 
         val exception =
             shouldThrow<PdlException> {

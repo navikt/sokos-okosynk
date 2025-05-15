@@ -6,10 +6,10 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
 import no.nav.sokos.okosynk.domain.BatchType
+import no.nav.sokos.okosynk.domain.BatchTypeContext
 import no.nav.sokos.okosynk.domain.OsMelding
 import no.nav.sokos.okosynk.domain.UrMelding
 import no.nav.sokos.okosynk.exception.OppgaveException
-import no.nav.sokos.okosynk.service.BatchTypeContext
 import no.nav.sokos.okosynk.util.Utils.readFromResource
 
 class FileProcessServiceTest : FunSpec({

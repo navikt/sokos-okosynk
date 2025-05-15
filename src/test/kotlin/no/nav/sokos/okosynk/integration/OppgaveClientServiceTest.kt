@@ -2,7 +2,6 @@ package no.nav.sokos.okosynk.integration
 
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.get
-import com.github.tomakehurst.wiremock.client.WireMock.matching
 import com.github.tomakehurst.wiremock.client.WireMock.patch
 import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
@@ -17,46 +16,31 @@ import org.apache.http.entity.ContentType.APPLICATION_JSON
 
 import no.nav.oppgave.models.Oppgave
 import no.nav.sokos.okosynk.TestData
+import no.nav.sokos.okosynk.WireMockTestData.oppdaterOppgaveWireMock
+import no.nav.sokos.okosynk.WireMockTestData.opprettOppgaveWireMock
+import no.nav.sokos.okosynk.WireMockTestData.sokOppgaveWireMock
 import no.nav.sokos.okosynk.domain.BatchType
 import no.nav.sokos.okosynk.exception.OppgaveException
-import no.nav.sokos.okosynk.listener.WiremockListener
-import no.nav.sokos.okosynk.listener.WiremockListener.wiremock
-import no.nav.sokos.okosynk.util.Utils.readFromResource
+import no.nav.sokos.okosynk.listener.WireMockListener
+import no.nav.sokos.okosynk.listener.WireMockListener.wiremock
 
 class OppgaveClientServiceTest : FunSpec({
-    extensions(WiremockListener)
+    extensions(WireMockListener)
 
     val oppgaveClientService: OppgaveClientService by lazy {
         OppgaveClientService(
             oppgaveUrl = wiremock.baseUrl(),
-            accessTokenClient = WiremockListener.accessTokenClient,
+            accessTokenClient = WireMockListener.accessTokenClient,
         )
     }
 
     test("sokOppgaver should return SokOppgaverResponse") {
-        val sokOppgaveResponse = "oppgave/sokOppgaveResponse.json".readFromResource()
-
-        wiremock.stubFor(
-            get(urlPathEqualTo("/api/v1/oppgaver"))
-                .withQueryParam("tema", matching("OKO"))
-                .withQueryParam("opprettetAv", matching("okosynkos"))
-                .withQueryParam("statuskategori", matching("AAPEN"))
-                .withQueryParam("limit", matching("10"))
-                .withQueryParam("offset", matching("0"))
-                .withHeader(HttpHeaders.Authorization, matching("Bearer .*"))
-                .withHeader(HttpHeaders.XCorrelationId, matching(".*"))
-                .willReturn(
-                    aResponse()
-                        .withHeader(HttpHeaders.ContentType, APPLICATION_JSON.mimeType)
-                        .withStatus(HttpStatusCode.OK.value)
-                        .withBody(sokOppgaveResponse),
-                ),
-        )
+        sokOppgaveWireMock()
 
         val response =
             oppgaveClientService.sokOppgaver(
                 opprettetAv = BatchType.OS.opprettetAv,
-                limit = 10,
+                limit = 1000,
                 offset = 0,
             )
         response.oppgaver.shouldNotBeEmpty()
@@ -79,7 +63,7 @@ class OppgaveClientServiceTest : FunSpec({
             shouldThrow<OppgaveException> {
                 oppgaveClientService.sokOppgaver(
                     opprettetAv = BatchType.OS.opprettetAv,
-                    limit = 10,
+                    limit = 1000,
                     offset = 0,
                 )
             }
@@ -87,19 +71,7 @@ class OppgaveClientServiceTest : FunSpec({
     }
 
     test("opprettOppgave should return oppgave as response") {
-        val opprettOppgaveResponse = "oppgave/opprettOppgaveResponse.json".readFromResource()
-
-        wiremock.stubFor(
-            post(urlEqualTo("/api/v1/oppgaver"))
-                .withHeader(HttpHeaders.Authorization, matching("Bearer .*"))
-                .withHeader(HttpHeaders.XCorrelationId, matching(".*"))
-                .willReturn(
-                    aResponse()
-                        .withHeader(HttpHeaders.ContentType, APPLICATION_JSON.mimeType)
-                        .withStatus(HttpStatusCode.Created.value)
-                        .withBody(opprettOppgaveResponse),
-                ),
-        )
+        opprettOppgaveWireMock()
 
         val request = TestData.opprettOppgaveRequest
 
@@ -141,19 +113,7 @@ class OppgaveClientServiceTest : FunSpec({
     }
 
     test("oppdaterOppgave should return update oppgave as response") {
-        val oppdaterOppgaveResponse = "oppgave/oppdaterOppgaveResponse.json".readFromResource()
-
-        wiremock.stubFor(
-            patch(urlEqualTo("/api/v1/oppgaver/12345"))
-                .withHeader(HttpHeaders.Authorization, matching("Bearer .*"))
-                .withHeader(HttpHeaders.XCorrelationId, matching(".*"))
-                .willReturn(
-                    aResponse()
-                        .withHeader(HttpHeaders.ContentType, APPLICATION_JSON.mimeType)
-                        .withStatus(HttpStatusCode.OK.value)
-                        .withBody(oppdaterOppgaveResponse),
-                ),
-        )
+        oppdaterOppgaveWireMock()
 
         val request = TestData.patchOppgaveRequest
         val response =

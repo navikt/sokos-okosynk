@@ -7,6 +7,7 @@ import mu.KotlinLogging
 import no.nav.sokos.okosynk.config.RegelverkConfig
 import no.nav.sokos.okosynk.config.SECURE_LOGGER
 import no.nav.sokos.okosynk.domain.BatchType
+import no.nav.sokos.okosynk.domain.BatchTypeContext
 import no.nav.sokos.okosynk.domain.GjelderIdType
 import no.nav.sokos.okosynk.domain.Melding
 import no.nav.sokos.okosynk.domain.MeldingKriterier
@@ -17,7 +18,6 @@ import no.nav.sokos.okosynk.domain.UrMelding
 import no.nav.sokos.okosynk.integration.ENHET_ID_FOR_ANDRE_EKSTERNE
 import no.nav.sokos.okosynk.integration.PdlClientService
 import no.nav.sokos.okosynk.metrics.Metrics
-import no.nav.sokos.okosynk.service.BatchTypeContext
 import no.nav.sokos.okosynk.util.IdentUtil.isDnr
 
 private val logger = KotlinLogging.logger { }
@@ -26,9 +26,9 @@ private val secureLogger = KotlinLogging.logger(SECURE_LOGGER)
 class BehandleMeldingProcessService(
     private val pdlClientService: PdlClientService = PdlClientService(),
 ) : Chain<List<Melding>, List<MeldingOppgave>> {
-    private val batchType = BatchTypeContext.get()
-
     override fun process(meldingList: List<Melding>): List<MeldingOppgave> {
+        val batchType = BatchTypeContext.get()
+
         logger.info { "${batchType.oppgaveType} - Start BehandleMeldingProcessService " }
         val regelverkMap = if (batchType == BatchType.OS) RegelverkConfig.regelverkOSMap else RegelverkConfig.regelverkURMap
         val meldingOppgaveList =
@@ -36,7 +36,7 @@ class BehandleMeldingProcessService(
                 .sortedByDescending { melding -> melding.sammenligningsDato() }
                 .filter { melding -> regelverkMap[melding.ruleKey()] != null }
                 .groupBy { melding -> MeldingKriterier(melding) }
-                .mapNotNull { (_, value) -> opprettOppgave(value, regelverkMap) }
+                .mapNotNull { (_, value) -> opprettMeldingOppgave(value, regelverkMap) }
                 .distinct()
                 .also { oppgave ->
                     logger.info { "Antall konvertert oppgaver for batchType: $batchType: ${oppgave.size}" }
@@ -61,7 +61,7 @@ class BehandleMeldingProcessService(
         }
     }
 
-    private fun opprettOppgave(
+    private fun opprettMeldingOppgave(
         meldingList: List<Melding>,
         regelverkMap: Map<String, Regelverk>,
     ): MeldingOppgave? {
@@ -74,7 +74,7 @@ class BehandleMeldingProcessService(
                 behandlingstype = regelverk?.behandlingstype,
                 tildeltEnhetsnr = regelverk?.ansvarligEnhetId,
                 beskrivelse = melding.beskrivelse(meldingList),
-                oppgavetype = batchType.oppgaveType,
+                oppgavetype = BatchTypeContext.get().oppgaveType,
                 opprettetAvEnhetsnr = ENHET_ID_FOR_ANDRE_EKSTERNE,
             )
 

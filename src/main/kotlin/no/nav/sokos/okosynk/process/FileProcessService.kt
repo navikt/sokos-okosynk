@@ -1,13 +1,13 @@
 import mu.KotlinLogging
 
 import no.nav.sokos.okosynk.domain.BatchType
+import no.nav.sokos.okosynk.domain.BatchTypeContext
 import no.nav.sokos.okosynk.domain.Melding
 import no.nav.sokos.okosynk.domain.OsMelding
 import no.nav.sokos.okosynk.domain.UrMelding
 import no.nav.sokos.okosynk.exception.OppgaveException
 import no.nav.sokos.okosynk.metrics.Metrics
 import no.nav.sokos.okosynk.process.Chain
-import no.nav.sokos.okosynk.service.BatchTypeContext
 import no.nav.sokos.okosynk.util.toDataClass
 
 private val logger = KotlinLogging.logger {}

@@ -14,6 +14,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
+import mu.KLogger
 import mu.KotlinLogging
 
 import no.nav.oppgave.models.Oppgave
@@ -25,11 +26,10 @@ import no.nav.sokos.okosynk.config.httpClient
 import no.nav.sokos.okosynk.exception.OppgaveException
 import no.nav.sokos.okosynk.security.AccessTokenClient
 
-private val logger = KotlinLogging.logger {}
-
 const val TEMA_OKONOMI_KODE = "OKO"
 const val ENHET_ID_FOR_ANDRE_EKSTERNE = "9999"
 private const val STATUSKATEGORI_AAPEN = "AAPEN"
+private val logger: KLogger = KotlinLogging.logger {}
 
 class OppgaveClientService(
     private val oppgaveUrl: String = PropertiesConfig.OppgaveProperties().oppgaveUrl,

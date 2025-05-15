@@ -3,34 +3,30 @@ package no.nav.sokos.okosynk.process
 import java.time.LocalDate
 
 import com.github.tomakehurst.wiremock.client.WireMock
-import com.github.tomakehurst.wiremock.client.WireMock.aResponse
-import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.shouldBe
-import io.ktor.http.HttpHeaders
-import io.ktor.http.HttpStatusCode
-import org.apache.http.entity.ContentType.APPLICATION_JSON
 
 import no.nav.sokos.okosynk.TestData
+import no.nav.sokos.okosynk.WireMockTestData.hentPersonWireMock
 import no.nav.sokos.okosynk.domain.BatchType
+import no.nav.sokos.okosynk.domain.BatchTypeContext
 import no.nav.sokos.okosynk.domain.Melding
 import no.nav.sokos.okosynk.domain.OsMelding
 import no.nav.sokos.okosynk.domain.UrMelding
 import no.nav.sokos.okosynk.integration.PdlClientService
-import no.nav.sokos.okosynk.listener.WiremockListener
-import no.nav.sokos.okosynk.listener.WiremockListener.wiremock
-import no.nav.sokos.okosynk.service.BatchTypeContext
+import no.nav.sokos.okosynk.listener.WireMockListener
+import no.nav.sokos.okosynk.listener.WireMockListener.wiremock
 import no.nav.sokos.okosynk.util.Utils.readFromResource
 import no.nav.sokos.okosynk.util.toDataClass
 
 class BehandleMeldingProcessServiceTest : FunSpec({
-    extensions(WiremockListener)
+    extensions(WireMockListener)
 
     val pdlClientService: PdlClientService by lazy {
         PdlClientService(
             pdlUrl = wiremock.baseUrl(),
-            accessTokenClient = WiremockListener.accessTokenClient,
+            accessTokenClient = WireMockListener.accessTokenClient,
         )
     }
 
@@ -44,17 +40,7 @@ class BehandleMeldingProcessServiceTest : FunSpec({
 
     test("behandleMeldingProcessService process should convert Melding to MeldingOppgave") {
         wiremock.resetAll()
-
-        val hentPersonResponse = "pdl/hentPersonResponse.json".readFromResource()
-        wiremock.stubFor(
-            WireMock.post(urlEqualTo("/graphql"))
-                .willReturn(
-                    aResponse()
-                        .withHeader(HttpHeaders.ContentType, APPLICATION_JSON.mimeType)
-                        .withStatus(HttpStatusCode.OK.value)
-                        .withBody(hentPersonResponse),
-                ),
-        )
+        hentPersonWireMock()
 
         val osInput = "sftp/OS.INPUT".readFromResource()
         val osMeldingList = osInput.lines().map { it.toDataClass<OsMelding>() }
@@ -78,16 +64,7 @@ class BehandleMeldingProcessServiceTest : FunSpec({
     }
 
     test("behandleMeldingProcessService process when hentIdenter returns exception ") {
-        val hentPersonResponse = "pdl/hentPersonNotFoundResponse.json".readFromResource()
-        wiremock.stubFor(
-            WireMock.post(urlEqualTo("/graphql"))
-                .willReturn(
-                    aResponse()
-                        .withHeader(HttpHeaders.ContentType, APPLICATION_JSON.mimeType)
-                        .withStatus(HttpStatusCode.OK.value)
-                        .withBody(hentPersonResponse),
-                ),
-        )
+        hentPersonWireMock(response = "pdl/hentPersonNotFoundResponse.json".readFromResource())
 
         val osInput = "sftp/OS.INPUT".readFromResource()
         val osMeldingList = osInput.lines().map { it.toDataClass<OsMelding>() }
@@ -99,18 +76,9 @@ class BehandleMeldingProcessServiceTest : FunSpec({
 
     test("behandleMeldingProcessService process different gjelderIdType with UR.INPUT") {
         wiremock.resetAll()
-        BatchTypeContext.set(BatchType.UR)
+        hentPersonWireMock()
 
-        val hentPersonResponse = "pdl/hentPersonResponse.json".readFromResource()
-        wiremock.stubFor(
-            WireMock.post(urlEqualTo("/graphql"))
-                .willReturn(
-                    aResponse()
-                        .withHeader(HttpHeaders.ContentType, APPLICATION_JSON.mimeType)
-                        .withStatus(HttpStatusCode.OK.value)
-                        .withBody(hentPersonResponse),
-                ),
-        )
+        BatchTypeContext.set(BatchType.UR)
 
         val urInput = "sftp/UR.INPUT".readFromResource()
         val urMeldingList = urInput.lines().map { it.toDataClass<UrMelding>() }

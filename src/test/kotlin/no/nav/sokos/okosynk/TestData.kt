@@ -8,6 +8,7 @@ import no.nav.oppgave.models.OpprettOppgaveRequest.Prioritet
 import no.nav.oppgave.models.PatchOppgaveRequest
 import no.nav.sokos.okosynk.domain.GjelderIdType
 import no.nav.sokos.okosynk.domain.Melding
+import no.nav.sokos.okosynk.domain.MeldingOppgave
 import no.nav.sokos.okosynk.domain.OsMelding
 import no.nav.sokos.okosynk.domain.UrMelding
 import no.nav.sokos.okosynk.integration.TEMA_OKONOMI_KODE
@@ -69,5 +70,18 @@ object TestData {
             bilagsId = "793627889",
             arsakTekst = "KID ugyldig/mangler",
             mottakerId = "80000662771",
+        )
+
+    val meldingOppgave =
+        MeldingOppgave(
+            behandlingstema = "ab0270",
+            behandlingstype = "ae0215",
+            tildeltEnhetsnr = "4151",
+            oppgavetype = "OKO_OS",
+            opprettetAvEnhetsnr = "9999",
+            beskrivelse = "AVAV",
+            personIdent = "1000068345109",
+            aktoerId = null,
+            orgnr = null,
         )
 }

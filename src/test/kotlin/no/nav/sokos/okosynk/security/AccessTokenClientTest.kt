@@ -11,11 +11,11 @@ import io.kotest.matchers.shouldBe
 
 import no.nav.sokos.okosynk.config.PropertiesConfig
 import no.nav.sokos.okosynk.config.httpClient
-import no.nav.sokos.okosynk.listener.WiremockListener
-import no.nav.sokos.okosynk.listener.WiremockListener.wiremock
+import no.nav.sokos.okosynk.listener.WireMockListener
+import no.nav.sokos.okosynk.listener.WireMockListener.wiremock
 
 class AccessTokenClientTest : FunSpec({
-    extensions(WiremockListener)
+    extensions(WireMockListener)
 
     testOrder = TestCaseOrder.Sequential
 
