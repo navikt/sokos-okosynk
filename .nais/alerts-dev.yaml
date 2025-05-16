@@ -10,8 +10,8 @@ spec:
     - name: sokos-okosynk-alerts
       rules:
         - alert: sokos-okosynk er nede
-          expr: kube_deployment_status_replicas_available{deployment="sokos-okosynk"} == 0
-          for: 5m
+          expr: kube_deployment_status_replicas_available{deployment="{{ $labels.app }}"} == 0
+          for: 2m
           annotations:
             action: "Sjekk hvorfor applikasjonen er nede"
             summary: "{{ $labels.deployment }} er nede i namespace {{ $labels.namespace }}"
@@ -22,8 +22,8 @@ spec:
             alert_type: custom
 
         - alert: sokos-okosynk har restartet flere ganger de siste 5 minuttene!
-          expr: sum(increase(kube_pod_container_status_restarts_total{container=~"sokos-okosynk"}[5m])) by (container) > 2
-          for: 5m
+          expr: sum(increase(kube_pod_container_status_restarts_total{container=~"{{ $labels.app }}"}[5m])) by (container) > 2
+          for: 2m
           annotations:
             action: "Sjekk hvorfor applikasjonen ikke klarer å restarte"
             summary: "{{ $labels.container }} restarter mange ganger"
@@ -35,11 +35,11 @@ spec:
 
         - alert: Applikasjonen logger høy andel errors
           expr:
-            'sum(max_over_time(log_messages_errors{namespace="okonomi",app="sokos-okosynk",level="Error"}[15m])
+            'sum(max_over_time(log_messages_errors{namespace="okonomi",app="sokos-okosynk",level="Error"}[5m])
               or vector(0)) -
-              sum(max_over_time(log_messages_errors{namespace="okonomi",app="sokos-okosynk",level="Error"}[15m]
-              offset 15m) or vector(0)) > 5'
-          for: 5m
+              sum(max_over_time(log_messages_errors{namespace="okonomi",app="sokos-okosynk",level="Error"}[5m]
+              offset 5m) or vector(0)) > 0'
+          for: 2m
           annotations:
             action: "<https://logs.adeo.no/app/discover#/?_g=(time:(from:now-1d,to:now))&_a=(filters:!((query:(match_phrase:(application:'sokos-okosynk'))),(query:(match_phrase:(cluster:'dev-fss'))),(query:(match_phrase:(level:'Error')))))|Sjekk loggene>"
             summary: "`kubectl logs -l app=sokos-okosynk -n okonomi` for logger"
@@ -51,11 +51,11 @@ spec:
 
         - alert: Applikasjonen logger høy andel warnings
           expr:
-            'sum(max_over_time(log_messages_errors{namespace="okonomi",app="sokos-okosynk",level="Warning"}[15m])
+            'sum(max_over_time(log_messages_errors{namespace="okonomi",app="sokos-okosynk",level="Warning"}[5m])
               or vector(0)) -
-              sum(max_over_time(log_messages_errors{namespace="okonomi",app="sokos-okosynk",level="Warning"}[15m]
-              offset 15m) or vector(0)) > 5'
-          for: 5m
+              sum(max_over_time(log_messages_errors{namespace="okonomi",app="sokos-okosynk",level="Warning"}[5m]
+              offset 5m) or vector(0)) > 5'
+          for: 2m
           annotations:
             action: "<https://logs.adeo.no/app/discover#/?_g=(time:(from:now-1d,to:now))&_a=(filters:!((query:(match_phrase:(application:'sokos-okosynk'))),(query:(match_phrase:(cluster:'dev-fss'))),(query:(match_phrase:(level:'Warning')))))|Sjekk loggene>"
             summary: "`kubectl logs -l app=sokos-okosynk -n okonomi` for logger"
@@ -64,33 +64,6 @@ spec:
             severity: warning
             sokos_okosynk_type: sokos-okosynk
             alert_type: custom
-
-        - alert: sokos-okosynk har høy andel HTTP serverfeil (5xx responser)
-          expr: floor(increase(ktor_http_server_requests_seconds_count{status=~"5.*", app="sokos-okosynk"}[3m])) > 2
-          for: 5m
-          annotations:
-            action: "`kubectl logs {{ $labels.pod }} -n {{ $labels.namespace }}`"
-            summary: "Følgende request feilet: `Status {{ $labels.status }} - {{ $labels.method }} {{ $labels.route }}`.
-                      Sjekk loggene for å se hvorfor dette feiler."
-          labels:
-            namespace: okonomi
-            severity: danger
-            sokos_okosynk_type: sokos-okosynk
-            alert_type: custom
-
-        - alert: sokos-okosynk har høy andel HTTP klientfeil (4xx responser)
-          expr: floor(increase(ktor_http_server_requests_seconds_count{status=~"4.*", status!~"404", app="sokos-okosynk"}[3m])) > 2
-          for: 2m
-          annotations:
-            action: "`kubectl logs {{ $labels.pod }} -n {{ $labels.namespace }}`"
-            summary: "Følgende request feilet: `Status {{ $labels.status }} - {{ $labels.method }} {{ $labels.route }}`. 
-                      Sjekk loggene for å se hvorfor dette feiler"
-          labels:
-            namespace: okonomi
-            severity: danger
-            sokos_okosynk_type: sokos-okosynk
-            alert_type: custom
-
 ---
 
 apiVersion: monitoring.coreos.com/v1alpha1
