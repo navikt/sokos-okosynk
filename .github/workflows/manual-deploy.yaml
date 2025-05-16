@@ -9,6 +9,7 @@ on:
         type: choice
         options:
           - dev
+          - prod
 
 env:
   TZ: Europe/Oslo
@@ -25,11 +26,11 @@ jobs:
     with:
       image-tag: snapshot
 
-  deploy-dev:
+  deploy-fss:
     needs: build
-    name: Deploy to dev-fss
+    name: Deploy to ${{ inputs.environment }}-fss
     uses: navikt/mob-gha-workflows/.github/workflows/nais-app-deploy.yaml@main
     with:
-      cluster: dev-fss
+      cluster: ${{ inputs.environment }}-fss
       resource: .nais/naiserator-${{ inputs.environment }}.yaml
       image: ${{ needs.build.outputs.image }}
