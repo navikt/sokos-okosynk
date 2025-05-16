@@ -81,6 +81,7 @@ class BehandleMeldingProcessService(
         return when (GjelderIdType.value(melding.gjelderId)) {
             GjelderIdType.AKTORID -> hentAktoer(melding.gjelderId)?.let { aktoerId -> meldingOppgave.copy(aktoerId = aktoerId) }
             GjelderIdType.ORGANISASJON -> meldingOppgave.copy(orgnr = melding.gjelderId)
+            GjelderIdType.SAMHANDLER -> meldingOppgave.copy(samhandlernr = melding.gjelderId)
             else -> meldingOppgave.copy(personIdent = melding.gjelderId)
         }
     }

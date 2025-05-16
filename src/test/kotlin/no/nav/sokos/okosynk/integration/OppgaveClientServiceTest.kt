@@ -10,6 +10,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldNotBeEmpty
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import org.apache.http.entity.ContentType.APPLICATION_JSON
@@ -67,7 +68,7 @@ class OppgaveClientServiceTest : FunSpec({
                     offset = 0,
                 )
             }
-        exception.message shouldBe "Feil ved sok oppgaver"
+        exception.message shouldContain "Feil ved søk av oppgaver. Status: 500 Server Error, XCorrelationId: "
     }
 
     test("opprettOppgave should return oppgave as response") {
@@ -109,7 +110,7 @@ class OppgaveClientServiceTest : FunSpec({
             shouldThrow<OppgaveException> {
                 oppgaveClientService.opprettOppgave(request)
             }
-        exception.message shouldBe "Feil ved opprettelse av oppgave. Status: 400 Bad Request"
+        exception.message shouldContain "Feil ved opprettelse av oppgave. Status: 400 Bad Request, XCorrelationId: "
     }
 
     test("oppdaterOppgave should return update oppgave as response") {
@@ -147,6 +148,6 @@ class OppgaveClientServiceTest : FunSpec({
                     request = request,
                 )
             }
-        exception.message shouldBe "Feil ved oppdater av oppgave. Status: 404 Not Found"
+        exception.message shouldContain "Feil ved oppdater av oppgave. Status: 404 Not Found, XCorrelationId: "
     }
 })

@@ -8,6 +8,7 @@ import kotlinx.coroutines.runBlocking
 import mu.KLogger
 import mu.KotlinLogging
 
+import no.nav.oppgave.models.BrukerDto
 import no.nav.oppgave.models.Oppgave
 import no.nav.oppgave.models.OpprettOppgaveRequest
 import no.nav.oppgave.models.OpprettOppgaveRequest.Prioritet
@@ -89,6 +90,7 @@ class BehandleOppgaveProcessService(
                             opprettetAvEnhetsnr = meldingOppgave.opprettetAvEnhetsnr,
                             orgnr = meldingOppgave.orgnr,
                             personident = meldingOppgave.aktoerId ?: meldingOppgave.personIdent,
+                            samhandlernr = meldingOppgave.samhandlernr,
                             prioritet = Prioritet.LAV,
                             tema = TEMA_OKONOMI_KODE,
                             tildeltEnhetsnr = meldingOppgave.tildeltEnhetsnr,
@@ -142,18 +144,12 @@ class BehandleOppgaveProcessService(
         }
     }
 
-    private fun resetCounters() {
-        ferdigstiltCounter.set(0)
-        oppdaterCounter.set(0)
-        opprettCounter.set(0)
-    }
-
     fun Oppgave.matches(meldingOppgave: MeldingOppgave): Boolean {
         return this.behandlingstema == meldingOppgave.behandlingstema &&
             this.behandlingstype == meldingOppgave.behandlingstype &&
             this.tildeltEnhetsnr == meldingOppgave.tildeltEnhetsnr &&
             this.opprettetAvEnhetsnr == meldingOppgave.opprettetAvEnhetsnr &&
-            (this.aktoerId?.let { it == meldingOppgave.aktoerId } ?: (this.bruker?.ident == meldingOppgave.personIdent)) &&
+            this.matchesBrukerOrAktoerId(meldingOppgave) &&
             this.orgnr == meldingOppgave.orgnr
     }
 
@@ -170,5 +166,19 @@ class BehandleOppgaveProcessService(
                 )
             }.filter { (_, group) -> group.size > 1 }
         return duplicates.values.sumOf { it.size - 1 }
+    }
+
+    private fun Oppgave.matchesBrukerOrAktoerId(meldingOppgave: MeldingOppgave): Boolean {
+        return when {
+            this.aktoerId != null -> this.aktoerId == meldingOppgave.aktoerId
+            this.bruker?.type == BrukerDto.Type.SAMHANDLER -> this.bruker.ident == meldingOppgave.samhandlernr
+            else -> this.bruker?.ident == meldingOppgave.personIdent
+        }
+    }
+
+    private fun resetCounters() {
+        ferdigstiltCounter.set(0)
+        oppdaterCounter.set(0)
+        opprettCounter.set(0)
     }
 }

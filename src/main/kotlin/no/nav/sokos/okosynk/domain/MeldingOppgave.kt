@@ -9,5 +9,6 @@ data class MeldingOppgave(
     val orgnr: String? = null,
     val personIdent: String? = null,
     val aktoerId: String? = null,
+    val samhandlernr: String? = null,
     val tildeltEnhetsnr: String? = null,
 )

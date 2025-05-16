@@ -42,15 +42,16 @@ class OppgaveClientService(
         limit: Int,
         offset: Int,
     ): SokOppgaverResponse {
+        val correlationId = UUID.randomUUID()
         val result =
             runCatching {
                 val accessToken = accessTokenClient.getSystemToken()
-                logger.debug { "Søk etter oppgaver" }
+                logger.debug { "Søk etter oppgaver med XCorrelationId: $correlationId" }
 
                 val response =
                     client.get("$oppgaveUrl/api/v1/oppgaver") {
                         header(HttpHeaders.Authorization, "Bearer $accessToken")
-                        header(HttpHeaders.XCorrelationId, UUID.randomUUID())
+                        header(HttpHeaders.XCorrelationId, correlationId)
                         contentType(ContentType.Application.Json)
                         parameter("tema", TEMA_OKONOMI_KODE)
                         parameter("opprettetAv", opprettetAv)
@@ -61,33 +62,33 @@ class OppgaveClientService(
 
                 when {
                     response.status.isSuccess() -> response.body<SokOppgaverResponse>()
-                    else -> throw OppgaveException("Feil ved søk av oppgaver. Status: ${response.status}")
+                    else -> throw OppgaveException("Feil ved søk av oppgaver. Status: ${response.status}, XCorrelationId: $correlationId.")
                 }
             }
-
         return result.fold(
             onSuccess = { response -> response },
-            onFailure = { exception -> throw OppgaveException("Feil ved sok oppgaver", exception) },
+            onFailure = { exception -> throw exception },
         )
     }
 
     suspend fun opprettOppgave(request: OpprettOppgaveRequest): Oppgave {
+        val correlationId = UUID.randomUUID()
         return runCatching {
             val accessToken = accessTokenClient.getSystemToken()
-            logger.debug { "Opprett en ny oppgave" }
+            logger.debug { "Opprett en ny oppgave med XCorrelationId: $correlationId" }
 
             val response =
                 client.post("$oppgaveUrl/api/v1/oppgaver") {
                     header(HttpHeaders.Authorization, "Bearer $accessToken")
-                    header(HttpHeaders.XCorrelationId, UUID.randomUUID())
+                    header(HttpHeaders.XCorrelationId, correlationId)
                     contentType(ContentType.Application.Json)
                     setBody(request)
                 }
 
-            response.status.isSuccess() || throw OppgaveException("Feil ved opprettelse av oppgave. Status: ${response.status}")
+            response.status.isSuccess() || throw OppgaveException("Feil ved opprettelse av oppgave. Status: ${response.status}, XCorrelationId: $correlationId")
             response.body<Oppgave>()
         }.fold(
-            onSuccess = { response -> response.also { logger.debug { "Oppgave opprettet med id: ${response.id}" } } },
+            onSuccess = { response -> response.also { logger.debug { "Oppgave opprettet med id: ${response.id}, XCorrelationId: $correlationId" } } },
             onFailure = { exception -> throw exception },
         )
     }
@@ -96,6 +97,7 @@ class OppgaveClientService(
         id: Long,
         request: PatchOppgaveRequest,
     ): Oppgave {
+        val correlationId = UUID.randomUUID()
         return runCatching {
             val accessToken = accessTokenClient.getSystemToken()
             logger.debug { "Oppdater en eksisterende oppgave" }
@@ -103,15 +105,15 @@ class OppgaveClientService(
             val response =
                 client.patch("$oppgaveUrl/api/v1/oppgaver/$id") {
                     header(HttpHeaders.Authorization, "Bearer $accessToken")
-                    header(HttpHeaders.XCorrelationId, UUID.randomUUID())
+                    header(HttpHeaders.XCorrelationId, correlationId)
                     contentType(ContentType.Application.Json)
                     setBody(request)
                 }
 
-            response.status.isSuccess() || throw OppgaveException("Feil ved oppdater av oppgave. Status: ${response.status}")
+            response.status.isSuccess() || throw OppgaveException("Feil ved oppdater av oppgave. Status: ${response.status}, XCorrelationId: $correlationId")
             response.body<Oppgave>()
         }.fold(
-            onSuccess = { response -> response.also { logger.debug { "Oppgave oppdater med id: $id" } } },
+            onSuccess = { response -> response.also { logger.debug { "Oppgave oppdatert med id: $id, XCorrelationId: $correlationId" } } },
             onFailure = { exception -> throw exception },
         )
     }

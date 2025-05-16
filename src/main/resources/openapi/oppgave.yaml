@@ -1246,6 +1246,9 @@ components:
           type: string
           description: Oppgavens frist for ferdigstillelse.
           format: date
+        samhandlernr:
+          type: string
+          description: Samhandlernr for oppgaven
         prioritet:
           type: string
           description: Hvilken prioritet oppgaven skal ha
