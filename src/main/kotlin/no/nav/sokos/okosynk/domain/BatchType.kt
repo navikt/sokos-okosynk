@@ -1,9 +1,20 @@
 package no.nav.sokos.okosynk.domain
 
-enum class BatchType(val fileName: String, val oppgaveType: String, val opprettetAv: String) {
+import no.nav.sokos.okosynk.config.PropertiesConfig
+
+enum class BatchType(private val rawFileName: String, val oppgaveType: String, val opprettetAv: String) {
     OS("OS.INPUT", "OKO_OS", "okosynkos"),
     UR("UR.INPUT", "OKO_UR", "okosynkur"),
     UNKOWN("UNKNOWN", "UNKNOWN", "UNKNOWN"),
+    ;
+
+    val fileName: String
+        get() =
+            if (PropertiesConfig.Configuration().profile == PropertiesConfig.Profile.PROD) {
+                rawFileName.lowercase()
+            } else {
+                rawFileName
+            }
 }
 
 object BatchTypeContext {

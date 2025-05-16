@@ -110,7 +110,9 @@ spec:
           channel: '#team-mob-alerts-dev'
           iconEmoji: ':alert:'
           username: 'Alert dev-fss (sokos-okosynk)'
-          sendResolved: true
+          sendResolved: false
+          httpConfig:
+            proxyUrl: http://webproxy.nais:8088
           title: |-
             [{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}] {{ .CommonLabels.alertname }}
           text: >-
@@ -133,4 +135,4 @@ spec:
     groupInterval: 10s
     groupWait: 5s
     receiver: sokos-okosynk-receiver
-    repeatInterval:
+    repeatInterval: 10m
