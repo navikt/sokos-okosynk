@@ -98,7 +98,7 @@ class BehandleOppgaveProcessService(
                         )
 
                     runCatching {
-                        oppgaveClientService.opprettOppgave(request)
+                        // oppgaveClientService.opprettOppgave(request)
                         opprettCounter.incrementAndGet()
                         Metrics.counter("opprett_oppgave_${BatchTypeContext.get().opprettetAv}").inc()
                     }.onFailure { exception ->
@@ -127,7 +127,7 @@ class BehandleOppgaveProcessService(
                     )
 
                 runCatching {
-                    oppgaveClientService.oppdaterOppgave(oppgave.id, request)
+                    //  oppgaveClientService.oppdaterOppgave(oppgave.id, request)
 
                     if (ferdigstilt) {
                         ferdigstiltCounter.incrementAndGet()

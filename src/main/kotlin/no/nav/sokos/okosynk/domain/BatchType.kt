@@ -10,7 +10,7 @@ enum class BatchType(private val rawFileName: String, val oppgaveType: String, v
 
     val fileName: String
         get() =
-            if (PropertiesConfig.Configuration().profile == PropertiesConfig.Profile.PROD) {
+            if (PropertiesConfig.Configuration().profile == PropertiesConfig.Profile.LOCAL) {
                 rawFileName.lowercase()
             } else {
                 rawFileName

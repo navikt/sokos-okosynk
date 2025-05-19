@@ -1,18 +1,14 @@
 package no.nav.sokos.okosynk.service
 
-import java.time.LocalDateTime
-
 import FileProcessService
 import mu.KotlinLogging
 
 import no.nav.sokos.okosynk.domain.BatchType
 import no.nav.sokos.okosynk.domain.BatchTypeContext
-import no.nav.sokos.okosynk.integration.Directories
 import no.nav.sokos.okosynk.integration.FtpService
 import no.nav.sokos.okosynk.metrics.Metrics
 import no.nav.sokos.okosynk.process.BehandleMeldingProcessService
 import no.nav.sokos.okosynk.process.BehandleOppgaveProcessService
-import no.nav.sokos.okosynk.util.Utils.toISO
 
 private val logger = KotlinLogging.logger {}
 private const val MAX_ANTALL_LINJER = 25000
@@ -53,10 +49,10 @@ class BatchService(
                     .run { behandleMeldingProcessService.process(this) }
                     .run { behandleOppgaveProcessService.process(this) }
 
-                ftpService.renameFile(
-                    oldFilename = "${Directories.INBOUND.value}/${batchType.fileName}",
-                    newFilename = "${Directories.INBOUND.value}/${batchType.fileName}.${LocalDateTime.now().toISO()}",
-                )
+//                ftpService.renameFile(
+//                    oldFilename = "${Directories.INBOUND.value}/${batchType.fileName}",
+//                    newFilename = "${Directories.INBOUND.value}/${batchType.fileName}.${LocalDateTime.now().toISO()}",
+//                )
 
                 logger.info { "Ferdig synk ${batchType.fileName} med Oppgave" }
             }

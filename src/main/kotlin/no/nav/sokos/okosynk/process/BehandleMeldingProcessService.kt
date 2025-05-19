@@ -79,7 +79,13 @@ class BehandleMeldingProcessService(
             )
 
         return when (GjelderIdType.value(melding.gjelderId)) {
-            GjelderIdType.AKTORID -> hentAktoer(melding.gjelderId)?.let { aktoerId -> meldingOppgave.copy(aktoerId = aktoerId) }
+            GjelderIdType.AKTORID -> {
+                val meldingoppgave = hentAktoer(melding.gjelderId)?.let { aktoerId -> meldingOppgave.copy(aktoerId = aktoerId) }
+                if (melding.gjelderId == "06050787778" || melding.gjelderId == "05117833870") {
+                    logger.info { "gjelderId: ${melding.gjelderId}, aktoerId: ${meldingoppgave?.aktoerId} " }
+                }
+                meldingoppgave
+            }
             GjelderIdType.ORGANISASJON -> meldingOppgave.copy(orgnr = melding.gjelderId)
             GjelderIdType.SAMHANDLER -> meldingOppgave.copy(samhandlernr = melding.gjelderId)
             else -> meldingOppgave.copy(personIdent = melding.gjelderId)

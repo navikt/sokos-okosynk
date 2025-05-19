@@ -4,7 +4,6 @@ import no.nav.sokos.okosynk.domain.BatchType
 import no.nav.sokos.okosynk.domain.BatchTypeContext
 import no.nav.sokos.okosynk.domain.Melding
 import no.nav.sokos.okosynk.domain.OsMelding
-import no.nav.sokos.okosynk.domain.UrMelding
 import no.nav.sokos.okosynk.exception.OppgaveException
 import no.nav.sokos.okosynk.metrics.Metrics
 import no.nav.sokos.okosynk.process.Chain
@@ -19,7 +18,7 @@ class FileProcessService() : Chain<List<String>, List<Melding>> {
         logger.info { "Start FileProcessService " }
         return when (batchType.fileName) {
             BatchType.OS.fileName -> meldingList.map { it.toDataClass<OsMelding>() }
-            BatchType.UR.fileName -> meldingList.map { it.toDataClass<UrMelding>() }
+            // BatchType.UR.fileName -> meldingList.map { it.toDataClass<UrMelding>() }
             else -> {
                 logger.error { "Ukjent filnavn: ${batchType.oppgaveType}" }
                 throw OppgaveException("Ukjent filname: ${batchType.oppgaveType}")
