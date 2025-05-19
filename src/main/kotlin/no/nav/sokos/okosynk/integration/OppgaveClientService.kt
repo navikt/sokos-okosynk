@@ -30,6 +30,7 @@ const val TEMA_OKONOMI_KODE = "OKO"
 const val ENHET_ID_FOR_ANDRE_EKSTERNE = "9999"
 private const val STATUSKATEGORI_AAPEN = "AAPEN"
 private val logger: KLogger = KotlinLogging.logger {}
+private val securelogger = KotlinLogging.logger("secureLogger")
 
 class OppgaveClientService(
     private val oppgaveUrl: String = PropertiesConfig.OppgaveProperties().oppgaveUrl,
@@ -75,8 +76,8 @@ class OppgaveClientService(
         val correlationId = UUID.randomUUID()
         return runCatching {
             val accessToken = accessTokenClient.getSystemToken()
-            logger.debug { "Opprett en ny oppgave med XCorrelationId: $correlationId" }
 
+            securelogger.info { "XCorrelationId: $correlationId - Opprett oppgave request: $request" }
             val response =
                 client.post("$oppgaveUrl/api/v1/oppgaver") {
                     header(HttpHeaders.Authorization, "Bearer $accessToken")
@@ -88,7 +89,7 @@ class OppgaveClientService(
             response.status.isSuccess() || throw OppgaveException("Feil ved opprettelse av oppgave. Status: ${response.status}, XCorrelationId: $correlationId")
             response.body<Oppgave>()
         }.fold(
-            onSuccess = { response -> response.also { logger.debug { "Oppgave opprettet med id: ${response.id}, XCorrelationId: $correlationId" } } },
+            onSuccess = { response -> response.also { securelogger.info { "XCorrelationId: $correlationId - Opprett oppgave response: $response" } } },
             onFailure = { exception -> throw exception },
         )
     }
