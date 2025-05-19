@@ -25,28 +25,28 @@ private val secureLogger = KotlinLogging.logger(SECURE_LOGGER)
 
 class BehandleMeldingProcessService(
     private val pdlClientService: PdlClientService = PdlClientService(),
-) : Chain<List<Melding>, List<MeldingOppgave>> {
-    override fun process(meldingList: List<Melding>): List<MeldingOppgave> {
+) : Chain<List<Melding>, Set<MeldingOppgave>> {
+    override fun process(meldingList: List<Melding>): Set<MeldingOppgave> {
         val batchType = BatchTypeContext.get()
 
         logger.info { "${batchType.oppgaveType} - Start BehandleMeldingProcessService " }
         val regelverkMap = if (batchType == BatchType.OS) RegelverkConfig.regelverkOSMap else RegelverkConfig.regelverkURMap
-        val meldingOppgaveList =
+        val meldingOppgaveSet =
             meldingList
                 .sortedByDescending { melding -> melding.sammenligningsDato() }
                 .filter { melding -> regelverkMap[melding.ruleKey()] != null }
                 .groupBy { melding -> MeldingKriterier(melding) }
                 .mapNotNull { (_, value) -> opprettMeldingOppgave(value, regelverkMap) }
-                .distinct()
                 .also { oppgave ->
                     logger.info { "Antall konvertert oppgaver for batchType: $batchType: ${oppgave.size}" }
                     Metrics.counter("konvertert_oppgave_${batchType.opprettetAv}").inc(oppgave.size.toLong())
                 }
+                .toSet()
 
-        meldingOppgaveList.filter { it.personIdent?.isDnr() ?: false }
+        meldingOppgaveSet.filter { it.personIdent?.isDnr() ?: false }
             .forEach { secureLogger.info { "dnr found in the batch file: ${it.personIdent}" } }
 
-        return meldingOppgaveList
+        return meldingOppgaveSet
     }
 
     private fun hentAktoer(gjelderId: String): String? {

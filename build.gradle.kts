@@ -36,7 +36,6 @@ val janionVersion = "3.1.12"
 val natpryceVersion = "1.6.10.0"
 val kotestVersion = "5.9.1"
 val kotlinxSerializationVersion = "1.8.1"
-val kotlinxDatetimeVersion = "0.6.2"
 val cronUtilsVersion = "9.2.1"
 
 val mockOAuth2ServerVersion = "2.1.11"

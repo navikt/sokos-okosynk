@@ -28,20 +28,20 @@ private const val BATCH_SIZE = 1000
 
 class BehandleOppgaveProcessService(
     private val oppgaveClientService: OppgaveClientService = OppgaveClientService(),
-) : Chain<List<MeldingOppgave>, Unit> {
+) : Chain<Set<MeldingOppgave>, Unit> {
     private val ferdigstiltCounter = AtomicInteger(0)
     private val oppdaterCounter = AtomicInteger(0)
     private val opprettCounter = AtomicInteger(0)
 
-    override fun process(meldingOppgaveList: List<MeldingOppgave>) {
+    override fun process(meldingOppgaveSet: Set<MeldingOppgave>) {
         resetCounters()
 
         logger.info { "Start BehandleOppgaveProcessService " }
         runCatching {
-            val oppgaveList = hentOppgaveList()
+            val oppgaveSet = hentOppgaveSet()
 
-            opprettOppgave(oppgaveList, meldingOppgaveList)
-            oppdaterOppgaveState(oppgaveList, meldingOppgaveList)
+            opprettOppgave(oppgaveSet, meldingOppgaveSet)
+            oppdaterOppgaveState(oppgaveSet, meldingOppgaveSet)
 
             logger.info { "Oppretter: ${opprettCounter.get()}, Oppdater: ${oppdaterCounter.get()}, Ferdigstilt: ${ferdigstiltCounter.get()} oppgaver" }
         }.onFailure { exception ->
@@ -49,36 +49,36 @@ class BehandleOppgaveProcessService(
         }
     }
 
-    private fun hentOppgaveList(): Set<Oppgave> {
+    private fun hentOppgaveSet(): Set<Oppgave> {
         val batchType = BatchTypeContext.get()
         return runBlocking {
             logger.info { "Starter søk og evt. inkrementell henting av oppgaver av type: ${batchType.oppgaveType}" }
 
-            val oppgaveList: MutableSet<Oppgave> = mutableSetOf()
+            val oppgaveSet: MutableSet<Oppgave> = mutableSetOf()
             var offset = 0
 
             while (true) {
                 val response = oppgaveClientService.sokOppgaver(opprettetAv = batchType.opprettetAv, limit = BATCH_SIZE, offset = offset)
-                oppgaveList.addAll(response.oppgaver ?: emptyList())
+                oppgaveSet.addAll(response.oppgaver ?: emptyList())
                 if (response.oppgaver?.isEmpty() == true) {
                     break
                 }
                 offset += BATCH_SIZE
             }
-            logger.info { "Total: ${oppgaveList.size} oppgaver av type: ${batchType.oppgaveType} funnet" }
-            logger.info { "Antall duplikater oppgaver: ${findDuplicateOppgave(oppgaveList)}" }
+            logger.info { "Total: ${oppgaveSet.size} oppgaver av type: ${batchType.oppgaveType} funnet" }
+            logger.info { "Antall duplikater oppgaver: ${findDuplicateOppgave(oppgaveSet)}" }
 
-            oppgaveList
+            oppgaveSet
         }
     }
 
     private fun opprettOppgave(
-        oppgaveList: Set<Oppgave>,
-        meldingOppgaveList: List<MeldingOppgave>,
+        oppgaveSet: Set<Oppgave>,
+        meldingOppgaveSet: Set<MeldingOppgave>,
     ) {
         runBlocking {
-            meldingOppgaveList
-                .filterNot { meldingOppgave -> oppgaveList.any { oppgave -> oppgave.matches(meldingOppgave) } }
+            meldingOppgaveSet
+                .filterNot { meldingOppgave -> oppgaveSet.any { oppgave -> oppgave.matches(meldingOppgave) } }
                 .forEach { meldingOppgave ->
                     val request =
                         OpprettOppgaveRequest(
@@ -110,14 +110,14 @@ class BehandleOppgaveProcessService(
     }
 
     private fun oppdaterOppgaveState(
-        oppgaveList: Set<Oppgave>,
-        meldingOppgaveList: List<MeldingOppgave>,
+        oppgaveSet: Set<Oppgave>,
+        meldingOppgaveSet: Set<MeldingOppgave>,
     ) {
         val batchType = BatchTypeContext.get()
 
         runBlocking {
-            oppgaveList.forEach { oppgave ->
-                val ferdigstilt = !meldingOppgaveList.any { meldingOppgave -> oppgave.matches(meldingOppgave) }
+            oppgaveSet.forEach { oppgave ->
+                val ferdigstilt = !meldingOppgaveSet.any { meldingOppgave -> oppgave.matches(meldingOppgave) }
 
                 val request =
                     PatchOppgaveRequest(
@@ -153,9 +153,9 @@ class BehandleOppgaveProcessService(
             this.orgnr == meldingOppgave.orgnr
     }
 
-    fun findDuplicateOppgave(oppgaveList: Set<Oppgave>): Int {
+    fun findDuplicateOppgave(oppgaveSet: Set<Oppgave>): Int {
         val duplicates =
-            oppgaveList.groupBy { oppgave ->
+            oppgaveSet.groupBy { oppgave ->
                 listOf(
                     oppgave.behandlingstema,
                     oppgave.behandlingstype,

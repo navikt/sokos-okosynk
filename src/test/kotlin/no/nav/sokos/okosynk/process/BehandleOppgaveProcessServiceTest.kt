@@ -49,8 +49,8 @@ class BehandleOppgaveProcessServiceTest : FunSpec({
         opprettOppgaveWireMock()
         oppdaterOppgaveWireMock()
 
-        val meldingOppgaveList = listOf(meldingOppgave)
-        behandleOppgaveProcessService.process(meldingOppgaveList)
+        val meldingOppgaveSet = setOf(meldingOppgave)
+        behandleOppgaveProcessService.process(meldingOppgaveSet)
 
         verify(2, getRequestedFor(urlPathMatching("$OPPGAVE_URL.*")))
         verify(1, postRequestedFor(urlEqualTo(OPPGAVE_URL)))
@@ -62,8 +62,8 @@ class BehandleOppgaveProcessServiceTest : FunSpec({
         opprettOppgaveWireMock()
         oppdaterOppgaveWireMock()
 
-        val meldingOppgaveList = listOf(meldingOppgave)
-        behandleOppgaveProcessService.process(meldingOppgaveList)
+        val meldingOppgaveSet = setOf(meldingOppgave)
+        behandleOppgaveProcessService.process(meldingOppgaveSet)
 
         verify(1, getRequestedFor(urlPathMatching("$OPPGAVE_URL.*")))
         verify(1, postRequestedFor(urlEqualTo(OPPGAVE_URL)))
@@ -76,8 +76,8 @@ class BehandleOppgaveProcessServiceTest : FunSpec({
         opprettOppgaveWireMock()
         oppdaterOppgaveWireMock()
 
-        val meldingOppgaveList =
-            listOf(
+        val meldingOppgaveSet =
+            setOf(
                 MeldingOppgave(
                     behandlingstype = "ae0216",
                     tildeltEnhetsnr = "4819",
@@ -103,7 +103,7 @@ class BehandleOppgaveProcessServiceTest : FunSpec({
                     oppgavetype = BatchTypeContext.get().oppgaveType,
                 ),
             )
-        behandleOppgaveProcessService.process(meldingOppgaveList)
+        behandleOppgaveProcessService.process(meldingOppgaveSet)
 
         verify(0, postRequestedFor(urlEqualTo(OPPGAVE_URL)))
         verify(

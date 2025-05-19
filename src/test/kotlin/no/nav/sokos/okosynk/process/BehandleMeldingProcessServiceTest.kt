@@ -46,19 +46,19 @@ class BehandleMeldingProcessServiceTest : FunSpec({
         val osMeldingList = osInput.lines().map { it.toDataClass<OsMelding>() }
         osMeldingList.size shouldBe 20
 
-        val meldingOppgaveList = behandleMeldingProcessService.process(osMeldingList)
+        val meldingOppgaveSet = behandleMeldingProcessService.process(osMeldingList)
 
-        meldingOppgaveList.size shouldBe 11
-        meldingOppgaveList[0].behandlingstema shouldBe null
-        meldingOppgaveList[0].behandlingstype shouldBe "ae0216"
-        meldingOppgaveList[0].beskrivelse shouldBe "AVVE;   1992kr;   beregningsdato/id:05.05.22/461386205;   periode:01.03.22-31.03.22;   feilkonto:" +
+        meldingOppgaveSet.size shouldBe 11
+        meldingOppgaveSet.toList()[0].behandlingstema shouldBe null
+        meldingOppgaveSet.toList()[0].behandlingstype shouldBe "ae0216"
+        meldingOppgaveSet.toList()[0].beskrivelse shouldBe "AVVE;   1992kr;   beregningsdato/id:05.05.22/461386205;   periode:01.03.22-31.03.22;   feilkonto:" +
             ";   statusdato:05.05.22;   ;   UtbTil:03083734573;   H124085"
-        meldingOppgaveList[0].oppgavetype shouldBe "OKO_OS"
-        meldingOppgaveList[0].opprettetAvEnhetsnr shouldBe "9999"
-        meldingOppgaveList[0].orgnr shouldBe null
-        meldingOppgaveList[0].personIdent shouldBe null
-        meldingOppgaveList[0].aktoerId shouldBe "2305469522806"
-        meldingOppgaveList[0].tildeltEnhetsnr shouldBe "4819"
+        meldingOppgaveSet.toList()[0].oppgavetype shouldBe "OKO_OS"
+        meldingOppgaveSet.toList()[0].opprettetAvEnhetsnr shouldBe "9999"
+        meldingOppgaveSet.toList()[0].orgnr shouldBe null
+        meldingOppgaveSet.toList()[0].personIdent shouldBe null
+        meldingOppgaveSet.toList()[0].aktoerId shouldBe "2305469522806"
+        meldingOppgaveSet.toList()[0].tildeltEnhetsnr shouldBe "4819"
 
         WireMock.verify(11, WireMock.postRequestedFor(WireMock.urlEqualTo("/graphql")))
     }
@@ -70,8 +70,8 @@ class BehandleMeldingProcessServiceTest : FunSpec({
         val osMeldingList = osInput.lines().map { it.toDataClass<OsMelding>() }
         osMeldingList.size shouldBe 20
 
-        val meldingOppgaveList = behandleMeldingProcessService.process(osMeldingList)
-        meldingOppgaveList.shouldBeEmpty()
+        val meldingOppgaveSet = behandleMeldingProcessService.process(osMeldingList)
+        meldingOppgaveSet.shouldBeEmpty()
     }
 
     test("behandleMeldingProcessService process different gjelderIdType with UR.INPUT") {
