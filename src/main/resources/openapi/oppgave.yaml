@@ -1152,6 +1152,8 @@ components:
       - tema
       type: object
       properties:
+        aktoerId:
+          type: string
         personident:
           maxLength: 13
           minLength: 11
