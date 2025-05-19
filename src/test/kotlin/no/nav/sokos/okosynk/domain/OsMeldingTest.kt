@@ -22,7 +22,7 @@ class OsMeldingTest : FunSpec({
         osMelding.brukerId shouldBe "K124096"
         osMelding.fomPeriode.toString() shouldBe "2022-03-01"
         osMelding.tomPeriode.toString() shouldBe "2022-03-31"
-        osMelding.totalNettoBelop shouldBe 0.00
+        osMelding.totalNettoBelop shouldBe 3093.00
         osMelding.flaggFeilKonto shouldBe ""
         osMelding.behandlendeEnhet shouldBe "4819"
         osMelding.faggruppe shouldBe "PEN"

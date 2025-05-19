@@ -5,6 +5,10 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatterBuilder
 
+import mu.KotlinLogging
+
+private val logger = KotlinLogging.logger {}
+
 object CopyBookParseUtil {
     private val KODER_FOR_POSITIVT_FORTEGN: List<Char> = mutableListOf('æ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I')
     private val KODER_FOR_NEGATIVT_FORTEGN: List<Char> = mutableListOf('å', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R')
@@ -22,7 +26,11 @@ object CopyBookParseUtil {
 
         return runCatching {
             val fortegn = this.last()
-            val lastDigitValue = fortegnMap[fortegn] ?: throw NumberFormatException("Ugyldig input: $this. Siste tegn angir ingen tallverdi.")
+            val lastDigitValue =
+                fortegnMap[fortegn] ?: let {
+                    logger.error("Ugyldig input: $this. Siste tegn angir ingen tallverdi.")
+                    throw NumberFormatException("Ugyldig input: $this. Siste tegn angir ingen tallverdi.")
+                }
             val integerPart = this.dropLast(2).toIntOrNull() ?: 0
             val decimalPart = this.dropLast(1).lastOrNull()?.toString()?.toIntOrNull() ?: 0
 

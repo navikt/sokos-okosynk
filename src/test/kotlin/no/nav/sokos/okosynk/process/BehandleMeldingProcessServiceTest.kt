@@ -51,7 +51,7 @@ class BehandleMeldingProcessServiceTest : FunSpec({
         meldingOppgaveList.size shouldBe 11
         meldingOppgaveList[0].behandlingstema shouldBe null
         meldingOppgaveList[0].behandlingstype shouldBe "ae0216"
-        meldingOppgaveList[0].beskrivelse shouldBe "AVVE;   0kr;   beregningsdato/id:05.05.22/461386205;   periode:01.03.22-31.03.22;   feilkonto:" +
+        meldingOppgaveList[0].beskrivelse shouldBe "AVVE;   1992kr;   beregningsdato/id:05.05.22/461386205;   periode:01.03.22-31.03.22;   feilkonto:" +
             ";   statusdato:05.05.22;   ;   UtbTil:03083734573;   H124085"
         meldingOppgaveList[0].oppgavetype shouldBe "OKO_OS"
         meldingOppgaveList[0].opprettetAvEnhetsnr shouldBe "9999"

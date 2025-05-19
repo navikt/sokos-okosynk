@@ -53,7 +53,7 @@ class FtpService(
                 ByteArrayOutputStream().use { outputStream ->
                     logger.info { "Laster ned filen $fileName fra mappen ${directory.value}" }
                     connector.get("${directory.value}/$fileName", outputStream)
-                    return@channel String(outputStream.toByteArray())
+                    return@channel String(outputStream.toByteArray(), Charsets.ISO_8859_1)
                         .lines()
                         .filter { it.isNotBlank() }
                 }
