@@ -1367,6 +1367,8 @@ components:
           example: FS22
         kommentar:
           $ref: '#/components/schemas/RegistrerKommentarJson'
+        beskrivelse:
+          type: string
         personident:
           maxLength: 13
           minLength: 11

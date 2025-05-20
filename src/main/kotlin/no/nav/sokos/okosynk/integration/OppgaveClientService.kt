@@ -39,7 +39,7 @@ class OppgaveClientService(
     private val accessTokenClient: AccessTokenClient = AccessTokenClient(azureAdScope = oppgaveScope),
 ) {
     suspend fun sokOppgaver(
-        opprettetAv: String,
+        oppgavetype: String,
         limit: Int,
         offset: Int,
     ): SokOppgaverResponse {
@@ -55,7 +55,7 @@ class OppgaveClientService(
                         header(HttpHeaders.XCorrelationId, correlationId)
                         contentType(ContentType.Application.Json)
                         parameter("tema", TEMA_OKONOMI_KODE)
-                        parameter("opprettetAv", opprettetAv)
+                        parameter("oppgavetype", oppgavetype)
                         parameter("statuskategori", STATUSKATEGORI_AAPEN)
                         parameter("limit", limit.toString())
                         parameter("offset", offset.toString())

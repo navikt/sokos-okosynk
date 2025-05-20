@@ -59,6 +59,6 @@ data class OsMelding(
             etteroppgjor,
             "UtbTil:$utbetalesTilId",
             brukerId,
-        ).joinToString(FELTSEPARATOR).trim()
+        ).joinToString(FELTSEPARATOR).trim().replaceFirst(FELTSEPARATOR, FORSTE_FELTSEPARATOR)
     }
 }

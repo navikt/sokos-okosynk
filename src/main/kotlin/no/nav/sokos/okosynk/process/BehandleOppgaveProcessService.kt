@@ -13,6 +13,7 @@ import no.nav.oppgave.models.Oppgave
 import no.nav.oppgave.models.OpprettOppgaveRequest
 import no.nav.oppgave.models.OpprettOppgaveRequest.Prioritet
 import no.nav.oppgave.models.PatchOppgaveRequest
+import no.nav.sokos.okosynk.config.PropertiesConfig
 import no.nav.sokos.okosynk.config.SECURE_LOGGER
 import no.nav.sokos.okosynk.domain.BatchTypeContext
 import no.nav.sokos.okosynk.domain.MeldingOppgave
@@ -58,17 +59,19 @@ class BehandleOppgaveProcessService(
             var offset = 0
 
             while (true) {
-                val response = oppgaveClientService.sokOppgaver(opprettetAv = batchType.opprettetAv, limit = BATCH_SIZE, offset = offset)
+                val response = oppgaveClientService.sokOppgaver(oppgavetype = batchType.oppgaveType, limit = BATCH_SIZE, offset = offset)
                 oppgaveSet.addAll(response.oppgaver ?: emptyList())
                 if (response.oppgaver?.isEmpty() == true) {
                     break
                 }
                 offset += BATCH_SIZE
             }
-            logger.info { "Total: ${oppgaveSet.size} oppgaver av type: ${batchType.oppgaveType} funnet" }
+
+            val filteredOppgaveSet = oppgaveSet.filter { it.opprettetAv == batchType.opprettetAv || it.opprettetAv == PropertiesConfig.Configuration().naisAppName }.toSet()
+            logger.info { "Total: ${filteredOppgaveSet.size} oppgaver av type: ${batchType.oppgaveType} funnet" }
             logger.info { "Antall duplikater oppgaver: ${findDuplicateOppgave(oppgaveSet)}" }
 
-            oppgaveSet
+            filteredOppgaveSet
         }
     }
 
@@ -76,6 +79,7 @@ class BehandleOppgaveProcessService(
         oppgaveSet: Set<Oppgave>,
         meldingOppgaveSet: Set<MeldingOppgave>,
     ) {
+        val batchType = BatchTypeContext.get()
         runBlocking {
             meldingOppgaveSet
                 .filterNot { meldingOppgave -> oppgaveSet.any { oppgave -> oppgave.matches(meldingOppgave) } }
@@ -85,7 +89,7 @@ class BehandleOppgaveProcessService(
                             aktivDato = LocalDate.now(),
                             behandlingstema = meldingOppgave.behandlingstema,
                             behandlingstype = meldingOppgave.behandlingstype,
-                            fristFerdigstillelse = LocalDate.now(),
+                            fristFerdigstillelse = LocalDate.now().plusDays(batchType.antallDagerFrist),
                             oppgavetype = meldingOppgave.oppgavetype,
                             opprettetAvEnhetsnr = meldingOppgave.opprettetAvEnhetsnr,
                             orgnr = meldingOppgave.orgnr,
@@ -100,6 +104,7 @@ class BehandleOppgaveProcessService(
 
                     runCatching {
                         oppgaveClientService.opprettOppgave(request)
+
                         opprettCounter.incrementAndGet()
                         Metrics.counter("opprett_oppgave_${BatchTypeContext.get().opprettetAv}").inc()
                     }.onFailure { exception ->
@@ -118,19 +123,27 @@ class BehandleOppgaveProcessService(
 
         runBlocking {
             oppgaveSet.forEach { oppgave ->
-                val ferdigstilt = !meldingOppgaveSet.any { meldingOppgave -> oppgave.matches(meldingOppgave) }
-
+                val matchingMeldingOppgave = meldingOppgaveSet.firstOrNull { meldingOppgave -> oppgave.matches(meldingOppgave) }
                 val request =
-                    PatchOppgaveRequest(
-                        endretAvEnhetsnr = ENHET_ID_FOR_ANDRE_EKSTERNE,
-                        versjon = oppgave.versjon,
-                        status = if (ferdigstilt) PatchOppgaveRequest.Status.FERDIGSTILT else null,
-                    )
+                    if (matchingMeldingOppgave == null) {
+                        PatchOppgaveRequest(
+                            endretAvEnhetsnr = ENHET_ID_FOR_ANDRE_EKSTERNE,
+                            versjon = oppgave.versjon,
+                            status = PatchOppgaveRequest.Status.FERDIGSTILT,
+                        )
+                    } else {
+                        val beskrivelse = updateBeskrivelseMedKode(oppgave.beskrivelse.orEmpty(), matchingMeldingOppgave.beskrivelse.orEmpty())
+                        PatchOppgaveRequest(
+                            endretAvEnhetsnr = ENHET_ID_FOR_ANDRE_EKSTERNE,
+                            versjon = oppgave.versjon,
+                            beskrivelse = beskrivelse,
+                        )
+                    }
 
                 runCatching {
                     oppgaveClientService.oppdaterOppgave(oppgave.id, request)
 
-                    if (ferdigstilt) {
+                    if (matchingMeldingOppgave == null) {
                         ferdigstiltCounter.incrementAndGet()
                         Metrics.counter("ferdigstilt_oppgave_${batchType.opprettetAv}").inc()
                     } else {
@@ -181,5 +194,19 @@ class BehandleOppgaveProcessService(
         ferdigstiltCounter.set(0)
         oppdaterCounter.set(0)
         opprettCounter.set(0)
+    }
+
+    private fun updateBeskrivelseMedKode(
+        beskrivelseFromOppgave: String,
+        beskrivelseFromMeldingOppgave: String,
+    ): String {
+        val beskrivelseFelter = beskrivelseFromOppgave.split(";")
+        val kode =
+            if (beskrivelseFelter.size > 2) {
+                beskrivelseFelter[1].take(10)
+            } else {
+                ""
+            }
+        return beskrivelseFromMeldingOppgave.replaceFirst(";;", ";$kode;")
     }
 }

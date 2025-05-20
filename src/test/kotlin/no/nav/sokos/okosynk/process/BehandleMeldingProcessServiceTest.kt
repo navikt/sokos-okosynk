@@ -51,7 +51,7 @@ class BehandleMeldingProcessServiceTest : FunSpec({
         meldingOppgaveSet.size shouldBe 11
         meldingOppgaveSet.toList()[0].behandlingstema shouldBe null
         meldingOppgaveSet.toList()[0].behandlingstype shouldBe "ae0216"
-        meldingOppgaveSet.toList()[0].beskrivelse shouldBe "AVVE;   1992kr;   beregningsdato/id:05.05.22/461386205;   periode:01.03.22-31.03.22;   feilkonto:" +
+        meldingOppgaveSet.toList()[0].beskrivelse shouldBe "AVVE;;   1992kr;   beregningsdato/id:05.05.22/461386205;   periode:01.03.22-31.03.22;   feilkonto:" +
             ";   statusdato:05.05.22;   ;   UtbTil:03083734573;   H124085"
         meldingOppgaveSet.toList()[0].oppgavetype shouldBe "OKO_OS"
         meldingOppgaveSet.toList()[0].opprettetAvEnhetsnr shouldBe "9999"
@@ -93,7 +93,7 @@ class BehandleMeldingProcessServiceTest : FunSpec({
         val melding: Melding = TestData.osMelding
         val result = melding.beskrivelse(listOf(melding))
 
-        result shouldBe "AVAV;   1000kr;   beregningsdato/id:01.10.23/123456789;   periode:01.10.23-31.10.23;   feilkonto:feil;   statusdato:02.10.23;   ;   UtbTil:123456789;   K124096"
+        result shouldBe "AVAV;;   1000kr;   beregningsdato/id:01.10.23/123456789;   periode:01.10.23-31.10.23;   feilkonto:feil;   statusdato:02.10.23;   ;   UtbTil:123456789;   K124096"
     }
 
     test("beskrivelse for a list of OS Melding") {
@@ -107,14 +107,14 @@ class BehandleMeldingProcessServiceTest : FunSpec({
 
         val result = melding1.beskrivelse(listOf(melding1, melding2))
 
-        result shouldBe "AVAV;   1500kr;   beregningsdato/id:01.10.23/123456789;   periode:01.10.22-01.10.24;   feilkonto:feil;   statusdato:02.10.23;   ;   UtbTil:123456789;   K124096"
+        result shouldBe "AVAV;;   1500kr;   beregningsdato/id:01.10.23/123456789;   periode:01.10.22-01.10.24;   feilkonto:feil;   statusdato:02.10.23;   ;   UtbTil:123456789;   K124096"
     }
 
     test("beskrivelse for a single UR Melding") {
         val melding: Melding = TestData.urMelding
         val result = melding.beskrivelse(listOf(melding))
 
-        result shouldBe "25;   KID ugyldig/mangler;   postert/bilagsnummer:01.10.23/793627889;   1000kr;   statusdato:02.10.23;   UtbTil:80000662771;   K124096"
+        result shouldBe "25;;   KID ugyldig/mangler;   postert/bilagsnummer:01.10.23/793627889;   1000kr;   statusdato:02.10.23;   UtbTil:80000662771;   K124096"
     }
 
     test("beskrivelse for a list of ÚR Melding") {
@@ -122,6 +122,6 @@ class BehandleMeldingProcessServiceTest : FunSpec({
         val melding2: Melding = (TestData.urMelding as UrMelding).copy(totalNettoBelop = 300.0)
         val result = melding1.beskrivelse(listOf(melding1, melding2))
 
-        result shouldBe "25;   KID ugyldig/mangler;   postert/bilagsnummer:01.10.23/793627889;   1300kr;   statusdato:02.10.23;   UtbTil:80000662771;   K124096"
+        result shouldBe "25;;   KID ugyldig/mangler;   postert/bilagsnummer:01.10.23/793627889;   1300kr;   statusdato:02.10.23;   UtbTil:80000662771;   K124096"
     }
 })

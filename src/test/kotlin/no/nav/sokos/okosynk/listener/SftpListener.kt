@@ -132,4 +132,19 @@ object SftpListener : TestListener {
             }
         }
     }
+
+    fun deleteFile(vararg fileName: String) {
+        val deleteFilename = fileName.joinToString(separator = " ")
+        val sftpConfig = SftpConfig(sftpProperties)
+
+        sftpConfig.channel { connector ->
+            runCatching {
+                logger.info { "Fjerner fil: $deleteFilename" }
+                fileName.forEach { connector.rm(it) }
+            }.onFailure { exception ->
+                logger.error { "Feil i fjerning av filer $deleteFilename: ${exception.message}" }
+                throw exception
+            }
+        }
+    }
 }

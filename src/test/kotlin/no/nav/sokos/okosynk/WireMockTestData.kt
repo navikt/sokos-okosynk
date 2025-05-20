@@ -25,7 +25,7 @@ object WireMockTestData {
         wiremock.stubFor(
             get(urlPathEqualTo(OPPGAVE_URL))
                 .withQueryParam("tema", matching("OKO"))
-                .withQueryParam("opprettetAv", matching("okosynkos"))
+                .withQueryParam("oppgavetype", matching("OKO_OS"))
                 .withQueryParam("statuskategori", matching("AAPEN"))
                 .withQueryParam("limit", matching("1000"))
                 .withQueryParam("offset", matching(offset.toString()))

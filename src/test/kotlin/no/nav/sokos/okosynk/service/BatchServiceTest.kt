@@ -60,6 +60,7 @@ class BatchServiceTest : FunSpec({
     }
 
     beforeTest {
+        SftpListener.deleteFile(Directories.INBOUND.value + "/*")
         wiremock.resetAll()
     }
 

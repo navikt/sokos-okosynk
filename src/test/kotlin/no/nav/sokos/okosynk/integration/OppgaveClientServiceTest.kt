@@ -40,7 +40,7 @@ class OppgaveClientServiceTest : FunSpec({
 
         val response =
             oppgaveClientService.sokOppgaver(
-                opprettetAv = BatchType.OS.opprettetAv,
+                oppgavetype = BatchType.OS.oppgaveType,
                 limit = 1000,
                 offset = 0,
             )
@@ -63,7 +63,7 @@ class OppgaveClientServiceTest : FunSpec({
         val exception =
             shouldThrow<OppgaveException> {
                 oppgaveClientService.sokOppgaver(
-                    opprettetAv = BatchType.OS.opprettetAv,
+                    oppgavetype = BatchType.OS.oppgaveType,
                     limit = 1000,
                     offset = 0,
                 )

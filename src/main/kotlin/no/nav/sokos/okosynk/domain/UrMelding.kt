@@ -51,6 +51,6 @@ data class UrMelding(
             "statusdato:${datoForStatus?.toNorwegianDate()}",
             "UtbTil:$mottakerId",
             brukerId,
-        ).joinToString(FELTSEPARATOR)
+        ).joinToString(FELTSEPARATOR).replaceFirst(FELTSEPARATOR, FORSTE_FELTSEPARATOR)
     }
 }
