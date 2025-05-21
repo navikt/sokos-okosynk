@@ -7,6 +7,8 @@ import io.micrometer.prometheusmetrics.PrometheusConfig
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
 import io.prometheus.metrics.core.metrics.Counter
 
+import no.nav.sokos.okosynk.domain.BatchType
+
 private const val METRICS_NAMESPACE = "sokos_okosynk"
 
 object Metrics {
@@ -33,5 +35,18 @@ object Metrics {
                 .withoutExemplars()
                 .register(prometheusMeterRegistry.prometheusRegistry)
         }
+    }
+
+    fun initMetrics() {
+        BatchType.entries
+            .filter { it != BatchType.UNKOWN }
+            .forEach { batchType ->
+                timer("batch_${batchType.opprettetAv}")
+                counter("les_melding_${batchType.opprettetAv}")
+                counter("ferdigstilt_oppgave_${batchType.opprettetAv}")
+                counter("konvertert_oppgave_${batchType.opprettetAv}")
+                counter("opprett_oppgave_${batchType.opprettetAv}")
+                counter("ferdigstilt_oppgave_${batchType.opprettetAv}")
+            }
     }
 }

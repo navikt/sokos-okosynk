@@ -10,6 +10,7 @@ import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching
 import com.github.tomakehurst.wiremock.client.WireMock.verify
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
 
 import no.nav.sokos.okosynk.OPPGAVE_URL
 import no.nav.sokos.okosynk.TestData.meldingOppgave
@@ -118,5 +119,39 @@ class BehandleOppgaveProcessServiceTest : FunSpec({
             patchRequestedFor(urlPathMatching("$OPPGAVE_URL/\\d+"))
                 .withRequestBody(matchingJsonPath("$.status", equalTo("FERDIGSTILT"))),
         )
+    }
+
+    test("should insert kode from original description into new description") {
+        val original = "foo;KODE123456;bar"
+        val newDesc = "ny_beskrivelse;;mer"
+        val result =
+            behandleOppgaveProcessService.run {
+                val method =
+                    BehandleOppgaveProcessService::class.java.getDeclaredMethod(
+                        "updateBeskrivelseMedKode",
+                        String::class.java,
+                        String::class.java,
+                    )
+                method.isAccessible = true
+                method.invoke(this, original, newDesc) as String
+            }
+        result shouldBe "ny_beskrivelse;KODE123456;mer"
+    }
+
+    test("should insert empty kode if original description has no code") {
+        val original = "foo;bar"
+        val newDesc = "ny_beskrivelse;;mer"
+        val result =
+            behandleOppgaveProcessService.run {
+                val method =
+                    BehandleOppgaveProcessService::class.java.getDeclaredMethod(
+                        "updateBeskrivelseMedKode",
+                        String::class.java,
+                        String::class.java,
+                    )
+                method.isAccessible = true
+                method.invoke(this, original, newDesc) as String
+            }
+        result shouldBe "ny_beskrivelse;;mer"
     }
 })

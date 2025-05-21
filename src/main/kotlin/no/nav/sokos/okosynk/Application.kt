@@ -10,6 +10,7 @@ import no.nav.sokos.okosynk.config.PropertiesConfig
 import no.nav.sokos.okosynk.config.applicationLifecycleConfig
 import no.nav.sokos.okosynk.config.commonConfig
 import no.nav.sokos.okosynk.config.routingConfig
+import no.nav.sokos.okosynk.metrics.Metrics.initMetrics
 import no.nav.sokos.okosynk.service.SchedulerService
 
 fun main() {
@@ -22,6 +23,7 @@ fun Application.module() {
     commonConfig()
     applicationLifecycleConfig(applicationState)
     routingConfig(applicationState)
+    initMetrics()
 
     if (PropertiesConfig.SchedulerProperties().enabled) {
         val scheduler = SchedulerService()
