@@ -5,7 +5,7 @@ import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 
 import no.nav.sokos.okosynk.config.RegelverkConfig
-import no.nav.sokos.okosynk.config.SECURE_LOGGER
+import no.nav.sokos.okosynk.config.TEAM_LOGS_MARKER
 import no.nav.sokos.okosynk.domain.BatchType
 import no.nav.sokos.okosynk.domain.BatchTypeContext
 import no.nav.sokos.okosynk.domain.GjelderIdType
@@ -21,7 +21,6 @@ import no.nav.sokos.okosynk.metrics.Metrics
 import no.nav.sokos.okosynk.util.IdentUtil.isDnr
 
 private val logger = KotlinLogging.logger { }
-private val secureLogger = KotlinLogging.logger(SECURE_LOGGER)
 
 class BehandleMeldingProcessService(
     private val pdlClientService: PdlClientService = PdlClientService(),
@@ -44,7 +43,7 @@ class BehandleMeldingProcessService(
                 .toSet()
 
         meldingOppgaveSet.filter { it.personIdent?.isDnr() ?: false }
-            .forEach { secureLogger.info { "dnr found in the batch file: ${it.personIdent}" } }
+            .forEach { logger.info(marker = TEAM_LOGS_MARKER) { "dnr found in the batch file: ${it.personIdent}" } }
 
         return meldingOppgaveSet
     }
@@ -55,7 +54,7 @@ class BehandleMeldingProcessService(
                 pdlClientService.hentIdenter(gjelderId)
             }.getOrElse { exception ->
                 logger.error { "Feil ved henting av aktørid, sjekk secureLogger" }
-                secureLogger.error(exception) { "Feil ved henting av aktørid for gjelderId: $gjelderId" }
+                logger.error(marker = TEAM_LOGS_MARKER, exception) { "Feil ved henting av aktørid for gjelderId: $gjelderId" }
                 null
             }
         }
@@ -105,7 +104,7 @@ fun Melding.beskrivelse(meldingList: List<Melding>): String? {
 
         else -> {
             logger.error { "Ukjent meldingstype, sjekk secureLogger" }
-            secureLogger.error { "Ukjent meldingstype: $this" }
+            logger.error(marker = TEAM_LOGS_MARKER) { "Ukjent meldingstype: $this" }
             null
         }
     }

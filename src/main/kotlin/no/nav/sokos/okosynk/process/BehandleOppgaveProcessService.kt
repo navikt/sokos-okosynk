@@ -14,7 +14,7 @@ import no.nav.oppgave.models.OpprettOppgaveRequest
 import no.nav.oppgave.models.OpprettOppgaveRequest.Prioritet
 import no.nav.oppgave.models.PatchOppgaveRequest
 import no.nav.sokos.okosynk.config.PropertiesConfig
-import no.nav.sokos.okosynk.config.SECURE_LOGGER
+import no.nav.sokos.okosynk.config.TEAM_LOGS_MARKER
 import no.nav.sokos.okosynk.domain.BatchTypeContext
 import no.nav.sokos.okosynk.domain.MeldingOppgave
 import no.nav.sokos.okosynk.integration.ENHET_ID_FOR_ANDRE_EKSTERNE
@@ -22,7 +22,6 @@ import no.nav.sokos.okosynk.integration.OppgaveClientService
 import no.nav.sokos.okosynk.integration.TEMA_OKONOMI_KODE
 import no.nav.sokos.okosynk.metrics.Metrics
 
-private val secureLogger = KotlinLogging.logger(SECURE_LOGGER)
 private val logger: KLogger = KotlinLogging.logger {}
 
 private const val BATCH_SIZE = 1000
@@ -109,7 +108,7 @@ class BehandleOppgaveProcessService(
                         Metrics.counter("opprett_oppgave_${BatchTypeContext.get().opprettetAv}").inc()
                     }.onFailure { exception ->
                         logger.error(exception) { "Feil ved opprettelse av oppgave, sjekk secureLogger" }
-                        secureLogger.error(exception) { "Feil ved opprettelse av oppgave: $request" }
+                        logger.error(marker = TEAM_LOGS_MARKER, exception) { "Feil ved opprettelse av oppgave: $request" }
                     }
                 }
         }
@@ -152,7 +151,7 @@ class BehandleOppgaveProcessService(
                     }
                 }.onFailure { exception ->
                     logger.error(exception) { "Feil ved oppdatering av oppgaveId: ${oppgave.id}, sjekk secureLogger" }
-                    secureLogger.error(exception) { "Feil ved oppdatering av oppgaveId: ${oppgave.id}, request: $request" }
+                    logger.error(marker = TEAM_LOGS_MARKER, exception) { "Feil ved oppdatering av oppgaveId: ${oppgave.id}, request: $request" }
                 }
             }
         }
