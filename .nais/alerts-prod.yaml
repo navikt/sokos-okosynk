@@ -64,6 +64,7 @@ spec:
             severity: warning
             sokos_okosynk_type: sokos-okosynk
             alert_type: custom
+
 ---
 
 apiVersion: monitoring.coreos.com/v1alpha1
