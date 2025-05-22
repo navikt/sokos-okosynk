@@ -43,6 +43,11 @@ spec:
   azure:
     application:
       enabled: true
+  accessPolicy:
+    outbound:
+      rules:
+        - application: logging
+          namespace: nais-system
   webproxy: true
   filesFrom:
     - secret: okosynk-sftp-private-key
