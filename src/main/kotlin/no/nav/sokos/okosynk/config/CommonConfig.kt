@@ -2,7 +2,6 @@ package no.nav.sokos.okosynk.config
 
 import kotlinx.serialization.json.Json
 
-import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
