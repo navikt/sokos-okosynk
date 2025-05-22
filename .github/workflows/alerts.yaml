@@ -20,10 +20,10 @@ jobs:
       cluster: dev-fss
       resource: .nais/alerts-dev.yaml
 
-#  deploy-prod:
-#    name: Deploy to prod-fss
-#    needs: deploy-dev
-#    uses: navikt/mob-gha-workflows/.github/workflows/nais-alert-deploy.yaml@main
-#    with:
-#      cluster: prod-fss
-#      resource: .nais/alerts-prod.yaml
+  deploy-prod:
+    name: Deploy to prod-fss
+    needs: deploy-dev
+    uses: navikt/mob-gha-workflows/.github/workflows/nais-alert-deploy.yaml@main
+    with:
+      cluster: prod-fss
+      resource: .nais/alerts-prod.yaml
