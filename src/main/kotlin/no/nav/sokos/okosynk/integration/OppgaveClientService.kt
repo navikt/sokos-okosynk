@@ -22,6 +22,7 @@ import no.nav.oppgave.models.OpprettOppgaveRequest
 import no.nav.oppgave.models.PatchOppgaveRequest
 import no.nav.oppgave.models.SokOppgaverResponse
 import no.nav.sokos.okosynk.config.PropertiesConfig
+import no.nav.sokos.okosynk.config.TEAM_LOGS_MARKER
 import no.nav.sokos.okosynk.config.httpClient
 import no.nav.sokos.okosynk.exception.OppgaveException
 import no.nav.sokos.okosynk.security.AccessTokenClient
@@ -30,7 +31,6 @@ const val TEMA_OKONOMI_KODE = "OKO"
 const val ENHET_ID_FOR_ANDRE_EKSTERNE = "9999"
 private const val STATUSKATEGORI_AAPEN = "AAPEN"
 private val logger: KLogger = KotlinLogging.logger {}
-private val securelogger = KotlinLogging.logger("secureLogger")
 
 class OppgaveClientService(
     private val oppgaveUrl: String = PropertiesConfig.OppgaveProperties().oppgaveUrl,
@@ -77,7 +77,7 @@ class OppgaveClientService(
         return runCatching {
             val accessToken = accessTokenClient.getSystemToken()
 
-            securelogger.info { "XCorrelationId: $correlationId - Opprett oppgave request: $request" }
+            logger.info(marker = TEAM_LOGS_MARKER) { "XCorrelationId: $correlationId - Opprett oppgave request: $request" }
             val response =
                 client.post("$oppgaveUrl/api/v1/oppgaver") {
                     header(HttpHeaders.Authorization, "Bearer $accessToken")
@@ -89,7 +89,7 @@ class OppgaveClientService(
             response.status.isSuccess() || throw OppgaveException("Feil ved opprettelse av oppgave. Status: ${response.status}, XCorrelationId: $correlationId")
             response.body<Oppgave>()
         }.fold(
-            onSuccess = { response -> response.also { securelogger.info { "XCorrelationId: $correlationId - Opprett oppgave response: $response" } } },
+            onSuccess = { response -> response.also { logger.info(marker = TEAM_LOGS_MARKER) { "XCorrelationId: $correlationId - Opprett oppgave response: $response" } } },
             onFailure = { exception -> throw exception },
         )
     }
