@@ -34,8 +34,6 @@ spec:
   prometheus:
     enabled: true
     path: /internal/metrics
-  secureLogs:
-    enabled: true
   observability:
     autoInstrumentation:
       enabled: true
