@@ -12,7 +12,7 @@ plugins {
     kotlin("plugin.serialization") version "2.1.21"
     id("com.expediagroup.graphql") version "8.7.0"
     id("com.github.johnrengelman.shadow") version "8.1.1"
-    id("org.jlleitschuh.gradle.ktlint") version "12.2.0"
+    id("org.jlleitschuh.gradle.ktlint") version "12.3.0"
     id("org.jetbrains.kotlinx.kover") version "0.9.1"
     id("org.openapi.generator") version "7.13.0"
 }
