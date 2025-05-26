@@ -42,6 +42,7 @@ val mockOAuth2ServerVersion = "2.1.11"
 val mockkVersion = "1.14.2"
 val wiremockVersion = "3.13.0"
 val testcontainersVersion = "1.21.0"
+val opentelemetryVersion = "2.16.0-alpha"
 
 dependencies {
 
@@ -86,6 +87,9 @@ dependencies {
     implementation("com.expediagroup:graphql-kotlin-ktor-client:$graphqlClientVersion") {
         exclude("com.expediagroup:graphql-kotlin-client-jackson")
     }
+
+    // Opentelemetry
+    implementation("io.opentelemetry.instrumentation:opentelemetry-ktor-3.0:$opentelemetryVersion")
 
     // Test
     testImplementation("io.ktor:ktor-server-test-host-jvm:$ktorVersion")

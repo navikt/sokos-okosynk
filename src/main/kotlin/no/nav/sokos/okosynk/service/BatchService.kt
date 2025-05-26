@@ -12,6 +12,7 @@ import no.nav.sokos.okosynk.integration.FtpService
 import no.nav.sokos.okosynk.metrics.Metrics
 import no.nav.sokos.okosynk.process.BehandleMeldingProcessService
 import no.nav.sokos.okosynk.process.BehandleOppgaveProcessService
+import no.nav.sokos.okosynk.util.TraceUtils
 import no.nav.sokos.okosynk.util.Utils.toISO
 
 private val logger = KotlinLogging.logger {}
@@ -28,7 +29,9 @@ class BatchService(
 
         runCatching {
             batchTypeList.forEach { batchType ->
-                Metrics.timer("batch_${batchType.opprettetAv}").recordCallable { processBatch(batchType) }
+                TraceUtils.withTracerId {
+                    Metrics.timer("batch_${batchType.opprettetAv}").recordCallable { processBatch(batchType) }
+                }
             }
         }.onFailure { exception ->
             logger.error(exception) { "Feil ved behandling fil fra OS/UR" }
