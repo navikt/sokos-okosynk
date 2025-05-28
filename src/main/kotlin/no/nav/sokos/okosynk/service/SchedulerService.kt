@@ -6,8 +6,6 @@ import java.util.concurrent.TimeoutException
 import java.util.concurrent.atomic.AtomicBoolean
 
 import kotlin.coroutines.cancellation.CancellationException
-import kotlin.div
-import kotlin.rem
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 import kotlinx.coroutines.CoroutineScope
@@ -63,6 +61,7 @@ class SchedulerService(
                         logger.warn { "Skipping scheduled execution because previous job is still running" }
                     }
                 } catch (e: CancellationException) {
+                    logger.error(e) { "Batch job cancelled" }
                     break
                 } catch (e: TimeoutException) {
                     logger.error(e) { "Batch job timed out after $jobTimeout" }
