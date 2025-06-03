@@ -16,7 +16,7 @@ import no.nav.sokos.okosynk.util.TraceUtils
 import no.nav.sokos.okosynk.util.Utils.toISO
 
 private val logger = KotlinLogging.logger {}
-private const val MAX_ANTALL_LINJER = 25000
+const val MAX_ANTALL_LINJER = 25000
 
 class BatchService(
     private val ftpService: FtpService = FtpService(),

@@ -110,10 +110,10 @@ class BatchServiceTest : FunSpec({
         verify(0, patchRequestedFor(urlPathMatching("$OPPGAVE_URL/\\d+")))
     }
 
-    test("BatchService run should not process when meldingFile oversize 25000 lines") {
+    test("BatchService run should not process when meldingFile oversize $MAX_ANTALL_LINJER lines") {
         val osInputFile = "sftp/OS.INPUT".readFromResource()
         val lines = osInputFile.lines().filter { it.isNotBlank() }
-        val oversizeInput = List(25001) { lines[it % lines.size] }.joinToString("\n")
+        val oversizeInput = List(MAX_ANTALL_LINJER + 1) { lines[it % lines.size] }.joinToString("\n")
 
         SftpListener.createFile(BatchType.OS.fileName, Directories.INBOUND, oversizeInput)
 
