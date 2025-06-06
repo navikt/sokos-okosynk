@@ -36,10 +36,10 @@ spec:
         - alert: Applikasjonen logger høy andel errors
           expr: |
             (
-            sum(loki:service:loglevel:count1m{service_name="sokos-okosynk", detected_level="error"})
-            /
-            sum(loki:service:loglevel:count1m{service_name="sokos-okosynk"})
-            ) > 0.05
+             sum(max_over_time(loki:service:loglevel:count1m{service_name="sokos-okosynk", detected_level="error"}[5m]))
+             -
+             sum(max_over_time(loki:service:loglevel:count1m{service_name="sokos-okosynk", detected_level="error"}[5m] offset 5m))
+            ) > 0
           for: 2m
           annotations:
             action: "<https://grafana.nav.cloud.nais.io/a/grafana-lokiexplore-app/explore/service_name/sokos-okosynk/logs?patterns=%5B%5D&from=now-24h&to=now&var-filters=service_name%7C%3D%7Csokos-okosynk&var-ds=dev-gcp-loki&var-levels=detected_level%7C%3D%7Cerror|Sjekk loggene>"
@@ -53,10 +53,10 @@ spec:
         - alert: Applikasjonen logger høy andel warnings
           expr: |
             (
-            sum(loki:service:loglevel:count1m{service_name="sokos-okosynk", detected_level="warn"})
-            /
-            sum(loki:service:loglevel:count1m{service_name="sokos-okosynk"})
-            ) > 0.05
+              sum(max_over_time(loki:service:loglevel:count1m{service_name="sokos-okosynk", detected_level="warn"}[5m]))
+              -
+              sum(max_over_time(loki:service:loglevel:count1m{service_name="sokos-okosynk", detected_level="warn"}[5m] offset 5m))
+            ) > 0
           for: 2m
           annotations:
             action: "<https://grafana.nav.cloud.nais.io/a/grafana-lokiexplore-app/explore/service_name/sokos-okosynk/logs?patterns=%5B%5D&from=now-24h&to=now&var-filters=service_name%7C%3D%7Csokos-okosynk&var-ds=dev-gcp-loki&var-levels=detected_level%7C%3D%7Cwarn|Sjekk loggene>"
