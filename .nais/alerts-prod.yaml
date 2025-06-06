@@ -34,11 +34,7 @@ spec:
             alert_type: custom
 
         - alert: Applikasjonen logger høy andel errors
-          expr:
-            'sum(max_over_time(log_messages_errors{namespace="okonomi",app="sokos-okosynk",level="Error"}[5m])
-              or vector(0)) -
-              sum(max_over_time(log_messages_errors{namespace="okonomi",app="sokos-okosynk",level="Error"}[5m]
-              offset 5m) or vector(0)) > 0'
+          expr: 'sum(loki:service:loglevel:count1m{service_name="sokos-okosynk", detected_level="error"}[60m:5m]) > 0'
           for: 2m
           annotations:
             action: "<https://grafana.nav.cloud.nais.io/a/grafana-lokiexplore-app/explore/service_name/sokos-okosynk/logs?patterns=%5B%5D&from=now-24h&to=now&var-filters=service_name%7C%3D%7Csokos-okosynk&var-ds=prod-gcp-loki&var-levels=detected_level%7C%3D%7Cerror|Sjekk error loggene i sokos-okosynk>"
@@ -50,11 +46,7 @@ spec:
             alert_type: custom
 
         - alert: Applikasjonen logger høy andel warnings
-          expr:
-            'sum(max_over_time(log_messages_errors{namespace="okonomi",app="sokos-okosynk",level="Warning"}[5m])
-              or vector(0)) -
-              sum(max_over_time(log_messages_errors{namespace="okonomi",app="sokos-okosynk",level="Warning"}[5m]
-              offset 5m) or vector(0)) > 5'
+          expr: 'sum(loki:service:loglevel:count1m{service_name="sokos-okosynk", detected_level="warn"}[60m:5m]) > 0'
           for: 2m
           annotations:
             action: "<https://grafana.nav.cloud.nais.io/a/grafana-lokiexplore-app/explore/service_name/sokos-okosynk/logs?patterns=%5B%5D&from=now-24h&to=now&var-filters=service_name%7C%3D%7Csokos-okosynk&var-ds=prod-gcp-loki&var-levels=detected_level%7C%3D%7Cwarn|Sjekk warning loggene i sokos-okosynk>"
