@@ -76,7 +76,7 @@ spec:
             name: slack-webhook
           channel: '#team-mob-alerts-dev'
           iconEmoji: ':alert:'
-          username: 'Alert dev-fss (sokos-okosynk)'
+          username: 'Alert dev-gcp (sokos-okosynk)'
           sendResolved: false
           httpConfig:
             proxyUrl: http://webproxy.nais:8088
