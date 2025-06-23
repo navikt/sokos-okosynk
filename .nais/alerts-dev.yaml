@@ -78,8 +78,6 @@ spec:
           iconEmoji: ':alert:'
           username: 'Alert dev-gcp (sokos-okosynk)'
           sendResolved: false
-          httpConfig:
-            proxyUrl: http://webproxy.nais:8088
           title: |-
             [{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}] {{ .CommonLabels.alertname }}
           text: >-
