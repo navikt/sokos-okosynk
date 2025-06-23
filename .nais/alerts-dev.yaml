@@ -76,7 +76,7 @@ spec:
             name: slack-webhook
           channel: '#team-mob-alerts-dev'
           iconEmoji: ':alert:'
-          username: 'Alert dev-gcp (sokos-okosynk)'
+          username: 'Alert dev-fss (sokos-okosynk)'
           sendResolved: true
           title: |-
             [{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}] {{ .CommonLabels.alertname }}
