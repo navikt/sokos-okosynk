@@ -77,7 +77,7 @@ spec:
           channel: '#team-mob-alerts-dev'
           iconEmoji: ':alert:'
           username: 'Alert dev-gcp (sokos-okosynk)'
-          sendResolved: false
+          sendResolved: true
           title: |-
             [{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}] {{ .CommonLabels.alertname }}
           text: >-
