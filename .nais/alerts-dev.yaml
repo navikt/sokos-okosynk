@@ -23,7 +23,7 @@ spec:
 
         - alert: sokos-okosynk har restartet flere ganger de siste 5 minuttene!
           expr: sum(increase(kube_pod_container_status_restarts_total{container=~"{{ $labels.app }}"}[5m])) by (container) > 2
-          for: 2m
+          for: 10m
           annotations:
             action: "Sjekk hvorfor applikasjonen ikke klarer å restarte"
             summary: "{{ $labels.container }} restarter mange ganger"
