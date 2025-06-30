@@ -8,13 +8,13 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "2.1.21"
-    kotlin("plugin.serialization") version "2.1.21"
+    kotlin("jvm") version "2.2.0"
+    kotlin("plugin.serialization") version "2.2.0"
     id("com.expediagroup.graphql") version "8.8.1"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("org.jlleitschuh.gradle.ktlint") version "12.3.0"
     id("org.jetbrains.kotlinx.kover") version "0.9.1"
-    id("org.openapi.generator") version "7.13.0"
+    id("org.openapi.generator") version "7.14.0"
 }
 
 group = "no.nav.sokos.okosynk"
@@ -35,14 +35,14 @@ val kotlinLoggingVersion = "3.0.5"
 val janionVersion = "3.1.12"
 val natpryceVersion = "1.6.10.0"
 val kotestVersion = "5.9.1"
-val kotlinxSerializationVersion = "1.8.1"
+val kotlinxSerializationVersion = "1.9.0"
 val cronUtilsVersion = "9.2.1"
 
 val mockOAuth2ServerVersion = "2.2.1"
 val mockkVersion = "1.14.4"
 val wiremockVersion = "3.13.1"
-val testcontainersVersion = "1.21.2"
-val opentelemetryVersion = "2.16.0-alpha"
+val testcontainersVersion = "1.21.3"
+val opentelemetryVersion = "2.17.0-alpha"
 
 dependencies {
 
