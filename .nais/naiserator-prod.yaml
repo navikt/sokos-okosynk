@@ -52,7 +52,7 @@ spec:
       mountPath: /var/run/secrets/okosynk-sftp-private-key
   env:
     - name: SCHEDULER_CRON_EXPRESSION
-      value: "0 0 12 * * *"
+      value: "0 15 6 * * *"
     - name: SCHEDULER_ENABLED
       value: "true"
 
