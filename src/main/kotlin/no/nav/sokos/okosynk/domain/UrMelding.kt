@@ -34,16 +34,12 @@ data class UrMelding(
     @CopyBookField(startIndex = 154, endIndex = 165, type = CopyBookType.STRING)
     val mottakerId: String,
 ) : Melding {
-    override fun sammenligningsDato(): LocalDate {
-        return datoPostert
-    }
+    override fun sammenligningsDato(): LocalDate = datoPostert
 
-    override fun ruleKey(): String {
-        return "${oppdragsKode}_$behandlendeEnhet"
-    }
+    override fun ruleKey(): String = "${oppdragsKode}_$behandlendeEnhet"
 
-    fun beskrivelseInfo(totalNettoBelop: Double): String {
-        return listOf(
+    fun beskrivelseInfo(totalNettoBelop: Double): String =
+        listOf(
             venteStatus,
             arsakTekst,
             "postert/bilagsnummer:${datoPostert.toNorwegianDate()}/$bilagsId",
@@ -52,5 +48,4 @@ data class UrMelding(
             "UtbTil:$mottakerId",
             brukerId,
         ).joinToString(FELTSEPARATOR).replaceFirst(FELTSEPARATOR, FORSTE_FELTSEPARATOR)
-    }
 }

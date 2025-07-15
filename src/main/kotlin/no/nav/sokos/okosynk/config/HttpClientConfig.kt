@@ -61,9 +61,7 @@ object LocalDateSerializer : KSerializer<LocalDate> {
         encoder.encodeString(value.format(formatter))
     }
 
-    override fun deserialize(decoder: Decoder): LocalDate {
-        return LocalDate.parse(decoder.decodeString(), formatter)
-    }
+    override fun deserialize(decoder: Decoder): LocalDate = LocalDate.parse(decoder.decodeString(), formatter)
 }
 
 object OffsetDateTimeSerializer : KSerializer<OffsetDateTime> {
@@ -79,7 +77,5 @@ object OffsetDateTimeSerializer : KSerializer<OffsetDateTime> {
         encoder.encodeString(value.format(formatter))
     }
 
-    override fun deserialize(decoder: Decoder): OffsetDateTime {
-        return OffsetDateTime.parse(decoder.decodeString(), formatter)
-    }
+    override fun deserialize(decoder: Decoder): OffsetDateTime = OffsetDateTime.parse(decoder.decodeString(), formatter)
 }

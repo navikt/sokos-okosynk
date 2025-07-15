@@ -51,7 +51,11 @@ class PdlClientService(
                 if (result.errors?.isNotEmpty() == true) {
                     handleErrors(result.errors)
                 }
-                result.data?.hentIdenter?.identer?.firstOrNull()?.ident
+                result.data
+                    ?.hentIdenter
+                    ?.identer
+                    ?.firstOrNull()
+                    ?.ident
             }
 
             else -> throw ClientRequestException(response, "Noe gikk galt ved oppslag mot PDL")

@@ -36,20 +36,16 @@ data class OsMelding(
     @CopyBookField(startIndex = 119, endIndex = 131, type = CopyBookType.STRING)
     val etteroppgjor: String,
 ) : Melding {
-    override fun sammenligningsDato(): LocalDate {
-        return beregningsdato
-    }
+    override fun sammenligningsDato(): LocalDate = beregningsdato
 
-    override fun ruleKey(): String {
-        return "${faggruppe}_$behandlendeEnhet"
-    }
+    override fun ruleKey(): String = "${faggruppe}_$behandlendeEnhet"
 
     fun beskrivelseInfo(
         totalNettoBelop: Double,
         minFomPeriode: LocalDate,
         maxTomPeriode: LocalDate,
-    ): String {
-        return listOf(
+    ): String =
+        listOf(
             venteStatus,
             "${totalNettoBelop.toInt()}kr",
             "beregningsdato/id:${beregningsdato.toNorwegianDate()}/$beregningsid",
@@ -60,5 +56,4 @@ data class OsMelding(
             "UtbTil:$utbetalesTilId",
             brukerId,
         ).joinToString(FELTSEPARATOR).trim().replaceFirst(FELTSEPARATOR, FORSTE_FELTSEPARATOR)
-    }
 }

@@ -157,37 +157,36 @@ class BehandleOppgaveProcessService(
         }
     }
 
-    fun Oppgave.matches(meldingOppgave: MeldingOppgave): Boolean {
-        return this.behandlingstema == meldingOppgave.behandlingstema &&
+    fun Oppgave.matches(meldingOppgave: MeldingOppgave): Boolean =
+        this.behandlingstema == meldingOppgave.behandlingstema &&
             this.behandlingstype == meldingOppgave.behandlingstype &&
             this.tildeltEnhetsnr == meldingOppgave.tildeltEnhetsnr &&
             this.opprettetAvEnhetsnr == meldingOppgave.opprettetAvEnhetsnr &&
             this.matchesBrukerOrAktoerId(meldingOppgave) &&
             this.orgnr == meldingOppgave.orgnr
-    }
 
     fun findDuplicateOppgave(oppgaveSet: Set<Oppgave>): Int {
         val duplicates =
-            oppgaveSet.groupBy { oppgave ->
-                listOf(
-                    oppgave.behandlingstema,
-                    oppgave.behandlingstype,
-                    oppgave.tildeltEnhetsnr,
-                    oppgave.opprettetAvEnhetsnr,
-                    oppgave.aktoerId ?: oppgave.bruker?.ident,
-                    oppgave.orgnr,
-                )
-            }.filter { (_, group) -> group.size > 1 }
+            oppgaveSet
+                .groupBy { oppgave ->
+                    listOf(
+                        oppgave.behandlingstema,
+                        oppgave.behandlingstype,
+                        oppgave.tildeltEnhetsnr,
+                        oppgave.opprettetAvEnhetsnr,
+                        oppgave.aktoerId ?: oppgave.bruker?.ident,
+                        oppgave.orgnr,
+                    )
+                }.filter { (_, group) -> group.size > 1 }
         return duplicates.values.sumOf { it.size - 1 }
     }
 
-    private fun Oppgave.matchesBrukerOrAktoerId(meldingOppgave: MeldingOppgave): Boolean {
-        return when {
+    private fun Oppgave.matchesBrukerOrAktoerId(meldingOppgave: MeldingOppgave): Boolean =
+        when {
             this.aktoerId != null -> this.aktoerId == meldingOppgave.aktoerId
             this.bruker?.type == BrukerDto.Type.SAMHANDLER -> this.bruker.ident == meldingOppgave.samhandlernr
             else -> this.bruker?.ident == meldingOppgave.personIdent
         }
-    }
 
     private fun resetCounters() {
         ferdigstiltCounter.set(0)

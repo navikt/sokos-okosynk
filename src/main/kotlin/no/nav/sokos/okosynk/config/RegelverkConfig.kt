@@ -22,20 +22,22 @@ object RegelverkConfig {
         val content = resourceFile.readFromResource()
         properties.load(content.reader())
 
-        return properties.map { (key, value) ->
+        return properties
+            .map { (key, value) ->
 
-            val (behandlingstema, behandlingstype, ansvarligEnhetId) =
-                value.toString()
-                    .split(",")
-                    .map { it.takeIf { it.isNotBlank() } }
+                val (behandlingstema, behandlingstype, ansvarligEnhetId) =
+                    value
+                        .toString()
+                        .split(",")
+                        .map { it.takeIf { it.isNotBlank() } }
 
-            val regelverk =
-                Regelverk(
-                    behandlingstema = behandlingstema,
-                    behandlingstype = behandlingstype,
-                    ansvarligEnhetId = ansvarligEnhetId,
-                )
-            key.toString() to regelverk
-        }.toMap()
+                val regelverk =
+                    Regelverk(
+                        behandlingstema = behandlingstema,
+                        behandlingstype = behandlingstype,
+                        ansvarligEnhetId = ansvarligEnhetId,
+                    )
+                key.toString() to regelverk
+            }.toMap()
     }
 }

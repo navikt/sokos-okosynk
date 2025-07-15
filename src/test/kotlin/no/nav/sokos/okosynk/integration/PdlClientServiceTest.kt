@@ -20,58 +20,59 @@ import no.nav.sokos.okosynk.util.Utils.readFromResource
 
 private const val AKTORID = "70078749472"
 
-class PdlClientServiceTest : FunSpec({
-    extensions(WireMockListener)
+class PdlClientServiceTest :
+    FunSpec({
+        extensions(WireMockListener)
 
-    val pdlClientService: PdlClientService by lazy {
-        PdlClientService(
-            pdlUrl = wiremock.baseUrl(),
-            accessTokenClient = WireMockListener.accessTokenClient,
-        )
-    }
+        val pdlClientService: PdlClientService by lazy {
+            PdlClientService(
+                pdlUrl = wiremock.baseUrl(),
+                accessTokenClient = WireMockListener.accessTokenClient,
+            )
+        }
 
-    test("hentPerson should return person response with aktorId") {
-        hentPersonWireMock()
+        test("hentPerson should return person response with aktorId") {
+            hentPersonWireMock()
 
-        val response = pdlClientService.hentIdenter(AKTORID)
-        response shouldBe "2305469522806"
-    }
+            val response = pdlClientService.hentIdenter(AKTORID)
+            response shouldBe "2305469522806"
+        }
 
-    test("hentPerson should throw PdlException with not found person") {
-        hentPersonWireMock(response = "pdl/hentPersonNotFoundResponse.json".readFromResource())
+        test("hentPerson should throw PdlException with not found person") {
+            hentPersonWireMock(response = "pdl/hentPersonNotFoundResponse.json".readFromResource())
 
-        val exception =
-            shouldThrow<PdlException> {
-                pdlClientService.hentIdenter(AKTORID)
-            }
-        exception.message shouldBe "Fant ikke person"
-    }
+            val exception =
+                shouldThrow<PdlException> {
+                    pdlClientService.hentIdenter(AKTORID)
+                }
+            exception.message shouldBe "Fant ikke person"
+        }
 
-    test("hentPerson should throw PdlException with not authorized") {
-        hentPersonWireMock(response = "pdl/hentPersonNotAuthorizedResponse.json".readFromResource())
+        test("hentPerson should throw PdlException with not authorized") {
+            hentPersonWireMock(response = "pdl/hentPersonNotAuthorizedResponse.json".readFromResource())
 
-        val exception =
-            shouldThrow<PdlException> {
-                pdlClientService.hentIdenter(AKTORID)
-            }
-        exception.message shouldBe "Ikke autentisert"
-    }
+            val exception =
+                shouldThrow<PdlException> {
+                    pdlClientService.hentIdenter(AKTORID)
+                }
+            exception.message shouldBe "Ikke autentisert"
+        }
 
-    test("hentPerson should throw ClientExcpetion ") {
-        wiremock.stubFor(
-            post(urlEqualTo("/graphql"))
-                .willReturn(
-                    aResponse()
-                        .withStatus(HttpStatusCode.InternalServerError.value)
-                        .withHeader(HttpHeaders.ContentType, APPLICATION_JSON.mimeType)
-                        .withBody("""{"message": "Internal Server Error"}"""),
-                ),
-        )
+        test("hentPerson should throw ClientExcpetion ") {
+            wiremock.stubFor(
+                post(urlEqualTo("/graphql"))
+                    .willReturn(
+                        aResponse()
+                            .withStatus(HttpStatusCode.InternalServerError.value)
+                            .withHeader(HttpHeaders.ContentType, APPLICATION_JSON.mimeType)
+                            .withBody("""{"message": "Internal Server Error"}"""),
+                    ),
+            )
 
-        val exception =
-            shouldThrow<ClientRequestException> {
-                pdlClientService.hentIdenter(AKTORID)
-            }
-        exception.message shouldContain "Noe gikk galt ved oppslag mot PDL"
-    }
-})
+            val exception =
+                shouldThrow<ClientRequestException> {
+                    pdlClientService.hentIdenter(AKTORID)
+                }
+            exception.message shouldContain "Noe gikk galt ved oppslag mot PDL"
+        }
+    })
