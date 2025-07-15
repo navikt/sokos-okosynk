@@ -14,66 +14,67 @@ import no.nav.sokos.okosynk.config.httpClient
 import no.nav.sokos.okosynk.listener.WireMockListener
 import no.nav.sokos.okosynk.listener.WireMockListener.wiremock
 
-class AccessTokenClientTest : FunSpec({
-    extensions(WireMockListener)
+class AccessTokenClientTest :
+    FunSpec({
+        extensions(WireMockListener)
 
-    testOrder = TestCaseOrder.Sequential
+        testOrder = TestCaseOrder.Sequential
 
-    val mockAzureAdProperties =
-        PropertiesConfig.AzureAdProperties(
-            tenantId = "test-tenant",
-            clientId = "test-client-id",
-            clientSecret = "test-client-secret",
-        )
+        val mockAzureAdProperties =
+            PropertiesConfig.AzureAdProperties(
+                tenantId = "test-tenant",
+                clientId = "test-client-id",
+                clientSecret = "test-client-secret",
+            )
 
-    val accessTokenClient: AccessTokenClient by lazy {
-        AccessTokenClient(
-            azureAdProperties = mockAzureAdProperties,
-            azureAdScope = "test-scope",
-            client = httpClient,
-            azureAdAccessTokenUrl = wiremock.baseUrl() + "/oauth2/v2.0/token",
-        )
-    }
+        val accessTokenClient: AccessTokenClient by lazy {
+            AccessTokenClient(
+                azureAdProperties = mockAzureAdProperties,
+                azureAdScope = "test-scope",
+                client = httpClient,
+                azureAdAccessTokenUrl = wiremock.baseUrl() + "/oauth2/v2.0/token",
+            )
+        }
 
-    test("getSystemToken should throw an exception on failure") {
-        wiremock.stubFor(
-            post(urlEqualTo("/oauth2/v2.0/token"))
-                .willReturn(
-                    aResponse()
-                        .withStatus(400)
-                        .withHeader("Content-Type", "application/json")
-                        .withBody("""{"error_description": "Invalid request"}"""),
-                ),
-        )
+        test("getSystemToken should throw an exception on failure") {
+            wiremock.stubFor(
+                post(urlEqualTo("/oauth2/v2.0/token"))
+                    .willReturn(
+                        aResponse()
+                            .withStatus(400)
+                            .withHeader("Content-Type", "application/json")
+                            .withBody("""{"error_description": "Invalid request"}"""),
+                    ),
+            )
 
-        val exception =
-            runBlocking {
-                kotlin.runCatching { accessTokenClient.getSystemToken() }.exceptionOrNull()
-            }
+            val exception =
+                runBlocking {
+                    kotlin.runCatching { accessTokenClient.getSystemToken() }.exceptionOrNull()
+                }
 
-        exception?.message shouldBe "GetAccessToken returnerte 400 Bad Request med feilmelding: Invalid request"
-    }
+            exception?.message shouldBe "GetAccessToken returnerte 400 Bad Request med feilmelding: Invalid request"
+        }
 
-    test("getSystemToken should return a valid token") {
-        val mockResponse =
-            """
-            {
-                "access_token": "mock-access-token",
-                "expires_in": 3600
-            }
-            """.trimIndent()
+        test("getSystemToken should return a valid token") {
+            val mockResponse =
+                """
+                {
+                    "access_token": "mock-access-token",
+                    "expires_in": 3600
+                }
+                """.trimIndent()
 
-        wiremock.stubFor(
-            post(urlEqualTo("/oauth2/v2.0/token"))
-                .willReturn(
-                    aResponse()
-                        .withStatus(200)
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(mockResponse),
-                ),
-        )
+            wiremock.stubFor(
+                post(urlEqualTo("/oauth2/v2.0/token"))
+                    .willReturn(
+                        aResponse()
+                            .withStatus(200)
+                            .withHeader("Content-Type", "application/json")
+                            .withBody(mockResponse),
+                    ),
+            )
 
-        val token = runBlocking { accessTokenClient.getSystemToken() }
-        token shouldBe "mock-access-token"
-    }
-})
+            val token = runBlocking { accessTokenClient.getSystemToken() }
+            token shouldBe "mock-access-token"
+        }
+    })

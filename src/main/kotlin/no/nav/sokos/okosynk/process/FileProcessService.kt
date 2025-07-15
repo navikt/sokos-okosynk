@@ -12,7 +12,7 @@ import no.nav.sokos.okosynk.util.toDataClass
 
 private val logger = KotlinLogging.logger {}
 
-class FileProcessService() : Chain<List<String>, List<Melding>> {
+class FileProcessService : Chain<List<String>, List<Melding>> {
     override fun process(meldingList: List<String>): List<Melding> {
         val batchType = BatchTypeContext.get()
 

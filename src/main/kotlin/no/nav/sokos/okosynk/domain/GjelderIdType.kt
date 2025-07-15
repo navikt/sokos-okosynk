@@ -14,13 +14,12 @@ enum class GjelderIdType {
     ;
 
     companion object {
-        fun value(gjelderId: String): GjelderIdType {
-            return when {
+        fun value(gjelderId: String): GjelderIdType =
+            when {
                 gjelderId.length == ORGANISASJONSNUMMER_LENGDE -> ORGANISASJON
                 gjelderId.firstOrNull() in listOf(TSS_PREFIX_1, TSS_PREFIX_2) -> SAMHANDLER
                 gjelderId.isBnr() -> BNR
                 else -> AKTORID
             }
-        }
     }
 }

@@ -39,17 +39,17 @@ class BehandleMeldingProcessService(
                 .also { oppgave ->
                     logger.info { "Antall konvertert oppgaver for batchType: $batchType: ${oppgave.size}" }
                     Metrics.counter("konvertert_oppgave_${batchType.opprettetAv}").inc(oppgave.size.toLong())
-                }
-                .toSet()
+                }.toSet()
 
-        meldingOppgaveSet.filter { it.personIdent?.isDnr() ?: false }
+        meldingOppgaveSet
+            .filter { it.personIdent?.isDnr() ?: false }
             .forEach { logger.info(marker = TEAM_LOGS_MARKER) { "dnr found in the batch file: ${it.personIdent}" } }
 
         return meldingOppgaveSet
     }
 
-    private fun hentAktoer(gjelderId: String): String? {
-        return runBlocking {
+    private fun hentAktoer(gjelderId: String): String? =
+        runBlocking {
             runCatching {
                 pdlClientService.hentIdenter(gjelderId)
             }.getOrElse { exception ->
@@ -58,7 +58,6 @@ class BehandleMeldingProcessService(
                 null
             }
         }
-    }
 
     private fun opprettMeldingOppgave(
         meldingList: List<Melding>,

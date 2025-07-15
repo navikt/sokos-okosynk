@@ -32,7 +32,12 @@ object CopyBookParseUtil {
                     throw NumberFormatException("Ugyldig input: $this. Siste tegn angir ingen tallverdi.")
                 }
             val integerPart = this.dropLast(2).toIntOrNull() ?: 0
-            val decimalPart = this.dropLast(1).lastOrNull()?.toString()?.toIntOrNull() ?: 0
+            val decimalPart =
+                this
+                    .dropLast(1)
+                    .lastOrNull()
+                    ?.toString()
+                    ?.toIntOrNull() ?: 0
 
             val result = integerPart + (decimalPart * 10 + lastDigitValue) / 100.0
 
@@ -53,7 +58,8 @@ object CopyBookParseUtil {
                             .appendOptional(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"))
                             .appendOptional(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
                             .toFormatter()
-                    this.takeIf { it.contains("T") }
+                    this
+                        .takeIf { it.contains("T") }
                         ?.let { LocalDateTime.parse(this, formatter).toLocalDate() }
                         ?: LocalDate.parse(this, formatter)
                 }

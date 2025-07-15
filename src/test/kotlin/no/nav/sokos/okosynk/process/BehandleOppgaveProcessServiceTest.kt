@@ -25,133 +25,134 @@ import no.nav.sokos.okosynk.listener.WireMockListener
 import no.nav.sokos.okosynk.listener.WireMockListener.wiremock
 import no.nav.sokos.okosynk.util.Utils.readFromResource
 
-class BehandleOppgaveProcessServiceTest : FunSpec({
-    extensions(WireMockListener)
+class BehandleOppgaveProcessServiceTest :
+    FunSpec({
+        extensions(WireMockListener)
 
-    val oppgaveClientService: OppgaveClientService by lazy {
-        OppgaveClientService(
-            oppgaveUrl = wiremock.baseUrl(),
-            accessTokenClient = WireMockListener.accessTokenClient,
-        )
-    }
-
-    val behandleOppgaveProcessService: BehandleOppgaveProcessService by lazy {
-        BehandleOppgaveProcessService(oppgaveClientService)
-    }
-
-    beforeTest {
-        BatchTypeContext.set(BatchType.OS)
-        wiremock.resetAll()
-    }
-
-    test("behandleOppgaveProcessService process should handle oppgaver correctly") {
-        sokOppgaveWireMock(response = "oppgave/sokOppgaveResponse.json".readFromResource(), offset = 0)
-        sokOppgaveWireMock(response = """{ "antallTreffTotalt": 4, "oppgaver": [] }""", offset = 1000)
-        opprettOppgaveWireMock()
-        oppdaterOppgaveWireMock()
-
-        val meldingOppgaveSet = setOf(meldingOppgave)
-        behandleOppgaveProcessService.process(meldingOppgaveSet)
-
-        verify(2, getRequestedFor(urlPathMatching("$OPPGAVE_URL.*")))
-        verify(1, postRequestedFor(urlEqualTo(OPPGAVE_URL)))
-        verify(4, patchRequestedFor(urlPathMatching("$OPPGAVE_URL/\\d+")))
-    }
-
-    test(name = "behandleOppgaveProcessService process should only created new oppgave") {
-        sokOppgaveWireMock(response = """{ "antallTreffTotalt": 0, "oppgaver": [] }""", offset = 0)
-        opprettOppgaveWireMock()
-        oppdaterOppgaveWireMock()
-
-        val meldingOppgaveSet = setOf(meldingOppgave)
-        behandleOppgaveProcessService.process(meldingOppgaveSet)
-
-        verify(1, getRequestedFor(urlPathMatching("$OPPGAVE_URL.*")))
-        verify(1, postRequestedFor(urlEqualTo(OPPGAVE_URL)))
-        verify(0, patchRequestedFor(urlPathMatching("$OPPGAVE_URL/\\d+")))
-    }
-
-    test("behandleOppgaveProcessService should handle patch requests with FERDIGSTILT and null status") {
-        sokOppgaveWireMock(response = "oppgave/sokOppgaveResponse.json".readFromResource(), offset = 0)
-        sokOppgaveWireMock(response = """{ "antallTreffTotalt": 4, "oppgaver": [] }""", offset = 1000)
-        opprettOppgaveWireMock()
-        oppdaterOppgaveWireMock()
-
-        val meldingOppgaveSet =
-            setOf(
-                MeldingOppgave(
-                    behandlingstype = "ae0216",
-                    tildeltEnhetsnr = "4819",
-                    opprettetAvEnhetsnr = "9999",
-                    aktoerId = "1000091768276",
-                    personIdent = "42126902896",
-                    oppgavetype = BatchTypeContext.get().oppgaveType,
-                ),
-                MeldingOppgave(
-                    behandlingstype = "ae0216",
-                    tildeltEnhetsnr = "4819",
-                    opprettetAvEnhetsnr = "9999",
-                    aktoerId = "1000010121748",
-                    personIdent = "13015519732",
-                    oppgavetype = BatchTypeContext.get().oppgaveType,
-                ),
-                MeldingOppgave(
-                    behandlingstype = "ae0216",
-                    tildeltEnhetsnr = "4819",
-                    opprettetAvEnhetsnr = "9999",
-                    aktoerId = "1000045346097",
-                    personIdent = "16123635756",
-                    oppgavetype = BatchTypeContext.get().oppgaveType,
-                ),
+        val oppgaveClientService: OppgaveClientService by lazy {
+            OppgaveClientService(
+                oppgaveUrl = wiremock.baseUrl(),
+                accessTokenClient = WireMockListener.accessTokenClient,
             )
-        behandleOppgaveProcessService.process(meldingOppgaveSet)
+        }
 
-        verify(0, postRequestedFor(urlEqualTo(OPPGAVE_URL)))
-        verify(
-            3,
-            patchRequestedFor(urlPathMatching("$OPPGAVE_URL/\\d+"))
-                .withRequestBody(matchingJsonPath("$.status", WireMock.absent())),
-        )
+        val behandleOppgaveProcessService: BehandleOppgaveProcessService by lazy {
+            BehandleOppgaveProcessService(oppgaveClientService)
+        }
 
-        // Verify PATCH request with status FERDIGSTILT
-        verify(
-            1,
-            patchRequestedFor(urlPathMatching("$OPPGAVE_URL/\\d+"))
-                .withRequestBody(matchingJsonPath("$.status", equalTo("FERDIGSTILT"))),
-        )
-    }
+        beforeTest {
+            BatchTypeContext.set(BatchType.OS)
+            wiremock.resetAll()
+        }
 
-    test("should insert kode from original description into new description") {
-        val original = "foo;KODE123456;bar"
-        val newDesc = "ny_beskrivelse;;mer"
-        val result =
-            behandleOppgaveProcessService.run {
-                val method =
-                    BehandleOppgaveProcessService::class.java.getDeclaredMethod(
-                        "updateBeskrivelseMedKode",
-                        String::class.java,
-                        String::class.java,
-                    )
-                method.isAccessible = true
-                method.invoke(this, original, newDesc) as String
-            }
-        result shouldBe "ny_beskrivelse;KODE123456;mer"
-    }
+        test("behandleOppgaveProcessService process should handle oppgaver correctly") {
+            sokOppgaveWireMock(response = "oppgave/sokOppgaveResponse.json".readFromResource(), offset = 0)
+            sokOppgaveWireMock(response = """{ "antallTreffTotalt": 4, "oppgaver": [] }""", offset = 1000)
+            opprettOppgaveWireMock()
+            oppdaterOppgaveWireMock()
 
-    test("should insert empty kode if original description has no code") {
-        val original = "foo;bar"
-        val newDesc = "ny_beskrivelse;;mer"
-        val result =
-            behandleOppgaveProcessService.run {
-                val method =
-                    BehandleOppgaveProcessService::class.java.getDeclaredMethod(
-                        "updateBeskrivelseMedKode",
-                        String::class.java,
-                        String::class.java,
-                    )
-                method.isAccessible = true
-                method.invoke(this, original, newDesc) as String
-            }
-        result shouldBe "ny_beskrivelse;;mer"
-    }
-})
+            val meldingOppgaveSet = setOf(meldingOppgave)
+            behandleOppgaveProcessService.process(meldingOppgaveSet)
+
+            verify(2, getRequestedFor(urlPathMatching("$OPPGAVE_URL.*")))
+            verify(1, postRequestedFor(urlEqualTo(OPPGAVE_URL)))
+            verify(4, patchRequestedFor(urlPathMatching("$OPPGAVE_URL/\\d+")))
+        }
+
+        test(name = "behandleOppgaveProcessService process should only created new oppgave") {
+            sokOppgaveWireMock(response = """{ "antallTreffTotalt": 0, "oppgaver": [] }""", offset = 0)
+            opprettOppgaveWireMock()
+            oppdaterOppgaveWireMock()
+
+            val meldingOppgaveSet = setOf(meldingOppgave)
+            behandleOppgaveProcessService.process(meldingOppgaveSet)
+
+            verify(1, getRequestedFor(urlPathMatching("$OPPGAVE_URL.*")))
+            verify(1, postRequestedFor(urlEqualTo(OPPGAVE_URL)))
+            verify(0, patchRequestedFor(urlPathMatching("$OPPGAVE_URL/\\d+")))
+        }
+
+        test("behandleOppgaveProcessService should handle patch requests with FERDIGSTILT and null status") {
+            sokOppgaveWireMock(response = "oppgave/sokOppgaveResponse.json".readFromResource(), offset = 0)
+            sokOppgaveWireMock(response = """{ "antallTreffTotalt": 4, "oppgaver": [] }""", offset = 1000)
+            opprettOppgaveWireMock()
+            oppdaterOppgaveWireMock()
+
+            val meldingOppgaveSet =
+                setOf(
+                    MeldingOppgave(
+                        behandlingstype = "ae0216",
+                        tildeltEnhetsnr = "4819",
+                        opprettetAvEnhetsnr = "9999",
+                        aktoerId = "1000091768276",
+                        personIdent = "42126902896",
+                        oppgavetype = BatchTypeContext.get().oppgaveType,
+                    ),
+                    MeldingOppgave(
+                        behandlingstype = "ae0216",
+                        tildeltEnhetsnr = "4819",
+                        opprettetAvEnhetsnr = "9999",
+                        aktoerId = "1000010121748",
+                        personIdent = "13015519732",
+                        oppgavetype = BatchTypeContext.get().oppgaveType,
+                    ),
+                    MeldingOppgave(
+                        behandlingstype = "ae0216",
+                        tildeltEnhetsnr = "4819",
+                        opprettetAvEnhetsnr = "9999",
+                        aktoerId = "1000045346097",
+                        personIdent = "16123635756",
+                        oppgavetype = BatchTypeContext.get().oppgaveType,
+                    ),
+                )
+            behandleOppgaveProcessService.process(meldingOppgaveSet)
+
+            verify(0, postRequestedFor(urlEqualTo(OPPGAVE_URL)))
+            verify(
+                3,
+                patchRequestedFor(urlPathMatching("$OPPGAVE_URL/\\d+"))
+                    .withRequestBody(matchingJsonPath("$.status", WireMock.absent())),
+            )
+
+            // Verify PATCH request with status FERDIGSTILT
+            verify(
+                1,
+                patchRequestedFor(urlPathMatching("$OPPGAVE_URL/\\d+"))
+                    .withRequestBody(matchingJsonPath("$.status", equalTo("FERDIGSTILT"))),
+            )
+        }
+
+        test("should insert kode from original description into new description") {
+            val original = "foo;KODE123456;bar"
+            val newDesc = "ny_beskrivelse;;mer"
+            val result =
+                behandleOppgaveProcessService.run {
+                    val method =
+                        BehandleOppgaveProcessService::class.java.getDeclaredMethod(
+                            "updateBeskrivelseMedKode",
+                            String::class.java,
+                            String::class.java,
+                        )
+                    method.isAccessible = true
+                    method.invoke(this, original, newDesc) as String
+                }
+            result shouldBe "ny_beskrivelse;KODE123456;mer"
+        }
+
+        test("should insert empty kode if original description has no code") {
+            val original = "foo;bar"
+            val newDesc = "ny_beskrivelse;;mer"
+            val result =
+                behandleOppgaveProcessService.run {
+                    val method =
+                        BehandleOppgaveProcessService::class.java.getDeclaredMethod(
+                            "updateBeskrivelseMedKode",
+                            String::class.java,
+                            String::class.java,
+                        )
+                    method.isAccessible = true
+                    method.invoke(this, original, newDesc) as String
+                }
+            result shouldBe "ny_beskrivelse;;mer"
+        }
+    })
