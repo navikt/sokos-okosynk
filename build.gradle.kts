@@ -24,7 +24,7 @@ repositories {
     maven { url = uri("https://maven.pkg.jetbrains.space/public/p/ktor/eap") }
 }
 
-val ktorVersion = "3.2.1"
+val ktorVersion = "3.2.2"
 val jschVersion = "2.27.2"
 val logbackVersion = "1.5.18"
 val logstashVersion = "8.1"
@@ -39,10 +39,10 @@ val kotlinxSerializationVersion = "1.9.0"
 val cronUtilsVersion = "9.2.1"
 
 val mockOAuth2ServerVersion = "2.2.1"
-val mockkVersion = "1.14.4"
+val mockkVersion = "1.14.5"
 val wiremockVersion = "3.13.1"
 val testcontainersVersion = "1.21.3"
-val opentelemetryVersion = "2.17.1-alpha"
+val opentelemetryVersion = "2.18.0-alpha"
 
 dependencies {
 
