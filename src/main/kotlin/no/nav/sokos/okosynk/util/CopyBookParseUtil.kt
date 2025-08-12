@@ -1,5 +1,7 @@
 package no.nav.sokos.okosynk.util
 
+import java.math.BigDecimal
+import java.math.RoundingMode
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -46,7 +48,7 @@ object CopyBookParseUtil {
             } else {
                 result
             }
-        }.getOrDefault(0.00).let { "%.2f".format(it).toDouble() }
+        }.getOrDefault(0.00).let { BigDecimal(it).setScale(2, RoundingMode.HALF_UP).toDouble() }
     }
 
     fun String.toLocalDate(): LocalDate? =
