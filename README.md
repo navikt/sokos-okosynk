@@ -65,6 +65,25 @@ Loggen konfigureres i `src/main/resources/logback.xml`.
 Forhåpentligvis vil loggene ende opp i Kibana (`https://logs.adeo.no`), men man kan også
 lese dem direkte fra Kubernetes. Først må man få en liste av pods tilhørende okosynk:
 
+### Alarmer
+
+Applikasjonen bruker [Grafana Alerting](https://grafana.nav.cloud.nais.io/alerting/) for overvåkning og varsling.
+Dette er konfigurert via NAIS sin [alerting-integrasjon](https://doc.nais.io/observability/alerts).
+
+Alarmene overvåker metrics som:
+
+- HTTP-feilrater
+- JVM-metrikker
+
+Varsler blir sendt til følgende Slack-kanaler:
+
+- Dev-miljø: [#team-mob-alerts-dev](https://nav-it.slack.com/archives/C042SF2FEQM)
+- Prod-miljø: [#team-mob-alerts-prod](https://nav-it.slack.com/archives/C042ESY71GX)
+
+### Grafana
+
+- [sokos-okosynk](https://grafana.nav.cloud.nais.io/d/aelylbkr2xmv4b/sokos-okosynk)
+
 # 3. Programvarearkitektur
 
 ```mermaid
