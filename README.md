@@ -7,6 +7,8 @@
 * [3. Programvarearkitektur](#3-programvarearkitektur)
 * [4. Deployment](#4-deployment)
 * [5. Autentisering](#5-Autentisering)
+* [6. Drift og støtte](#6-Drift-og-støtte)
+* [7. Henvendelser](#7-Henvendelser)
 
 # 1 Funksjonelle Krav
 
@@ -14,6 +16,11 @@ Applikasjon for å synkronisere oppgaver fra økonomisystemene OS (Oppdragssyste
 Applikasjonen leser flatfiler bestående av meldinger fra OS og UR. Noen av meldingene aggregeres
 dersom de gjelder samme oppgave. Fra de resterende meldingene opprettes det oppgaver, og det er
 disse oppgavene som skal ligge i oppgave-applikasjonen.
+
+`sokos-okosynk` er en batchjobb som kjører kl. UTC 4:00 hver morgen hele året (altså kl 05:00 om vinteren og kl 0:600 om sommeren norsk tid).
+
+`sokos-okosynk` kjøres som en sekvensielle jobb, som heter henholdsvis okosynkos og okosynkur.
+
 
 # 2. Utviklingsmiljø
 
@@ -43,46 +50,6 @@ For å kjøre applikasjonen lokalt må du gjøre følgende:
   Denne vil opprette [default.properties](defaults.properties) med alle environment variabler du trenger for å kjøre
   applikasjonen som er definert i [PropertiesConfig](src/main/kotlin/no/nav/sokos/spk/mottak/config/PropertiesConfig.kt).
 
-### Miljøer
-
-`sokos-okosynk` kjøres i følgende miljøer:
-
-- dev-fss (Q-miljø)
-- prod-fss (prod-miljø)
-
-`sokos-okosynk` er en batchjobb som kjører kl. UTC 4:00 hver morgen hele året (altså kl 05:00 om vinteren og kl 0:600 om sommeren norsk tid).
-Den kjører på nais-plattformen i to miljøer:
-
-1) Cluster `dev-fss`, i namespace `okonomi`
-2) Cluster `prod-fss`, i namespace `okonomi`
-
-`sokos-okosynk` kjøres som en sekvensielle jobb, som heter henholdsvis okosynkos og okosynkur.
-
-### Logging
-
-Resultatet kan kontrolleres ved å se på loggene i Kibana.
-Loggen konfigureres i `src/main/resources/logback.xml`.
-Forhåpentligvis vil loggene ende opp i Kibana (`https://logs.adeo.no`), men man kan også
-lese dem direkte fra Kubernetes. Først må man få en liste av pods tilhørende okosynk:
-
-### Alarmer
-
-Applikasjonen bruker [Grafana Alerting](https://grafana.nav.cloud.nais.io/alerting/) for overvåkning og varsling.
-Dette er konfigurert via NAIS sin [alerting-integrasjon](https://doc.nais.io/observability/alerts).
-
-Alarmene overvåker metrics som:
-
-- HTTP-feilrater
-- JVM-metrikker
-
-Varsler blir sendt til følgende Slack-kanaler:
-
-- Dev-miljø: [#team-mob-alerts-dev](https://nav-it.slack.com/archives/C042SF2FEQM)
-- Prod-miljø: [#team-mob-alerts-prod](https://nav-it.slack.com/archives/C042ESY71GX)
-
-### Grafana
-
-- [sokos-okosynk](https://grafana.nav.cloud.nais.io/d/aelylbkr2xmv4b/sokos-okosynk)
 
 # 3. Programvarearkitektur
 
@@ -118,7 +85,7 @@ i GOSYS
 * Oppgaver som ligger både i oppgave-applikasjonen og i flatfil oppdateres med ny informasjon.
 * Oppgaver som ligger i flatfil men ikke i oppgave-applikasjonen blir opprettet i oppgave-applikasjonen.
 
-[Teknisk oversikt](Dokumentasjon/overordnet-teknisk.md) over `sokos-okosynk`
+[Teknisk oversikt](dokumentasjon/overordnet-teknisk.md) over `sokos-okosynk`
 
 # 4. Deployment
 
@@ -132,3 +99,54 @@ Har også mulighet for å deploye manuelt til testmiljø ved å deploye PR.
 # 5. Autentisering
 
 Applikasjonen har ingen restApi endepunkt og har ingen autentiseringsbehov.
+
+# 6. Drift og støtte
+
+### Logging
+
+Feilmeldinger og infomeldinger som ikke innheholder sensitive data logges til [Grafana Loki](https://docs.nais.io/observability/logging/#grafana-loki).  
+Sensitive meldinger logges til [Team Logs](https://doc.nais.io/observability/logging/how-to/team-logs/).
+
+### Kubectl
+
+For dev-fss:
+
+```shell script
+kubectl config use-context dev-fss
+kubectl get pods -n okonomi | grep sokos-okosynk
+kubectl logs -f sokos-okosynk-<POD-ID> --namespace okonomi -c sokos-okosynk
+```
+
+For prod-fss:
+
+```shell script
+kubectl config use-context prod-fss
+kubectl get pods -n okonomi | grep sokos-okosynk
+kubectl logs -f sokos-okosynk-<POD-ID> --namespace okonomi -c sokos-okosynk
+```
+
+### Alarmer
+
+Applikasjonen bruker [Grafana Alerting](https://grafana.nav.cloud.nais.io/alerting/) for overvåkning og varsling.
+Dette er konfigurert via NAIS sin [alerting-integrasjon](https://doc.nais.io/observability/alerts).
+
+Alarmene overvåker metrics som:
+
+- HTTP-feilrater
+- JVM-metrikker
+
+Varsler blir sendt til følgende Slack-kanaler:
+
+- Dev-miljø: [#team-mob-alerts-dev](https://nav-it.slack.com/archives/C042SF2FEQM)
+- Prod-miljø: [#team-mob-alerts-prod](https://nav-it.slack.com/archives/C042ESY71GX)
+
+### Grafana
+
+- [sokos-okosynk](https://grafana.nav.cloud.nais.io/d/aelylbkr2xmv4b/sokos-okosynk?var-interval=2m&orgId=1&from=now-24h&to=now&timezone=browser&var-datasource=000000011&var-app=sokos-okosynk&var-namespace=okonomi&var-memory_pool_heap=$__all&refresh=30s)
+
+---
+
+# 7. Henvendelser
+
+Spørsmål knyttet til koden eller prosjektet kan stilles som issues her på Github.
+Interne henvendelser kan sendes via Slack i kanalen [#utbetaling](https://nav-it.slack.com/archives/CKZADNFBP)
