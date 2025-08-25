@@ -12,7 +12,7 @@ plugins {
     kotlin("plugin.serialization") version "2.2.10"
     id("com.expediagroup.graphql") version "8.8.1"
     id("com.gradleup.shadow") version "9.0.2"
-    id("org.jlleitschuh.gradle.ktlint") version "13.0.0"
+    id("org.jlleitschuh.gradle.ktlint") version "13.1.0"
     id("org.jetbrains.kotlinx.kover") version "0.9.1"
     id("org.openapi.generator") version "7.14.0"
 }
@@ -24,7 +24,7 @@ repositories {
 }
 
 val ktorVersion = "3.2.3"
-val jschVersion = "2.27.2"
+val jschVersion = "2.27.3"
 val logbackVersion = "1.5.18"
 val logstashVersion = "8.1"
 val micrometerVersion = "1.15.3"
@@ -33,7 +33,7 @@ val graphqlClientVersion = "8.8.1"
 val kotlinLoggingVersion = "3.0.5"
 val janionVersion = "3.1.12"
 val natpryceVersion = "1.6.10.0"
-val kotestVersion = "6.0.0.M17"
+val kotestVersion = "6.0.1"
 val kotlinxSerializationVersion = "1.9.0"
 val cronUtilsVersion = "9.2.1"
 
