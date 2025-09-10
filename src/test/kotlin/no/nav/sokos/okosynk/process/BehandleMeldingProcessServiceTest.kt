@@ -83,11 +83,11 @@ class BehandleMeldingProcessServiceTest :
 
             val urInput = "sftp/UR.INPUT".readFromResource()
             val urMeldingList = urInput.lines().map { it.toDataClass<UrMelding>() }
-            urMeldingList.size shouldBe 20
+            urMeldingList.size shouldBe 21
 
             val meldingOppgaveList = behandleMeldingProcessService.process(urMeldingList)
-            meldingOppgaveList.size shouldBe 19
-            WireMock.verify(18, WireMock.postRequestedFor(WireMock.urlEqualTo("/graphql")))
+            meldingOppgaveList.size shouldBe 20
+            WireMock.verify(19, WireMock.postRequestedFor(WireMock.urlEqualTo("/graphql")))
         }
 
         test("beskrivelse for a single OS Melding") {

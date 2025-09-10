@@ -11,7 +11,7 @@ class UrMeldingTest :
         test("Les UR.INPUT og mapper til UrMelding") {
             val urInput = "sftp/UR.INPUT".readFromResource()
             val urMeldingList = urInput.lines().map { it.toDataClass<UrMelding>() }
-            urMeldingList.size shouldBe 20
+            urMeldingList.size shouldBe 21
 
             val urMelding = urMeldingList.first()
             urMelding.gjelderId shouldBe "80000662771"

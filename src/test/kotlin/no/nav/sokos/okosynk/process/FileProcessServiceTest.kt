@@ -30,7 +30,7 @@ class FileProcessServiceTest :
             val meldingList = "sftp/UR.INPUT".readFromResource().lines()
 
             val result = fileProcessService.process(meldingList)
-            result.size shouldBe 20
+            result.size shouldBe 21
             result.all { it is UrMelding } shouldBe true
         }
 
