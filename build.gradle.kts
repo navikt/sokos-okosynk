@@ -192,7 +192,7 @@ tasks {
     }
 
     withType<Wrapper> {
-        gradleVersion = "9.0.0"
+        gradleVersion = "9.1.0"
     }
 
     ("build") {
