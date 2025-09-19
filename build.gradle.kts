@@ -2,7 +2,6 @@ import kotlinx.kover.gradle.plugin.dsl.tasks.KoverReport
 
 import com.expediagroup.graphql.plugin.gradle.config.GraphQLSerializer
 import com.expediagroup.graphql.plugin.gradle.tasks.GraphQLGenerateClientTask
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -11,10 +10,11 @@ plugins {
     kotlin("jvm") version "2.2.10"
     kotlin("plugin.serialization") version "2.2.10"
     id("com.expediagroup.graphql") version "8.8.1"
-    id("com.gradleup.shadow") version "9.0.2"
     id("org.jlleitschuh.gradle.ktlint") version "13.1.0"
     id("org.jetbrains.kotlinx.kover") version "0.9.1"
     id("org.openapi.generator") version "7.14.0"
+
+    application
 }
 
 group = "no.nav.sokos.okosynk"
@@ -105,6 +105,10 @@ configurations.ktlint {
     resolutionStrategy.force("ch.qos.logback:logback-classic:$logbackVersion")
 }
 
+application {
+    mainClass.set("no.nav.sokos.okosynk.ApplicationKt")
+}
+
 sourceSets {
     main {
         java {
@@ -172,15 +176,6 @@ tasks {
         }
     }
 
-    withType<ShadowJar>().configureEach {
-        enabled = true
-        archiveFileName.set("app.jar")
-        manifest {
-            attributes["Main-Class"] = "no.nav.sokos.okosynk.ApplicationKt"
-        }
-        finalizedBy(koverHtmlReport)
-    }
-
     withType<Test>().configureEach {
         useJUnitPlatform()
 
@@ -192,14 +187,12 @@ tasks {
         }
 
         reports.forEach { report -> report.required.value(false) }
+
+        finalizedBy(koverHtmlReport)
     }
 
     withType<Wrapper> {
-        gradleVersion = "9.0.0"
-    }
-
-    ("jar") {
-        enabled = false
+        gradleVersion = "9.1.0"
     }
 
     ("build") {

@@ -35,9 +35,7 @@ disse oppgavene som skal ligge i oppgave-applikasjonen.
 
 Du må ha Docker på for å bygge prosjektet da bygging også kjører tester med testcontainers.
 
-```
-./gradlew clean build shadowJar
-```
+`./gradlew build installDist`
 
 ### Lokal utvikling
 
