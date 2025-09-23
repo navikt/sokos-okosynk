@@ -61,7 +61,7 @@ class SchedulerService(
                         logger.warn { "Skipping scheduled execution because previous job is still running" }
                     }
                 } catch (e: CancellationException) {
-                    logger.error(e) { "Batch job cancelled" }
+                    logger.info { "Batch job cancelled" }
                     break
                 } catch (e: TimeoutException) {
                     logger.error(e) { "Batch job timed out after $jobTimeout" }
@@ -77,9 +77,7 @@ class SchedulerService(
     }
 
     fun stop() {
-        if (!job.isCancelled) {
-            job.cancel()
-            logger.info { "Batch job scheduler stopped" }
-        }
+        job.cancel()
+        logger.info { "Batch job scheduler stopped" }
     }
 }
