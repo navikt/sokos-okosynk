@@ -87,7 +87,7 @@ class BehandleMeldingProcessServiceTest :
 
             val meldingOppgaveList = behandleMeldingProcessService.process(urMeldingList)
             meldingOppgaveList.size shouldBe 20
-            WireMock.verify(19, WireMock.postRequestedFor(WireMock.urlEqualTo("/graphql")))
+            WireMock.verify(18, WireMock.postRequestedFor(WireMock.urlEqualTo("/graphql")))
         }
 
         test("beskrivelse for a single OS Melding") {
