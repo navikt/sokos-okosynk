@@ -101,8 +101,8 @@ class OppgaveClientService(
         val correlationId = UUID.randomUUID()
         return runCatching {
             val accessToken = accessTokenClient.getSystemToken()
-            logger.debug { "Oppdater en eksisterende oppgave" }
 
+            logger.info(marker = TEAM_LOGS_MARKER) { "XCorrelationId: $correlationId - Uppdater oppgave request: $request" }
             val response =
                 client.patch("$oppgaveUrl/api/v1/oppgaver/$id") {
                     header(HttpHeaders.Authorization, "Bearer $accessToken")
@@ -114,7 +114,7 @@ class OppgaveClientService(
             response.status.isSuccess() || throw OppgaveException("Feil ved oppdater av oppgave. Status: ${response.status}, XCorrelationId: $correlationId")
             response.body<Oppgave>()
         }.fold(
-            onSuccess = { response -> response.also { logger.debug { "Oppgave oppdatert med id: $id, XCorrelationId: $correlationId" } } },
+            onSuccess = { response -> response.also { logger.info(marker = TEAM_LOGS_MARKER) { "XCorrelationId: $correlationId - Oppdater oppgave response: $response" } } },
             onFailure = { exception -> throw exception },
         )
     }
