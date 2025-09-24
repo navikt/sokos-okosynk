@@ -13,6 +13,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
 import no.nav.sokos.okosynk.OPPGAVE_URL
+import no.nav.sokos.okosynk.TestData.medlingOppgaveMedOrgnr
 import no.nav.sokos.okosynk.TestData.meldingOppgave
 import no.nav.sokos.okosynk.WireMockTestData.oppdaterOppgaveWireMock
 import no.nav.sokos.okosynk.WireMockTestData.opprettOppgaveWireMock
@@ -70,6 +71,24 @@ class BehandleOppgaveProcessServiceTest :
             verify(1, getRequestedFor(urlPathMatching("$OPPGAVE_URL.*")))
             verify(1, postRequestedFor(urlEqualTo(OPPGAVE_URL)))
             verify(0, patchRequestedFor(urlPathMatching("$OPPGAVE_URL/\\d+")))
+        }
+
+        test(name = "behandleOppgaveProcessService process should not created new oppgave with orgnr") {
+            sokOppgaveWireMock(response = "oppgave/sokOppgaveMedOrgnrResponse.json".readFromResource(), offset = 0)
+            sokOppgaveWireMock(response = """{ "antallTreffTotalt": 1, "oppgaver": [] }""", offset = 1000)
+            opprettOppgaveWireMock()
+            oppdaterOppgaveWireMock()
+
+            val meldingOppgaveSet = setOf(medlingOppgaveMedOrgnr)
+            behandleOppgaveProcessService.process(meldingOppgaveSet)
+
+            verify(2, getRequestedFor(urlPathMatching("$OPPGAVE_URL.*")))
+            verify(0, postRequestedFor(urlEqualTo(OPPGAVE_URL)))
+            verify(
+                1,
+                patchRequestedFor(urlPathMatching("$OPPGAVE_URL/\\d+"))
+                    .withRequestBody(matchingJsonPath("$.status", WireMock.absent())),
+            )
         }
 
         test("behandleOppgaveProcessService should handle patch requests with FERDIGSTILT and null status") {

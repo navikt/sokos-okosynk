@@ -185,6 +185,7 @@ class BehandleOppgaveProcessService(
         when {
             this.aktoerId != null -> this.aktoerId == meldingOppgave.aktoerId
             this.bruker?.type == BrukerDto.Type.SAMHANDLER -> this.bruker.ident == meldingOppgave.samhandlernr
+            this.bruker?.type == BrukerDto.Type.ARBEIDSGIVER -> this.bruker.ident == meldingOppgave.orgnr
             else -> this.bruker?.ident == meldingOppgave.personIdent
         }
 

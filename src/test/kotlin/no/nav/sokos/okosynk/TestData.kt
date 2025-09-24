@@ -84,4 +84,17 @@ object TestData {
             aktoerId = null,
             orgnr = null,
         )
+
+    val medlingOppgaveMedOrgnr =
+        MeldingOppgave(
+            behandlingstema = "ab0270",
+            behandlingstype = "ae0216",
+            tildeltEnhetsnr = "4819",
+            oppgavetype = "OKO_OS",
+            opprettetAvEnhetsnr = "9999",
+            beskrivelse = "AVAV",
+            personIdent = null,
+            aktoerId = null,
+            orgnr = "913909827",
+        )
 }

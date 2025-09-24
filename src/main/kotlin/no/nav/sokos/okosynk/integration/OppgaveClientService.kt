@@ -67,12 +67,7 @@ class OppgaveClientService(
                 }
             }
         return result.fold(
-            onSuccess = { response ->
-                response.oppgaver?.find { oppgave -> oppgave.orgnr == "976520114" || oppgave.orgnr == "00976520114" }?.let { oppgave ->
-                    logger.info(marker = TEAM_LOGS_MARKER) { "Fant oppgave med NAV sitt orgnr. Dette er ikke forventet. $oppgave, XCorrelationId: $correlationId" }
-                }
-                response
-            },
+            onSuccess = { response -> response },
             onFailure = { exception -> throw exception },
         )
     }
