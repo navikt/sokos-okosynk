@@ -23,7 +23,7 @@ repositories {
     mavenCentral()
 }
 
-val ktorVersion = "3.3.0"
+val ktorVersion = "3.3.3"
 val jschVersion = "2.27.3"
 val logbackVersion = "1.5.18"
 val logstashVersion = "8.1"
