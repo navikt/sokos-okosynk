@@ -33,7 +33,7 @@ val graphqlClientVersion = "8.8.1"
 val kotlinLoggingVersion = "3.0.5"
 val janionVersion = "3.1.12"
 val natpryceVersion = "1.6.10.0"
-val kotestVersion = "6.0.5"
+val kotestVersion = "6.0.7"
 val kotlinxSerializationVersion = "1.9.0"
 val cronUtilsVersion = "9.2.1"
 
