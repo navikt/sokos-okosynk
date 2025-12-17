@@ -1,5 +1,3 @@
-# sokos-okosynk - teknisk oversikt
-
 ```mermaid
 sequenceDiagram
     SchedulerService ->> BatchService: trigger batch

@@ -1,16 +1,15 @@
 # sokos-okosynk
 
-# Innholdsoversikt
+* [1. Dokumentasjon](dokumentasjon/dokumentasjon.md)
+* [2. Funksjonelle krav](#2-funksjonelle-krav)
+* [3. Utviklingsmiljø](#3-utviklingsmiljø)
+* [4. Programvarearkitektur](#4-programvarearkitektur)
+* [5. Deployment](#5-deployment)
+* [6. Autentisering](#6-Autentisering)
+* [7. Drift og støtte](#7-Drift-og-støtte)
+* [8. Henvendelser](#8-Henvendelser)
 
-* [1. Funksjonelle krav](#1-funksjonelle-krav)
-* [2. Utviklingsmiljø](#2-utviklingsmiljø)
-* [3. Programvarearkitektur](#3-programvarearkitektur)
-* [4. Deployment](#4-deployment)
-* [5. Autentisering](#5-Autentisering)
-* [6. Drift og støtte](#6-Drift-og-støtte)
-* [7. Henvendelser](#7-Henvendelser)
-
-# 1 Funksjonelle Krav
+# 2. Funksjonelle Krav
 
 Applikasjon for å synkronisere oppgaver fra økonomisystemene OS (Oppdragssystemet) og UR (Utbetalingsreskontro) mot oppgave-applikasjonen (tidligere Gsak).
 Applikasjonen leser flatfiler bestående av meldinger fra OS og UR. Noen av meldingene aggregeres
@@ -22,7 +21,7 @@ disse oppgavene som skal ligge i oppgave-applikasjonen.
 `sokos-okosynk` kjøres som en sekvensielle jobb, som heter henholdsvis okosynkos og okosynkur.
 
 
-# 2. Utviklingsmiljø
+# 3. Utviklingsmiljø
 
 ### Forutsetninger
 
@@ -49,7 +48,7 @@ For å kjøre applikasjonen lokalt må du gjøre følgende:
   applikasjonen som er definert i [PropertiesConfig](src/main/kotlin/no/nav/sokos/spk/mottak/config/PropertiesConfig.kt).
 
 
-# 3. Programvarearkitektur
+# 4. Programvarearkitektur
 
 ```mermaid
 flowchart LR
@@ -83,9 +82,9 @@ i GOSYS
 * Oppgaver som ligger både i oppgave-applikasjonen og i flatfil oppdateres med ny informasjon.
 * Oppgaver som ligger i flatfil men ikke i oppgave-applikasjonen blir opprettet i oppgave-applikasjonen.
 
-[Teknisk oversikt](dokumentasjon/overordnet-teknisk.md) over `sokos-okosynk`
+[Teknisk oversikt](dokumentasjon/dokumentasjon.md) over `sokos-okosynk`
 
-# 4. Deployment
+# 5. Deployment
 
 Distribusjon av tjenesten er gjort med bruk av Github Actions.
 [sokos-okosynk CI / CD](https://github.com/navikt/sokos-okosynk/actions)
@@ -94,11 +93,11 @@ Push/merge til main branch direkte er ikke mulig. Det må opprettes PR og godkje
 Når PR er merged til main branch vil Github Actions bygge og deploye til dev-fss og prod-fss.
 Har også mulighet for å deploye manuelt til testmiljø ved å deploye PR.
 
-# 5. Autentisering
+# 6. Autentisering
 
 Applikasjonen har ingen restApi endepunkt og har ingen autentiseringsbehov.
 
-# 6. Drift og støtte
+# 7. Drift og støtte
 
 ### Logging
 
@@ -144,7 +143,7 @@ Varsler blir sendt til følgende Slack-kanaler:
 
 ---
 
-# 7. Henvendelser
+# 8. Henvendelser
 
 Spørsmål knyttet til koden eller prosjektet kan stilles som issues her på Github.
 Interne henvendelser kan sendes via Slack i kanalen [#utbetaling](https://nav-it.slack.com/archives/CKZADNFBP)
