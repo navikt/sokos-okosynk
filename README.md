@@ -26,7 +26,7 @@ disse oppgavene som skal ligge i oppgave-applikasjonen.
 
 ### Forutsetninger
 
-* Java 21
+* Java 25
 * Gradle
 * [Kotest](https://plugins.jetbrains.com/plugin/14080-kotest) plugin for å kjøre tester
 * [Docker](https://www.docker.com/) for å kjøre testcontainers
