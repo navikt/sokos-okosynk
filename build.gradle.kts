@@ -11,7 +11,7 @@ plugins {
     kotlin("plugin.serialization") version "2.3.0"
     id("com.expediagroup.graphql") version "8.8.1"
     id("org.jlleitschuh.gradle.ktlint") version "14.0.1"
-    id("org.jetbrains.kotlinx.kover") version "0.9.3"
+    id("org.jetbrains.kotlinx.kover") version "0.9.4"
     id("org.openapi.generator") version "7.17.0"
 
     application
