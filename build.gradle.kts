@@ -25,7 +25,7 @@ repositories {
 
 val ktorVersion = "3.3.3"
 val jschVersion = "2.27.7"
-val logbackVersion = "1.5.21"
+val logbackVersion = "1.5.22"
 val logstashVersion = "9.0"
 val micrometerVersion = "1.16.1"
 val graphqlClientVersion = "8.8.1"
@@ -41,7 +41,7 @@ val mockOAuth2ServerVersion = "3.0.1"
 val mockkVersion = "1.14.7"
 val wiremockVersion = "3.13.2"
 val testcontainersVersion = "2.0.2"
-val opentelemetryVersion = "2.22.0-alpha"
+val opentelemetryVersion = "2.23.0-alpha"
 
 dependencies {
 
