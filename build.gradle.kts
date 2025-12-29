@@ -40,7 +40,7 @@ val cronUtilsVersion = "9.2.1"
 val mockOAuth2ServerVersion = "3.0.1"
 val mockkVersion = "1.14.7"
 val wiremockVersion = "3.13.2"
-val testcontainersVersion = "2.0.2"
+val testcontainersVersion = "2.0.3"
 val opentelemetryVersion = "2.23.0-alpha"
 
 dependencies {
