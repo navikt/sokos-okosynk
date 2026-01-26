@@ -12,7 +12,7 @@ plugins {
     id("com.expediagroup.graphql") version "8.8.1"
     id("org.jlleitschuh.gradle.ktlint") version "14.0.1"
     id("org.jetbrains.kotlinx.kover") version "0.9.4"
-    id("org.openapi.generator") version "7.18.0"
+    id("org.openapi.generator") version "7.19.0"
 
     application
 }
@@ -25,9 +25,9 @@ repositories {
 
 val ktorVersion = "3.3.3"
 val jschVersion = "2.27.7"
-val logbackVersion = "1.5.24"
+val logbackVersion = "1.5.25"
 val logstashVersion = "9.0"
-val micrometerVersion = "1.16.1"
+val micrometerVersion = "1.16.2"
 val graphqlClientVersion = "8.8.1"
 
 val kotlinLoggingVersion = "3.0.5"
@@ -41,7 +41,7 @@ val mockOAuth2ServerVersion = "3.0.1"
 val mockkVersion = "1.14.7"
 val wiremockVersion = "3.13.2"
 val testcontainersVersion = "2.0.3"
-val opentelemetryVersion = "2.23.0-alpha"
+val opentelemetryVersion = "2.24.0-alpha"
 
 dependencies {
 
@@ -95,7 +95,7 @@ dependencies {
     testImplementation("io.kotest:kotest-assertions-core-jvm:$kotestVersion")
     testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
     testImplementation("io.mockk:mockk:$mockkVersion")
-    testImplementation("net.bytebuddy:byte-buddy:1.18.3") // TEMP: Needed for mockk 1.14.6 with java25. Remove when Mockk is updated and bytebuddy is no longer needed.
+    testImplementation("net.bytebuddy:byte-buddy:1.18.4") // TEMP: Needed for mockk 1.14.6 with java25. Remove when Mockk is updated and bytebuddy is no longer needed.
     testImplementation("no.nav.security:mock-oauth2-server:$mockOAuth2ServerVersion")
     testImplementation("org.testcontainers:testcontainers:$testcontainersVersion")
     testImplementation("org.wiremock:wiremock:$wiremockVersion")
