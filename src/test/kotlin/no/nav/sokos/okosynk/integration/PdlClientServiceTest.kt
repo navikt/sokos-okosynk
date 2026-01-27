@@ -3,6 +3,7 @@ package no.nav.sokos.okosynk.integration
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
+import com.github.tomakehurst.wiremock.common.ContentTypes
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -10,7 +11,6 @@ import io.kotest.matchers.string.shouldContain
 import io.ktor.client.plugins.ClientRequestException
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
-import org.apache.http.entity.ContentType.APPLICATION_JSON
 
 import no.nav.sokos.okosynk.WireMockTestData.hentPersonWireMock
 import no.nav.sokos.okosynk.exception.PdlException
@@ -64,7 +64,7 @@ class PdlClientServiceTest :
                     .willReturn(
                         aResponse()
                             .withStatus(HttpStatusCode.InternalServerError.value)
-                            .withHeader(HttpHeaders.ContentType, APPLICATION_JSON.mimeType)
+                            .withHeader(HttpHeaders.ContentType, ContentTypes.APPLICATION_JSON)
                             .withBody("""{"message": "Internal Server Error"}"""),
                     ),
             )

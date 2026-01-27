@@ -8,9 +8,9 @@ import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo
 import com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching
+import com.github.tomakehurst.wiremock.common.ContentTypes
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
-import org.apache.http.entity.ContentType.APPLICATION_JSON
 
 import no.nav.sokos.okosynk.listener.WireMockListener.wiremock
 import no.nav.sokos.okosynk.util.Utils.readFromResource
@@ -33,7 +33,7 @@ object WireMockTestData {
                 .withHeader(HttpHeaders.XCorrelationId, matching(".*"))
                 .willReturn(
                     aResponse()
-                        .withHeader(HttpHeaders.ContentType, APPLICATION_JSON.mimeType)
+                        .withHeader(HttpHeaders.ContentType, ContentTypes.APPLICATION_JSON)
                         .withStatus(HttpStatusCode.OK.value)
                         .withBody(response),
                 ),
@@ -47,7 +47,7 @@ object WireMockTestData {
                 .withHeader(HttpHeaders.XCorrelationId, matching(".*"))
                 .willReturn(
                     aResponse()
-                        .withHeader(HttpHeaders.ContentType, APPLICATION_JSON.mimeType)
+                        .withHeader(HttpHeaders.ContentType, ContentTypes.APPLICATION_JSON)
                         .withStatus(HttpStatusCode.Created.value)
                         .withBody(response),
                 ),
@@ -61,7 +61,7 @@ object WireMockTestData {
                 .withHeader(HttpHeaders.XCorrelationId, matching(".*"))
                 .willReturn(
                     aResponse()
-                        .withHeader(HttpHeaders.ContentType, APPLICATION_JSON.mimeType)
+                        .withHeader(HttpHeaders.ContentType, ContentTypes.APPLICATION_JSON)
                         .withStatus(HttpStatusCode.OK.value)
                         .withBody(response),
                 ),
@@ -73,7 +73,7 @@ object WireMockTestData {
             post(urlEqualTo("/graphql"))
                 .willReturn(
                     aResponse()
-                        .withHeader(HttpHeaders.ContentType, APPLICATION_JSON.mimeType)
+                        .withHeader(HttpHeaders.ContentType, ContentTypes.APPLICATION_JSON)
                         .withStatus(HttpStatusCode.OK.value)
                         .withBody(response),
                 ),

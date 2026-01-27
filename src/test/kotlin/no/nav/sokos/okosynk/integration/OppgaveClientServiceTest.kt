@@ -6,6 +6,7 @@ import com.github.tomakehurst.wiremock.client.WireMock.patch
 import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo
+import com.github.tomakehurst.wiremock.common.ContentTypes
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldNotBeEmpty
@@ -13,7 +14,6 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
-import org.apache.http.entity.ContentType.APPLICATION_JSON
 
 import no.nav.oppgave.models.Oppgave
 import no.nav.sokos.okosynk.TestData
@@ -56,7 +56,7 @@ class OppgaveClientServiceTest :
                     .willReturn(
                         aResponse()
                             .withStatus(HttpStatusCode.InternalServerError.value)
-                            .withHeader(HttpHeaders.ContentType, APPLICATION_JSON.mimeType)
+                            .withHeader(HttpHeaders.ContentType, ContentTypes.APPLICATION_JSON)
                             .withBody("""{"message": "Internal Server Error"}"""),
                     ),
             )
@@ -101,7 +101,7 @@ class OppgaveClientServiceTest :
                     .willReturn(
                         aResponse()
                             .withStatus(HttpStatusCode.BadRequest.value)
-                            .withHeader(HttpHeaders.ContentType, APPLICATION_JSON.mimeType)
+                            .withHeader(HttpHeaders.ContentType, ContentTypes.APPLICATION_JSON)
                             .withBody("""{"message": "Bad Request"}"""),
                     ),
             )
@@ -136,7 +136,7 @@ class OppgaveClientServiceTest :
                     .willReturn(
                         aResponse()
                             .withStatus(HttpStatusCode.NotFound.value)
-                            .withHeader(HttpHeaders.ContentType, APPLICATION_JSON.mimeType)
+                            .withHeader(HttpHeaders.ContentType, ContentTypes.APPLICATION_JSON)
                             .withBody("""{"message": "Not Found"}"""),
                     ),
             )

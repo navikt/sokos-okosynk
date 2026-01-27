@@ -1,7 +1,5 @@
 package no.nav.sokos.okosynk.security
 
-import kotlinx.coroutines.runBlocking
-
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
@@ -18,7 +16,7 @@ class AccessTokenClientTest :
     FunSpec({
         extensions(WireMockListener)
 
-        testOrder = TestCaseOrder.Sequential
+        testCaseOrder = TestCaseOrder.Sequential
 
         val mockAzureAdProperties =
             PropertiesConfig.AzureAdProperties(
@@ -48,9 +46,7 @@ class AccessTokenClientTest :
             )
 
             val exception =
-                runBlocking {
-                    kotlin.runCatching { accessTokenClient.getSystemToken() }.exceptionOrNull()
-                }
+                kotlin.runCatching { accessTokenClient.getSystemToken() }.exceptionOrNull()
 
             exception?.message shouldBe "GetAccessToken returnerte 400 Bad Request med feilmelding: Invalid request"
         }
@@ -74,7 +70,7 @@ class AccessTokenClientTest :
                     ),
             )
 
-            val token = runBlocking { accessTokenClient.getSystemToken() }
+            val token = accessTokenClient.getSystemToken()
             token shouldBe "mock-access-token"
         }
     })
