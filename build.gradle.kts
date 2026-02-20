@@ -41,7 +41,7 @@ val mockOAuth2ServerVersion = "3.0.1"
 val mockkVersion = "1.14.9"
 val wiremockVersion = "3.13.2"
 val testcontainersVersion = "2.0.3"
-val opentelemetryVersion = "2.24.0-alpha"
+val opentelemetryVersion = "2.25.0-alpha"
 
 dependencies {
 
