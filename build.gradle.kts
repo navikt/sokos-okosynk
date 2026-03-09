@@ -24,7 +24,7 @@ repositories {
 }
 
 val ktorVersion = "3.4.0"
-val jschVersion = "2.27.7"
+val jschVersion = "2.27.8"
 val logbackVersion = "1.5.32"
 val logstashVersion = "9.0"
 val micrometerVersion = "1.16.3"
@@ -33,7 +33,7 @@ val graphqlClientVersion = "8.8.1"
 val kotlinLoggingVersion = "3.0.5"
 val janionVersion = "3.1.12"
 val natpryceVersion = "1.6.10.0"
-val kotestVersion = "6.1.3"
+val kotestVersion = "6.1.4"
 val kotlinxSerializationVersion = "1.10.0"
 val cronUtilsVersion = "9.2.1"
 
