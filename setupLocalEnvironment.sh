@@ -30,7 +30,7 @@ echo "Environment variables saved to defaults.properties"
 
 sed -i '' '/^SFTP_SERVER=/ s/=.*/=10.183.32.98/' defaults.properties
 
-PRIVATE_KEY=$(kubectl get secret okosynk-sftp-private-key -o jsonpath='{.data.SFTP_PRIVATE_KEY}' | base64 --decode)
+PRIVATE_KEY=$(kubectl exec -n okonomi "$POD_NAME" -- cat /var/run/secrets/sokos-okosynk-sftp-private-key/private-key)
 rm -f privateKey
 echo "$PRIVATE_KEY" > privateKey
 grep -q '^SFTP_PRIVATE_KEY=' defaults.properties && \
