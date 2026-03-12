@@ -48,8 +48,8 @@ spec:
           namespace: nais-system
   webproxy: true
   filesFrom:
-    - secret: okosynk-sftp-private-key
-      mountPath: /var/run/secrets/okosynk-sftp-private-key
+    - secret: sokos-okosynk-sftp-private-key
+      mountPath: /var/run/secrets/sokos-okosynk-sftp-private-key
   env:
     - name: SCHEDULER_CRON_EXPRESSION
       value: "0 15 6 * * *"
@@ -76,4 +76,4 @@ spec:
     - name: SFTP_PORT
       value: "22"
     - name: SFTP_PRIVATE_KEY
-      value: /var/run/secrets/okosynk-sftp-private-key/SFTP_PRIVATE_KEY
+      value: /var/run/secrets/sokos-okosynk-sftp-private-key/private-key
