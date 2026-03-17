@@ -100,6 +100,21 @@ dependencies {
     testImplementation("org.wiremock:wiremock:$wiremockVersion")
 }
 
+configurations.all {
+    resolutionStrategy {
+        eachDependency {
+            if (requested.group == "tools.jackson.core" && requested.name == "jackson-core") {
+                useVersion("3.1.0")
+                because("jackson-core has Nesting Depth Constraint Bypass in `UTF8DataInputJsonParser` potentially allowing Resource Exhaustion. Affected version >= 3.0.0, < 3.1.0")
+            }
+            if (requested.group == "com.fasterxml.jackson.core" && requested.name == "jackson-core") {
+                useVersion("2.21.1")
+                because("jackson-core: Number Length Constraint Bypass in Async Parser Leads to Potential DoS Condition. Affected version >= 2.19.0, < 2.21.1")
+            }
+        }
+    }
+}
+
 application {
     mainClass.set("no.nav.sokos.okosynk.ApplicationKt")
 }
