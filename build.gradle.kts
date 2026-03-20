@@ -10,7 +10,7 @@ plugins {
     kotlin("jvm") version "2.3.10"
     kotlin("plugin.serialization") version "2.3.10"
     id("com.expediagroup.graphql") version "9.0.0"
-    id("org.jlleitschuh.gradle.ktlint") version "14.0.1"
+    id("org.jlleitschuh.gradle.ktlint") version "14.2.0"
     id("org.jetbrains.kotlinx.kover") version "0.9.7"
     id("org.openapi.generator") version "7.20.0"
 
@@ -24,7 +24,7 @@ repositories {
 }
 
 val ktorVersion = "3.4.1"
-val jschVersion = "2.27.8"
+val jschVersion = "2.27.9"
 val logbackVersion = "1.5.32"
 val logstashVersion = "9.0"
 val micrometerVersion = "1.16.4"
