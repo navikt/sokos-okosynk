@@ -10,7 +10,7 @@ plugins {
     kotlin("jvm") version "2.3.10"
     kotlin("plugin.serialization") version "2.3.10"
     id("com.expediagroup.graphql") version "9.0.0"
-    id("org.jlleitschuh.gradle.ktlint") version "14.0.1"
+    id("org.jlleitschuh.gradle.ktlint") version "14.2.0"
     id("org.jetbrains.kotlinx.kover") version "0.9.7"
     id("org.openapi.generator") version "7.20.0"
 
@@ -24,7 +24,7 @@ repositories {
 }
 
 val ktorVersion = "3.4.1"
-val jschVersion = "2.27.8"
+val jschVersion = "2.27.9"
 val logbackVersion = "1.5.32"
 val logstashVersion = "9.0"
 val micrometerVersion = "1.16.4"
@@ -33,7 +33,7 @@ val graphqlClientVersion = "9.0.0"
 val kotlinLoggingVersion = "3.0.5"
 val janionVersion = "3.1.12"
 val natpryceVersion = "1.6.10.0"
-val kotestVersion = "6.1.6"
+val kotestVersion = "6.1.7"
 val kotlinxSerializationVersion = "1.10.0"
 val cronUtilsVersion = "9.2.1"
 
@@ -41,7 +41,7 @@ val mockOAuth2ServerVersion = "3.0.1"
 val mockkVersion = "1.14.9"
 val wiremockVersion = "3.13.2"
 val testcontainersVersion = "2.0.3"
-val opentelemetryVersion = "2.25.0-alpha"
+val opentelemetryVersion = "2.26.0-alpha"
 
 dependencies {
 
