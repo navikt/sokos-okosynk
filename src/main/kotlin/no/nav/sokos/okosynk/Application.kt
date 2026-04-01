@@ -29,7 +29,6 @@ fun Application.module() {
         val scheduler = SchedulerService()
         scheduler.scheduleWithCronExpression(PropertiesConfig.SchedulerProperties().cronExpression)
 
-        // Make sure to stop the scheduler when the application shuts down
         this.monitor.subscribe(ApplicationStopping) {
             scheduler.stop()
         }

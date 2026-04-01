@@ -10,6 +10,7 @@ import io.ktor.client.request.parameter
 import io.ktor.client.request.patch
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
@@ -63,7 +64,10 @@ class OppgaveClientService(
 
                 when {
                     response.status.isSuccess() -> response.body<SokOppgaverResponse>()
-                    else -> throw OppgaveException("Feil ved søk av oppgaver. Status: ${response.status}, XCorrelationId: $correlationId.")
+                    else -> {
+                        val errorBody = response.bodyAsText(Charsets.UTF_8)
+                        throw OppgaveException("Feil ved søk av oppgaver. Status: ${response.status}, XCorrelationId: $correlationId, error: $errorBody")
+                    }
                 }
             }
         return result.fold(

@@ -19,7 +19,6 @@ import no.nav.sokos.okosynk.WireMockTestData.oppdaterOppgaveWireMock
 import no.nav.sokos.okosynk.WireMockTestData.opprettOppgaveWireMock
 import no.nav.sokos.okosynk.WireMockTestData.sokOppgaveWireMock
 import no.nav.sokos.okosynk.domain.BatchType
-import no.nav.sokos.okosynk.domain.BatchTypeContext
 import no.nav.sokos.okosynk.domain.MeldingOppgave
 import no.nav.sokos.okosynk.integration.OppgaveClientService
 import no.nav.sokos.okosynk.listener.WireMockListener
@@ -42,7 +41,6 @@ class BehandleOppgaveProcessServiceTest :
         }
 
         beforeTest {
-            BatchTypeContext.set(BatchType.OS)
             wiremock.resetAll()
         }
 
@@ -53,7 +51,7 @@ class BehandleOppgaveProcessServiceTest :
             oppdaterOppgaveWireMock()
 
             val meldingOppgaveSet = setOf(meldingOppgave)
-            behandleOppgaveProcessService.process(meldingOppgaveSet)
+            behandleOppgaveProcessService.process(BatchType.OS, meldingOppgaveSet)
 
             verify(2, getRequestedFor(urlPathMatching("$OPPGAVE_URL.*")))
             verify(1, postRequestedFor(urlEqualTo(OPPGAVE_URL)))
@@ -66,7 +64,7 @@ class BehandleOppgaveProcessServiceTest :
             oppdaterOppgaveWireMock()
 
             val meldingOppgaveSet = setOf(meldingOppgave)
-            behandleOppgaveProcessService.process(meldingOppgaveSet)
+            behandleOppgaveProcessService.process(BatchType.OS, meldingOppgaveSet)
 
             verify(1, getRequestedFor(urlPathMatching("$OPPGAVE_URL.*")))
             verify(1, postRequestedFor(urlEqualTo(OPPGAVE_URL)))
@@ -80,7 +78,7 @@ class BehandleOppgaveProcessServiceTest :
             oppdaterOppgaveWireMock()
 
             val meldingOppgaveSet = setOf(medlingOppgaveMedOrgnr)
-            behandleOppgaveProcessService.process(meldingOppgaveSet)
+            behandleOppgaveProcessService.process(BatchType.OS, meldingOppgaveSet)
 
             verify(2, getRequestedFor(urlPathMatching("$OPPGAVE_URL.*")))
             verify(0, postRequestedFor(urlEqualTo(OPPGAVE_URL)))
@@ -105,7 +103,7 @@ class BehandleOppgaveProcessServiceTest :
                         opprettetAvEnhetsnr = "9999",
                         aktoerId = "1000091768276",
                         personIdent = "42126902896",
-                        oppgavetype = BatchTypeContext.get().oppgaveType,
+                        oppgavetype = BatchType.OS.oppgaveType,
                     ),
                     MeldingOppgave(
                         behandlingstype = "ae0216",
@@ -113,7 +111,7 @@ class BehandleOppgaveProcessServiceTest :
                         opprettetAvEnhetsnr = "9999",
                         aktoerId = "1000010121748",
                         personIdent = "13015519732",
-                        oppgavetype = BatchTypeContext.get().oppgaveType,
+                        oppgavetype = BatchType.OS.oppgaveType,
                     ),
                     MeldingOppgave(
                         behandlingstype = "ae0216",
@@ -121,10 +119,10 @@ class BehandleOppgaveProcessServiceTest :
                         opprettetAvEnhetsnr = "9999",
                         aktoerId = "1000045346097",
                         personIdent = "16123635756",
-                        oppgavetype = BatchTypeContext.get().oppgaveType,
+                        oppgavetype = BatchType.OS.oppgaveType,
                     ),
                 )
-            behandleOppgaveProcessService.process(meldingOppgaveSet)
+            behandleOppgaveProcessService.process(BatchType.OS, meldingOppgaveSet)
 
             verify(0, postRequestedFor(urlEqualTo(OPPGAVE_URL)))
             verify(

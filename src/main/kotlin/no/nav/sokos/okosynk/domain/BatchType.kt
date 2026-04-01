@@ -21,13 +21,3 @@ enum class BatchType(
                 rawFileName
             }
 }
-
-object BatchTypeContext {
-    private val threadLocalBatchType = ThreadLocal<BatchType>()
-
-    fun set(batchType: BatchType) = threadLocalBatchType.set(batchType)
-
-    fun get(): BatchType = threadLocalBatchType.get() ?: BatchType.UNKOWN
-
-    fun clear() = threadLocalBatchType.remove()
-}

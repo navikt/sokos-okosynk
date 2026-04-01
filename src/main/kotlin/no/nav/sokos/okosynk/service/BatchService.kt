@@ -1,17 +1,17 @@
 package no.nav.sokos.okosynk.service
 
 import java.time.LocalDateTime
+import java.util.concurrent.TimeUnit
 
-import FileProcessService
 import mu.KotlinLogging
 
 import no.nav.sokos.okosynk.domain.BatchType
-import no.nav.sokos.okosynk.domain.BatchTypeContext
 import no.nav.sokos.okosynk.integration.Directories
 import no.nav.sokos.okosynk.integration.FtpService
 import no.nav.sokos.okosynk.metrics.Metrics
 import no.nav.sokos.okosynk.process.BehandleMeldingProcessService
 import no.nav.sokos.okosynk.process.BehandleOppgaveProcessService
+import no.nav.sokos.okosynk.process.FileProcessService
 import no.nav.sokos.okosynk.util.TraceUtils
 import no.nav.sokos.okosynk.util.Utils.toISO
 
@@ -24,23 +24,25 @@ class BatchService(
     private val behandleMeldingProcessService: BehandleMeldingProcessService = BehandleMeldingProcessService(),
     private val behandleOppgaveProcessService: BehandleOppgaveProcessService = BehandleOppgaveProcessService(),
 ) {
-    fun run() {
+    suspend fun run() {
         val batchTypeList = BatchType.entries.filter { it != BatchType.UNKOWN }
 
         runCatching {
             batchTypeList.forEach { batchType ->
                 TraceUtils.withTracerId {
-                    Metrics.timer("batch_${batchType.opprettetAv}").recordCallable { processBatch(batchType) }
+                    val startNanos = System.nanoTime()
+                    processBatch(batchType)
+                    Metrics
+                        .timer("batch_${batchType.opprettetAv}")
+                        .record(System.nanoTime() - startNanos, TimeUnit.NANOSECONDS)
                 }
             }
         }.onFailure { exception ->
             logger.error(exception) { "Feil ved behandling fil fra OS/UR" }
-        }.also {
-            BatchTypeContext.clear()
         }
     }
 
-    private fun processBatch(batchType: BatchType) {
+    private suspend fun processBatch(batchType: BatchType) {
         logger.info { "Starter nedlasting av filnavn: ${batchType.fileName}" }
         val meldingFile = ftpService.downloadFiles(fileName = batchType.fileName)
 
@@ -50,11 +52,10 @@ class BatchService(
             else -> {
                 logger.info { "Start synk ${batchType.fileName} med Oppgave" }
 
-                BatchTypeContext.set(batchType)
                 meldingFile
-                    .run { fileProcessService.process(this) }
-                    .run { behandleMeldingProcessService.process(this) }
-                    .run { behandleOppgaveProcessService.process(this) }
+                    .run { fileProcessService.process(batchType, this) }
+                    .run { behandleMeldingProcessService.process(batchType, this) }
+                    .run { behandleOppgaveProcessService.process(batchType, this) }
 
                 ftpService.renameFile(
                     oldFilename = "${Directories.INBOUND.value}/${batchType.fileName}",

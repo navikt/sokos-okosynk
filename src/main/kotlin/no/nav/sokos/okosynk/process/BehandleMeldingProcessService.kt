@@ -1,13 +1,10 @@
 package no.nav.sokos.okosynk.process
 
-import kotlinx.coroutines.runBlocking
-
 import mu.KotlinLogging
 
 import no.nav.sokos.okosynk.config.RegelverkConfig
 import no.nav.sokos.okosynk.config.TEAM_LOGS_MARKER
 import no.nav.sokos.okosynk.domain.BatchType
-import no.nav.sokos.okosynk.domain.BatchTypeContext
 import no.nav.sokos.okosynk.domain.GjelderIdType
 import no.nav.sokos.okosynk.domain.Melding
 import no.nav.sokos.okosynk.domain.MeldingKriterier
@@ -25,9 +22,10 @@ private val logger = KotlinLogging.logger { }
 class BehandleMeldingProcessService(
     private val pdlClientService: PdlClientService = PdlClientService(),
 ) : Chain<List<Melding>, Set<MeldingOppgave>> {
-    override fun process(meldingList: List<Melding>): Set<MeldingOppgave> {
-        val batchType = BatchTypeContext.get()
-
+    override suspend fun process(
+        batchType: BatchType,
+        meldingList: List<Melding>,
+    ): Set<MeldingOppgave> {
         logger.info { "${batchType.oppgaveType} - Start BehandleMeldingProcessService " }
         val regelverkMap = if (batchType == BatchType.OS) RegelverkConfig.regelverkOSMap else RegelverkConfig.regelverkURMap
         val meldingOppgaveSet =
@@ -35,7 +33,7 @@ class BehandleMeldingProcessService(
                 .sortedByDescending { melding -> melding.sammenligningsDato() }
                 .filter { melding -> regelverkMap[melding.ruleKey()] != null }
                 .groupBy { melding -> MeldingKriterier(melding) }
-                .mapNotNull { (_, value) -> opprettMeldingOppgave(value, regelverkMap) }
+                .mapNotNull { (_, value) -> opprettMeldingOppgave(batchType, value, regelverkMap) }
                 .also { oppgave ->
                     logger.info { "Antall konvertert oppgaver for batchType: $batchType: ${oppgave.size}" }
                     Metrics.counter("konvertert_oppgave_${batchType.opprettetAv}").inc(oppgave.size.toLong())
@@ -48,18 +46,17 @@ class BehandleMeldingProcessService(
         return meldingOppgaveSet
     }
 
-    private fun hentAktoer(gjelderId: String): String? =
-        runBlocking {
-            runCatching {
-                pdlClientService.hentIdenter(gjelderId)
-            }.getOrElse { exception ->
-                logger.error { "Feil ved henting av aktørid, sjekk secureLogger" }
-                logger.error(marker = TEAM_LOGS_MARKER, exception) { "Feil ved henting av aktørid for gjelderId: $gjelderId" }
-                null
-            }
+    private suspend fun getAktoer(gjelderId: String): String? =
+        runCatching {
+            pdlClientService.hentIdenter(gjelderId)
+        }.getOrElse { exception ->
+            logger.error { "Feil ved henting av aktørid, sjekk secureLogger" }
+            logger.error(marker = TEAM_LOGS_MARKER, exception) { "Feil ved henting av aktørid for gjelderId: $gjelderId" }
+            null
         }
 
-    private fun opprettMeldingOppgave(
+    private suspend fun opprettMeldingOppgave(
+        batchType: BatchType,
         meldingList: List<Melding>,
         regelverkMap: Map<String, Regelverk>,
     ): MeldingOppgave? {
@@ -72,12 +69,12 @@ class BehandleMeldingProcessService(
                 behandlingstype = regelverk?.behandlingstype,
                 tildeltEnhetsnr = regelverk?.ansvarligEnhetId,
                 beskrivelse = melding.beskrivelse(meldingList),
-                oppgavetype = BatchTypeContext.get().oppgaveType,
+                oppgavetype = batchType.oppgaveType,
                 opprettetAvEnhetsnr = ENHET_ID_FOR_ANDRE_EKSTERNE,
             )
 
         return when (GjelderIdType.value(melding.gjelderId)) {
-            GjelderIdType.AKTORID -> hentAktoer(melding.gjelderId)?.let { aktoerId -> meldingOppgave.copy(aktoerId = aktoerId) }
+            GjelderIdType.AKTORID -> getAktoer(melding.gjelderId)?.let { aktoerId -> meldingOppgave.copy(aktoerId = aktoerId) }
             GjelderIdType.ORGANISASJON -> meldingOppgave.copy(orgnr = melding.gjelderId)
             GjelderIdType.SAMHANDLER -> meldingOppgave.copy(samhandlernr = melding.gjelderId)
             else -> meldingOppgave.copy(personIdent = melding.gjelderId)

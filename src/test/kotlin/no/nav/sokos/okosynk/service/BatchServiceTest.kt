@@ -1,6 +1,5 @@
 package no.nav.sokos.okosynk.service
 
-import FileProcessService
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.equalTo
 import com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor
@@ -27,6 +26,7 @@ import no.nav.sokos.okosynk.listener.WireMockListener
 import no.nav.sokos.okosynk.listener.WireMockListener.wiremock
 import no.nav.sokos.okosynk.process.BehandleMeldingProcessService
 import no.nav.sokos.okosynk.process.BehandleOppgaveProcessService
+import no.nav.sokos.okosynk.process.FileProcessService
 import no.nav.sokos.okosynk.util.Utils.readFromResource
 
 class BatchServiceTest :
