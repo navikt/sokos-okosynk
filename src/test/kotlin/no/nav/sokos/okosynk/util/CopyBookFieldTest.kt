@@ -19,9 +19,9 @@ class CopyBookFieldTest :
             val decimalField: Double?,
             @CopyBookField(name = "specialField", startIndex = 34, endIndex = 42, type = CopyBookType.SPECIAL)
             val specialField: Double?,
-            @CopyBookField(name = "organizationField", startIndex = 42, endIndex = 53, type = CopyBookType.GJERLDER_ID)
+            @CopyBookField(name = "organizationField", startIndex = 42, endIndex = 53, type = CopyBookType.GJELDER_ID)
             val organizationField: String,
-            @CopyBookField(name = "gjelderIdField", startIndex = 53, endIndex = 64, type = CopyBookType.GJERLDER_ID)
+            @CopyBookField(name = "gjelderIdField", startIndex = 53, endIndex = 64, type = CopyBookType.GJELDER_ID)
             val gjelderIdField: String,
         )
 

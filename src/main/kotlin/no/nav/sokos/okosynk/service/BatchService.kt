@@ -1,17 +1,18 @@
 package no.nav.sokos.okosynk.service
 
 import java.time.LocalDateTime
+import java.util.concurrent.TimeUnit
 
-import FileProcessService
 import mu.KotlinLogging
 
+import no.nav.sokos.okosynk.config.PropertiesConfig
 import no.nav.sokos.okosynk.domain.BatchType
-import no.nav.sokos.okosynk.domain.BatchTypeContext
 import no.nav.sokos.okosynk.integration.Directories
 import no.nav.sokos.okosynk.integration.FtpService
 import no.nav.sokos.okosynk.metrics.Metrics
 import no.nav.sokos.okosynk.process.BehandleMeldingProcessService
 import no.nav.sokos.okosynk.process.BehandleOppgaveProcessService
+import no.nav.sokos.okosynk.process.FileProcessService
 import no.nav.sokos.okosynk.util.TraceUtils
 import no.nav.sokos.okosynk.util.Utils.toISO
 
@@ -24,44 +25,56 @@ class BatchService(
     private val behandleMeldingProcessService: BehandleMeldingProcessService = BehandleMeldingProcessService(),
     private val behandleOppgaveProcessService: BehandleOppgaveProcessService = BehandleOppgaveProcessService(),
 ) {
-    fun run() {
-        val batchTypeList = BatchType.entries.filter { it != BatchType.UNKOWN }
+    suspend fun run() {
+        val profile = PropertiesConfig.configuration.profile
+        val batchTypeList = BatchType.entries.filter { it != BatchType.UNKNOWN }
 
         runCatching {
             batchTypeList.forEach { batchType ->
                 TraceUtils.withTracerId {
-                    Metrics.timer("batch_${batchType.opprettetAv}").recordCallable { processBatch(batchType) }
+                    val startNanos = System.nanoTime()
+                    processBatch(batchType, profile)
+                    Metrics
+                        .timer("batch_${batchType.opprettetAv}")
+                        .record(System.nanoTime() - startNanos, TimeUnit.NANOSECONDS)
                 }
             }
         }.onFailure { exception ->
             logger.error(exception) { "Feil ved behandling fil fra OS/UR" }
-        }.also {
-            BatchTypeContext.clear()
         }
     }
 
-    private fun processBatch(batchType: BatchType) {
-        logger.info { "Starter nedlasting av filnavn: ${batchType.fileName}" }
-        val meldingFile = ftpService.downloadFiles(fileName = batchType.fileName)
+    private suspend fun processBatch(
+        batchType: BatchType,
+        profile: PropertiesConfig.Profile,
+    ) {
+        val fileName = batchType.getFileName(profile)
+        logger.info { "Starter nedlasting av filnavn: $fileName" }
+        val meldingFile = ftpService.downloadFiles(fileName = fileName)
 
         when {
-            meldingFile.isEmpty() -> logger.info { "Ingen fil med filnavn: ${batchType.fileName} fins til behandling, synking avsluttes" }
-            meldingFile.size > MAX_ANTALL_LINJER -> logger.error { "Fil ${batchType.fileName} overskrider maks antall linjer: ($MAX_ANTALL_LINJER)" }
-            else -> {
-                logger.info { "Start synk ${batchType.fileName} med Oppgave" }
+            meldingFile.isEmpty() -> {
+                logger.info { "Ingen fil med filnavn: $fileName fins til behandling, synking avsluttes" }
+            }
 
-                BatchTypeContext.set(batchType)
+            meldingFile.size > MAX_ANTALL_LINJER -> {
+                logger.error { "Fil $fileName overskrider maks antall linjer: ($MAX_ANTALL_LINJER)" }
+            }
+
+            else -> {
+                logger.info { "Start synk $fileName med Oppgave" }
+
                 meldingFile
-                    .run { fileProcessService.process(this) }
-                    .run { behandleMeldingProcessService.process(this) }
-                    .run { behandleOppgaveProcessService.process(this) }
+                    .run { fileProcessService.process(batchType, this) }
+                    .run { behandleMeldingProcessService.process(batchType, this) }
+                    .run { behandleOppgaveProcessService.process(batchType, this) }
 
                 ftpService.renameFile(
-                    oldFilename = "${Directories.INBOUND.value}/${batchType.fileName}",
-                    newFilename = "${Directories.INBOUND.value}/${batchType.fileName}.${LocalDateTime.now().toISO()}",
+                    oldFilename = "${Directories.INBOUND.value}/$fileName",
+                    newFilename = "${Directories.INBOUND.value}/$fileName.${LocalDateTime.now().toISO()}",
                 )
 
-                logger.info { "Ferdig synk ${batchType.fileName} med Oppgave" }
+                logger.info { "Ferdig synk $fileName med Oppgave" }
             }
         }
     }

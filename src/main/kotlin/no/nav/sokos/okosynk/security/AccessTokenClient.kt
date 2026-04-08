@@ -36,7 +36,7 @@ private const val GRANT_TYPE = "grant_type"
 private const val CLIENT_CREDENTIALS = "client_credentials"
 
 class AccessTokenClient(
-    private val azureAdProperties: PropertiesConfig.AzureAdProperties = PropertiesConfig.AzureAdProperties(),
+    private val azureAdProperties: PropertiesConfig.AzureAdProperties = PropertiesConfig.azureAdProperties,
     private val azureAdScope: String,
     private val client: HttpClient = httpClient,
     private val azureAdAccessTokenUrl: String = "https://login.microsoftonline.com/${azureAdProperties.tenantId}/oauth2/v2.0/token",

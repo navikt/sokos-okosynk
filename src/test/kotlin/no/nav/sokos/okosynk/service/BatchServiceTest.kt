@@ -1,6 +1,5 @@
 package no.nav.sokos.okosynk.service
 
-import FileProcessService
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.equalTo
 import com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor
@@ -16,6 +15,7 @@ import io.kotest.matchers.shouldBe
 
 import no.nav.sokos.okosynk.OPPGAVE_URL
 import no.nav.sokos.okosynk.WireMockTestData
+import no.nav.sokos.okosynk.config.PropertiesConfig.configuration
 import no.nav.sokos.okosynk.config.SftpConfig
 import no.nav.sokos.okosynk.domain.BatchType
 import no.nav.sokos.okosynk.integration.Directories
@@ -27,6 +27,7 @@ import no.nav.sokos.okosynk.listener.WireMockListener
 import no.nav.sokos.okosynk.listener.WireMockListener.wiremock
 import no.nav.sokos.okosynk.process.BehandleMeldingProcessService
 import no.nav.sokos.okosynk.process.BehandleOppgaveProcessService
+import no.nav.sokos.okosynk.process.FileProcessService
 import no.nav.sokos.okosynk.util.Utils.readFromResource
 
 class BatchServiceTest :
@@ -68,7 +69,8 @@ class BatchServiceTest :
         test("BatchService run should process batches without error") {
             // Create test files in sftp server
             val osInputFile = "sftp/OS.INPUT".readFromResource()
-            SftpListener.createFile(BatchType.OS.fileName, Directories.INBOUND, osInputFile)
+            val fileName = BatchType.OS.getFileName(configuration.profile)
+            SftpListener.createFile(fileName, Directories.INBOUND, osInputFile)
 
             // Mock Pdl and Oppgave responses
             WireMockTestData.hentPersonWireMock()
@@ -90,13 +92,13 @@ class BatchServiceTest :
             // FERDIGSTILT Oppgave for 4 times
             verify(4, patchRequestedFor(urlPathMatching("$OPPGAVE_URL/\\d+")).withRequestBody(matchingJsonPath("$.status", equalTo("FERDIGSTILT"))))
 
-            SftpListener.searchFile(BatchType.OS.fileName) shouldBe true
+            SftpListener.searchFile(fileName) shouldBe true
         }
 
         test("BatchService run should not process when no meldingFile is found") {
-            val batchTypeList = BatchType.entries.filter { it != BatchType.UNKOWN }
+            val batchTypeList = BatchType.entries.filter { it != BatchType.UNKNOWN }
             batchTypeList.forEach {
-                ftpService.downloadFiles(it.fileName).shouldBeEmpty()
+                ftpService.downloadFiles(it.getFileName(configuration.profile)).shouldBeEmpty()
             }
 
             WireMockTestData.hentPersonWireMock()
@@ -115,8 +117,9 @@ class BatchServiceTest :
             val osInputFile = "sftp/OS.INPUT".readFromResource()
             val lines = osInputFile.lines().filter { it.isNotBlank() }
             val oversizeInput = List(MAX_ANTALL_LINJER + 1) { lines[it % lines.size] }.joinToString("\n")
+            val fileName = BatchType.OS.getFileName(configuration.profile)
 
-            SftpListener.createFile(BatchType.OS.fileName, Directories.INBOUND, oversizeInput)
+            SftpListener.createFile(fileName, Directories.INBOUND, oversizeInput)
 
             WireMockTestData.hentPersonWireMock()
             WireMockTestData.sokOppgaveWireMock()
@@ -129,6 +132,6 @@ class BatchServiceTest :
             verify(0, postRequestedFor(urlEqualTo(OPPGAVE_URL)))
             verify(0, patchRequestedFor(urlPathMatching("$OPPGAVE_URL/\\d+")))
 
-            SftpListener.searchFile(BatchType.OS.fileName) shouldBe true
+            SftpListener.searchFile(fileName) shouldBe true
         }
     })

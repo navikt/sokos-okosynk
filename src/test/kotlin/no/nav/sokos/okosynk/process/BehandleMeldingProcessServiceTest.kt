@@ -10,7 +10,6 @@ import io.kotest.matchers.shouldBe
 import no.nav.sokos.okosynk.TestData
 import no.nav.sokos.okosynk.WireMockTestData.hentPersonWireMock
 import no.nav.sokos.okosynk.domain.BatchType
-import no.nav.sokos.okosynk.domain.BatchTypeContext
 import no.nav.sokos.okosynk.domain.Melding
 import no.nav.sokos.okosynk.domain.OsMelding
 import no.nav.sokos.okosynk.domain.UrMelding
@@ -35,10 +34,6 @@ class BehandleMeldingProcessServiceTest :
             BehandleMeldingProcessService(pdlClientService = pdlClientService)
         }
 
-        beforeTest {
-            BatchTypeContext.set(BatchType.OS)
-        }
-
         test("behandleMeldingProcessService process should convert Melding to MeldingOppgave") {
             wiremock.resetAll()
             hentPersonWireMock()
@@ -47,7 +42,7 @@ class BehandleMeldingProcessServiceTest :
             val osMeldingList = osInput.lines().map { it.toDataClass<OsMelding>() }
             osMeldingList.size shouldBe 20
 
-            val meldingOppgaveSet = behandleMeldingProcessService.process(osMeldingList)
+            val meldingOppgaveSet = behandleMeldingProcessService.process(BatchType.OS, osMeldingList)
 
             meldingOppgaveSet.size shouldBe 11
             meldingOppgaveSet.toList()[0].behandlingstema shouldBe null
@@ -71,7 +66,7 @@ class BehandleMeldingProcessServiceTest :
             val osMeldingList = osInput.lines().map { it.toDataClass<OsMelding>() }
             osMeldingList.size shouldBe 20
 
-            val meldingOppgaveSet = behandleMeldingProcessService.process(osMeldingList)
+            val meldingOppgaveSet = behandleMeldingProcessService.process(BatchType.OS, osMeldingList)
             meldingOppgaveSet.shouldBeEmpty()
         }
 
@@ -79,13 +74,11 @@ class BehandleMeldingProcessServiceTest :
             wiremock.resetAll()
             hentPersonWireMock()
 
-            BatchTypeContext.set(BatchType.UR)
-
             val urInput = "sftp/UR.INPUT".readFromResource()
             val urMeldingList = urInput.lines().map { it.toDataClass<UrMelding>() }
             urMeldingList.size shouldBe 21
 
-            val meldingOppgaveList = behandleMeldingProcessService.process(urMeldingList)
+            val meldingOppgaveList = behandleMeldingProcessService.process(BatchType.UR, urMeldingList)
             meldingOppgaveList.size shouldBe 20
             WireMock.verify(18, WireMock.postRequestedFor(WireMock.urlEqualTo("/graphql")))
         }

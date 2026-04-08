@@ -45,10 +45,16 @@ object PropertiesConfig {
 
     fun getOrEmpty(key: String): String = config.getOrElse(Key(key, stringType), "")
 
+    val configuration: Configuration by lazy { Configuration() }
+    val schedulerProperties: SchedulerProperties by lazy { SchedulerProperties() }
+    val sftpProperties: SftpProperties by lazy { SftpProperties() }
+    val pdlProperties: PdlProperties by lazy { PdlProperties() }
+    val oppgaveProperties: OppgaveProperties by lazy { OppgaveProperties() }
+    val azureAdProperties: AzureAdProperties = AzureAdProperties()
+
     data class Configuration(
         val naisAppName: String = get("NAIS_APP_NAME"),
         val profile: Profile = Profile.valueOf(get("APPLICATION_PROFILE")),
-        val azureAdProperties: AzureAdProperties = AzureAdProperties(),
     )
 
     class AzureAdProperties(
@@ -67,7 +73,7 @@ object PropertiesConfig {
         val host: String = getOrEmpty("SFTP_SERVER"),
         val username: String = getOrEmpty("SFTP_USERNAME"),
         val privateKey: String = getOrEmpty("SFTP_PRIVATE_KEY"),
-        val port: Int = getOrEmpty("SFTP_PORT").toInt(),
+        val port: Int = get("SFTP_PORT").toIntOrNull() ?: 22,
     )
 
     data class PdlProperties(

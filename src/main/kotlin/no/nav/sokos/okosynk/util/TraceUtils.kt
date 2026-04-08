@@ -10,10 +10,10 @@ import org.slf4j.MDC
 object TraceUtils {
     private val openTelemetry = GlobalOpenTelemetry.get()
 
-    fun <T> withTracerId(
+    suspend fun <T> withTracerId(
         tracer: Tracer = openTelemetry.getTracer(this::class.java.canonicalName),
         spanName: String = "withTracerId",
-        block: () -> T,
+        block: suspend () -> T,
     ): T {
         val span = tracer.spanBuilder(spanName).startSpan()
         val context = span.spanContext

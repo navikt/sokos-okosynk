@@ -15,7 +15,7 @@ import mu.KotlinLogging
 import org.slf4j.MDC
 
 import no.nav.pdl.HentIdenter
-import no.nav.sokos.okosynk.config.PropertiesConfig
+import no.nav.sokos.okosynk.config.PropertiesConfig.pdlProperties
 import no.nav.sokos.okosynk.config.httpClient
 import no.nav.sokos.okosynk.exception.PdlException
 import no.nav.sokos.okosynk.integration.model.GraphQLResponse
@@ -24,8 +24,8 @@ import no.nav.sokos.okosynk.security.AccessTokenClient
 private val logger = KotlinLogging.logger {}
 
 class PdlClientService(
-    private val pdlUrl: String = PropertiesConfig.PdlProperties().pdlUrl,
-    private val pdlScope: String = PropertiesConfig.PdlProperties().pdlScope,
+    private val pdlUrl: String = pdlProperties.pdlUrl,
+    private val pdlScope: String = pdlProperties.pdlScope,
     private val client: HttpClient = httpClient,
     private val accessTokenClient: AccessTokenClient = AccessTokenClient(azureAdScope = pdlScope),
 ) {
@@ -63,8 +63,7 @@ class PdlClientService(
     }
 
     private fun handleErrors(errors: List<GraphQLClientError>) {
-        val errorMessage = errors.joinToString { it.message }
-        val exceptionMessage = errorMessage
+        val exceptionMessage = errors.joinToString { it.message }
         throw PdlException(exceptionMessage)
     }
 }

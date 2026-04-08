@@ -13,13 +13,12 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
 import no.nav.sokos.okosynk.OPPGAVE_URL
-import no.nav.sokos.okosynk.TestData.medlingOppgaveMedOrgnr
 import no.nav.sokos.okosynk.TestData.meldingOppgave
+import no.nav.sokos.okosynk.TestData.meldingOppgaveMedOrgnr
 import no.nav.sokos.okosynk.WireMockTestData.oppdaterOppgaveWireMock
 import no.nav.sokos.okosynk.WireMockTestData.opprettOppgaveWireMock
 import no.nav.sokos.okosynk.WireMockTestData.sokOppgaveWireMock
 import no.nav.sokos.okosynk.domain.BatchType
-import no.nav.sokos.okosynk.domain.BatchTypeContext
 import no.nav.sokos.okosynk.domain.MeldingOppgave
 import no.nav.sokos.okosynk.integration.OppgaveClientService
 import no.nav.sokos.okosynk.listener.WireMockListener
@@ -42,7 +41,6 @@ class BehandleOppgaveProcessServiceTest :
         }
 
         beforeTest {
-            BatchTypeContext.set(BatchType.OS)
             wiremock.resetAll()
         }
 
@@ -53,7 +51,7 @@ class BehandleOppgaveProcessServiceTest :
             oppdaterOppgaveWireMock()
 
             val meldingOppgaveSet = setOf(meldingOppgave)
-            behandleOppgaveProcessService.process(meldingOppgaveSet)
+            behandleOppgaveProcessService.process(BatchType.OS, meldingOppgaveSet)
 
             verify(2, getRequestedFor(urlPathMatching("$OPPGAVE_URL.*")))
             verify(1, postRequestedFor(urlEqualTo(OPPGAVE_URL)))
@@ -66,7 +64,7 @@ class BehandleOppgaveProcessServiceTest :
             oppdaterOppgaveWireMock()
 
             val meldingOppgaveSet = setOf(meldingOppgave)
-            behandleOppgaveProcessService.process(meldingOppgaveSet)
+            behandleOppgaveProcessService.process(BatchType.OS, meldingOppgaveSet)
 
             verify(1, getRequestedFor(urlPathMatching("$OPPGAVE_URL.*")))
             verify(1, postRequestedFor(urlEqualTo(OPPGAVE_URL)))
@@ -79,8 +77,8 @@ class BehandleOppgaveProcessServiceTest :
             opprettOppgaveWireMock()
             oppdaterOppgaveWireMock()
 
-            val meldingOppgaveSet = setOf(medlingOppgaveMedOrgnr)
-            behandleOppgaveProcessService.process(meldingOppgaveSet)
+            val meldingOppgaveSet = setOf(meldingOppgaveMedOrgnr)
+            behandleOppgaveProcessService.process(BatchType.OS, meldingOppgaveSet)
 
             verify(2, getRequestedFor(urlPathMatching("$OPPGAVE_URL.*")))
             verify(0, postRequestedFor(urlEqualTo(OPPGAVE_URL)))
@@ -105,7 +103,7 @@ class BehandleOppgaveProcessServiceTest :
                         opprettetAvEnhetsnr = "9999",
                         aktoerId = "1000091768276",
                         personIdent = "42126902896",
-                        oppgavetype = BatchTypeContext.get().oppgaveType,
+                        oppgavetype = BatchType.OS.oppgaveType,
                     ),
                     MeldingOppgave(
                         behandlingstype = "ae0216",
@@ -113,7 +111,7 @@ class BehandleOppgaveProcessServiceTest :
                         opprettetAvEnhetsnr = "9999",
                         aktoerId = "1000010121748",
                         personIdent = "13015519732",
-                        oppgavetype = BatchTypeContext.get().oppgaveType,
+                        oppgavetype = BatchType.OS.oppgaveType,
                     ),
                     MeldingOppgave(
                         behandlingstype = "ae0216",
@@ -121,10 +119,10 @@ class BehandleOppgaveProcessServiceTest :
                         opprettetAvEnhetsnr = "9999",
                         aktoerId = "1000045346097",
                         personIdent = "16123635756",
-                        oppgavetype = BatchTypeContext.get().oppgaveType,
+                        oppgavetype = BatchType.OS.oppgaveType,
                     ),
                 )
-            behandleOppgaveProcessService.process(meldingOppgaveSet)
+            behandleOppgaveProcessService.process(BatchType.OS, meldingOppgaveSet)
 
             verify(0, postRequestedFor(urlEqualTo(OPPGAVE_URL)))
             verify(
@@ -144,34 +142,14 @@ class BehandleOppgaveProcessServiceTest :
         test("should insert kode from original description into new description") {
             val original = "foo;KODE123456;bar"
             val newDesc = "ny_beskrivelse;;mer"
-            val result =
-                behandleOppgaveProcessService.run {
-                    val method =
-                        BehandleOppgaveProcessService::class.java.getDeclaredMethod(
-                            "updateBeskrivelseMedKode",
-                            String::class.java,
-                            String::class.java,
-                        )
-                    method.isAccessible = true
-                    method.invoke(this, original, newDesc) as String
-                }
+            val result = behandleOppgaveProcessService.updateBeskrivelseMedKode(original, newDesc)
             result shouldBe "ny_beskrivelse;KODE123456;mer"
         }
 
         test("should insert empty kode if original description has no code") {
             val original = "foo;bar"
             val newDesc = "ny_beskrivelse;;mer"
-            val result =
-                behandleOppgaveProcessService.run {
-                    val method =
-                        BehandleOppgaveProcessService::class.java.getDeclaredMethod(
-                            "updateBeskrivelseMedKode",
-                            String::class.java,
-                            String::class.java,
-                        )
-                    method.isAccessible = true
-                    method.invoke(this, original, newDesc) as String
-                }
+            val result = behandleOppgaveProcessService.updateBeskrivelseMedKode(original, newDesc)
             result shouldBe "ny_beskrivelse;;mer"
         }
     })
