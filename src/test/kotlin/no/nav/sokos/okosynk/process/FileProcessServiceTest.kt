@@ -36,9 +36,9 @@ class FileProcessServiceTest :
 
             val exception =
                 shouldThrow<OppgaveException> {
-                    fileProcessService.process(BatchType.UNKOWN, meldingList)
+                    fileProcessService.process(BatchType.UNKNOWN, meldingList)
                 }
 
-            exception.message shouldBe "Ukjent filname: UNKNOWN"
+            exception.message shouldBe "Ukjent filnavn: UNKNOWN"
         }
     })

@@ -5,7 +5,6 @@ import java.math.RoundingMode
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeFormatterBuilder
 
 import mu.KotlinLogging
 
@@ -51,20 +50,19 @@ object CopyBookParseUtil {
         }.getOrDefault(0.00).let { BigDecimal(it).setScale(2, RoundingMode.HALF_UP).toDouble() }
     }
 
-    fun String.toLocalDate(): LocalDate? =
-        runCatching {
-            val value =
-                this.ifBlank { null }.let {
-                    val formatter =
-                        DateTimeFormatterBuilder()
-                            .appendOptional(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"))
-                            .appendOptional(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-                            .toFormatter()
-                    this
-                        .takeIf { it.contains("T") }
-                        ?.let { LocalDateTime.parse(this, formatter).toLocalDate() }
-                        ?: LocalDate.parse(this, formatter)
-                }
-            value
+    fun String.toLocalDate(): LocalDate? {
+        val input = trim()
+        if (input.isEmpty()) return null
+
+        val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+        val dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE
+
+        return runCatching {
+            if ('T' in input) {
+                LocalDateTime.parse(input, dateTimeFormatter).toLocalDate()
+            } else {
+                LocalDate.parse(input, dateFormatter)
+            }
         }.getOrNull()
+    }
 }

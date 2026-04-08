@@ -13,8 +13,8 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
 import no.nav.sokos.okosynk.OPPGAVE_URL
-import no.nav.sokos.okosynk.TestData.medlingOppgaveMedOrgnr
 import no.nav.sokos.okosynk.TestData.meldingOppgave
+import no.nav.sokos.okosynk.TestData.meldingOppgaveMedOrgnr
 import no.nav.sokos.okosynk.WireMockTestData.oppdaterOppgaveWireMock
 import no.nav.sokos.okosynk.WireMockTestData.opprettOppgaveWireMock
 import no.nav.sokos.okosynk.WireMockTestData.sokOppgaveWireMock
@@ -77,7 +77,7 @@ class BehandleOppgaveProcessServiceTest :
             opprettOppgaveWireMock()
             oppdaterOppgaveWireMock()
 
-            val meldingOppgaveSet = setOf(medlingOppgaveMedOrgnr)
+            val meldingOppgaveSet = setOf(meldingOppgaveMedOrgnr)
             behandleOppgaveProcessService.process(BatchType.OS, meldingOppgaveSet)
 
             verify(2, getRequestedFor(urlPathMatching("$OPPGAVE_URL.*")))
@@ -142,34 +142,14 @@ class BehandleOppgaveProcessServiceTest :
         test("should insert kode from original description into new description") {
             val original = "foo;KODE123456;bar"
             val newDesc = "ny_beskrivelse;;mer"
-            val result =
-                behandleOppgaveProcessService.run {
-                    val method =
-                        BehandleOppgaveProcessService::class.java.getDeclaredMethod(
-                            "updateBeskrivelseMedKode",
-                            String::class.java,
-                            String::class.java,
-                        )
-                    method.isAccessible = true
-                    method.invoke(this, original, newDesc) as String
-                }
+            val result = behandleOppgaveProcessService.updateBeskrivelseMedKode(original, newDesc)
             result shouldBe "ny_beskrivelse;KODE123456;mer"
         }
 
         test("should insert empty kode if original description has no code") {
             val original = "foo;bar"
             val newDesc = "ny_beskrivelse;;mer"
-            val result =
-                behandleOppgaveProcessService.run {
-                    val method =
-                        BehandleOppgaveProcessService::class.java.getDeclaredMethod(
-                            "updateBeskrivelseMedKode",
-                            String::class.java,
-                            String::class.java,
-                        )
-                    method.isAccessible = true
-                    method.invoke(this, original, newDesc) as String
-                }
+            val result = behandleOppgaveProcessService.updateBeskrivelseMedKode(original, newDesc)
             result shouldBe "ny_beskrivelse;;mer"
         }
     })

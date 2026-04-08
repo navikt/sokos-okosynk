@@ -7,16 +7,18 @@ import com.jcraft.jsch.Session
 import mu.KotlinLogging
 import org.slf4j.LoggerFactory
 
+import no.nav.sokos.okosynk.config.PropertiesConfig.sftpProperties
+
 private val logger = KotlinLogging.logger {}
 private const val CHANNEL_TYPE = "sftp"
 
 class SftpConfig(
-    private val sftpProperties: PropertiesConfig.SftpProperties = PropertiesConfig.SftpProperties(),
+    private val properties: PropertiesConfig.SftpProperties = sftpProperties,
 ) {
     private val jsch: JSch =
         JSch().apply {
             JSch.setLogger(JSchLogger())
-            addIdentity(sftpProperties.privateKey)
+            addIdentity(properties.privateKey)
         }
 
     fun <T> channel(operation: (ChannelSftp) -> T): T {
@@ -25,12 +27,12 @@ class SftpConfig(
 
         try {
             session =
-                jsch.getSession(sftpProperties.username, sftpProperties.host, sftpProperties.port).apply {
+                jsch.getSession(properties.username, properties.host, properties.port).apply {
                     setConfig("StrictHostKeyChecking", "no")
                     connect()
                 }
             sftpChannel = (session.openChannel(CHANNEL_TYPE) as ChannelSftp).apply { connect() }
-            logger.debug { "Åpner session på host: ${sftpProperties.host}:${sftpProperties.port}" }
+            logger.debug { "Åpner session på host: ${properties.host}:${properties.port}" }
             return operation(sftpChannel)
         } finally {
             sftpChannel?.disconnect()

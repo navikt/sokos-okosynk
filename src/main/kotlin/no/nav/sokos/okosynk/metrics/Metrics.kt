@@ -39,11 +39,10 @@ object Metrics {
 
     fun initMetrics() {
         BatchType.entries
-            .filter { it != BatchType.UNKOWN }
+            .filter { it != BatchType.UNKNOWN }
             .forEach { batchType ->
                 timer("batch_${batchType.opprettetAv}")
                 counter("les_melding_${batchType.opprettetAv}")
-                counter("ferdigstilt_oppgave_${batchType.opprettetAv}")
                 counter("konvertert_oppgave_${batchType.opprettetAv}")
                 counter("opprett_oppgave_${batchType.opprettetAv}")
                 counter("ferdigstilt_oppgave_${batchType.opprettetAv}")

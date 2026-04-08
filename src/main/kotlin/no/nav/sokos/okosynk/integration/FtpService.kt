@@ -2,11 +2,10 @@ package no.nav.sokos.okosynk.integration
 
 import java.io.ByteArrayOutputStream
 
-import com.jcraft.jsch.SftpException
 import mu.KotlinLogging
 
 import no.nav.sokos.okosynk.config.SftpConfig
-import no.nav.sokos.okosynk.exception.SFtpException
+import no.nav.sokos.okosynk.exception.SftpException
 
 private val logger = KotlinLogging.logger {}
 
@@ -26,10 +25,10 @@ class FtpService(
         sftpConfig.channel { connector ->
             runCatching {
                 connector.rename(oldFilename, newFilename)
-                logger.debug { "Filen endre navn fra $oldFilename til $oldFilename" }
+                logger.debug { "Filen endre navn fra $oldFilename til $newFilename" }
             }.onFailure { exception ->
                 logger.error { "Feil til endre filnavn fra $oldFilename til $newFilename. Feil: ${exception.message}" }
-                throw SFtpException("SFTP-feil: $exception")
+                throw SftpException("SFTP-feil: $exception")
             }
         }
     }
@@ -59,7 +58,7 @@ class FtpService(
                 }
             } catch (exception: SftpException) {
                 logger.error { "$fileName ble ikke hentet. Feilmelding: ${exception.message}" }
-                throw SFtpException("SFtp-feil: $exception", exception)
+                throw SftpException("SFtp-feil: $exception", exception)
             }
         }
     }

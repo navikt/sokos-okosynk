@@ -10,7 +10,7 @@ class PdlException(
     cause: Throwable? = null,
 ) : Exception(message, cause)
 
-class SFtpException(
+class SftpException(
     message: String,
     cause: Throwable? = null,
 ) : Exception(message, cause)

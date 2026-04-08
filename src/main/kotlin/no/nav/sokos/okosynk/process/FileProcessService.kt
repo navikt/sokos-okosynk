@@ -2,6 +2,7 @@ package no.nav.sokos.okosynk.process
 
 import mu.KotlinLogging
 
+import no.nav.sokos.okosynk.config.PropertiesConfig.configuration
 import no.nav.sokos.okosynk.domain.BatchType
 import no.nav.sokos.okosynk.domain.Melding
 import no.nav.sokos.okosynk.domain.OsMelding
@@ -17,16 +18,23 @@ class FileProcessService : Chain<List<String>, List<Melding>> {
         batchType: BatchType,
         meldingList: List<String>,
     ): List<Melding> {
-        logger.info { "Start FileProcessService " }
-        return when (batchType.fileName) {
-            BatchType.OS.fileName -> meldingList.map { it.toDataClass<OsMelding>() }
-            BatchType.UR.fileName -> meldingList.map { it.toDataClass<UrMelding>() }
+        val fileName = batchType.getFileName(configuration.profile)
+        logger.info { "Start FileProcessService for filnavn: $fileName" }
+        return when (batchType) {
+            BatchType.OS -> {
+                meldingList.map { it.toDataClass<OsMelding>() }
+            }
+
+            BatchType.UR -> {
+                meldingList.map { it.toDataClass<UrMelding>() }
+            }
+
             else -> {
                 logger.error { "Ukjent filnavn: ${batchType.oppgaveType}" }
-                throw OppgaveException("Ukjent filname: ${batchType.oppgaveType}")
+                throw OppgaveException("Ukjent filnavn: ${batchType.oppgaveType}")
             }
         }.also {
-            logger.info { "Antall meldinger i ${batchType.fileName}: ${meldingList.size}" }
+            logger.info { "Antall meldinger i $fileName: ${meldingList.size}" }
             Metrics.counter("les_melding_${batchType.opprettetAv}").inc(meldingList.size.toLong())
         }
     }

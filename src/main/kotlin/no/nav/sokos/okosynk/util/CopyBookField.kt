@@ -1,6 +1,5 @@
 package no.nav.sokos.okosynk.util
 
-import kotlin.div
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.full.primaryConstructor
@@ -23,7 +22,7 @@ enum class CopyBookType {
     DATE,
     DECIMAL,
     SPECIAL,
-    GJERLDER_ID,
+    GJELDER_ID,
 }
 
 inline fun <reified T : Any> String.toDataClass(): T {
@@ -38,16 +37,11 @@ inline fun <reified T : Any> String.toDataClass(): T {
             val valueString = this.substring(startIndex, endIndex).trim()
 
             when (annotation.type) {
-                CopyBookType.GJERLDER_ID ->
-                    valueString.takeIf { it.startsWith("00") }?.substring(2) ?: valueString
+                CopyBookType.GJELDER_ID -> valueString.takeIf { it.startsWith("00") }?.substring(2) ?: valueString
                 CopyBookType.INTEGER -> valueString.toIntOrNull()
                 CopyBookType.STRING -> valueString
                 CopyBookType.DATE -> valueString.toLocalDate()
-                CopyBookType.DECIMAL ->
-                    valueString.toDoubleOrNull()?.let { value ->
-                        value / 100.0
-                    }
-
+                CopyBookType.DECIMAL -> valueString.toDoubleOrNull()?.let { value -> value / 100.0 }
                 CopyBookType.SPECIAL -> valueString.parseDouble()
             }
         }

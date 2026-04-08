@@ -26,7 +26,7 @@ import org.testcontainers.shaded.org.bouncycastle.util.io.pem.PemWriter
 
 import no.nav.sokos.okosynk.config.PropertiesConfig
 import no.nav.sokos.okosynk.config.SftpConfig
-import no.nav.sokos.okosynk.exception.SFtpException
+import no.nav.sokos.okosynk.exception.SftpException
 import no.nav.sokos.okosynk.integration.Directories
 
 private val logger = KotlinLogging.logger {}
@@ -110,7 +110,7 @@ object SftpListener : TestListener {
                 logger.debug { "$filename ble opprettet i mappen $path" }
             }.onFailure { exception ->
                 logger.error { "$filename ble ikke opprettet i mappen $path. Feilmelding: ${exception.message}" }
-                throw SFtpException("SFtp-feil: $exception")
+                throw SftpException("SFtp-feil: $exception")
             }
         }
     }

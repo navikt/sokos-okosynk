@@ -22,7 +22,7 @@ import no.nav.oppgave.models.Oppgave
 import no.nav.oppgave.models.OpprettOppgaveRequest
 import no.nav.oppgave.models.PatchOppgaveRequest
 import no.nav.oppgave.models.SokOppgaverResponse
-import no.nav.sokos.okosynk.config.PropertiesConfig
+import no.nav.sokos.okosynk.config.PropertiesConfig.oppgaveProperties
 import no.nav.sokos.okosynk.config.TEAM_LOGS_MARKER
 import no.nav.sokos.okosynk.config.httpClient
 import no.nav.sokos.okosynk.exception.OppgaveException
@@ -34,8 +34,8 @@ private const val STATUSKATEGORI_AAPEN = "AAPEN"
 private val logger: KLogger = KotlinLogging.logger {}
 
 class OppgaveClientService(
-    private val oppgaveUrl: String = PropertiesConfig.OppgaveProperties().oppgaveUrl,
-    private val oppgaveScope: String = PropertiesConfig.OppgaveProperties().oppgaveScope,
+    private val oppgaveUrl: String = oppgaveProperties.oppgaveUrl,
+    private val oppgaveScope: String = oppgaveProperties.oppgaveScope,
     private val client: HttpClient = httpClient,
     private val accessTokenClient: AccessTokenClient = AccessTokenClient(azureAdScope = oppgaveScope),
 ) {
@@ -106,7 +106,7 @@ class OppgaveClientService(
         return runCatching {
             val accessToken = accessTokenClient.getSystemToken()
 
-            logger.info(marker = TEAM_LOGS_MARKER) { "XCorrelationId: $correlationId - Uppdater oppgave request: $request" }
+            logger.info(marker = TEAM_LOGS_MARKER) { "XCorrelationId: $correlationId - Oppdater oppgave request: $request" }
             val response =
                 client.patch("$oppgaveUrl/api/v1/oppgaver/$id") {
                     header(HttpHeaders.Authorization, "Bearer $accessToken")

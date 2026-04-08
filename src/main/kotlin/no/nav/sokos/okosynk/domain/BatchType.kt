@@ -10,14 +10,13 @@ enum class BatchType(
 ) {
     OS("OS.INPUT", "OKO_OS", "okosynkos", 7),
     UR("UR.INPUT", "OKO_UR", "okosynkur", 3),
-    UNKOWN("UNKNOWN", "UNKNOWN", "UNKNOWN", 0),
+    UNKNOWN("UNKNOWN", "UNKNOWN", "UNKNOWN", 0),
     ;
 
-    val fileName: String
-        get() =
-            if (PropertiesConfig.Configuration().profile == PropertiesConfig.Profile.PROD) {
-                rawFileName.lowercase()
-            } else {
-                rawFileName
-            }
+    fun getFileName(profile: PropertiesConfig.Profile): String =
+        if (profile == PropertiesConfig.Profile.PROD) {
+            rawFileName.lowercase()
+        } else {
+            rawFileName
+        }
 }

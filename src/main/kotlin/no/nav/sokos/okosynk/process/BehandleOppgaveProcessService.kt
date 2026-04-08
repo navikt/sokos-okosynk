@@ -11,7 +11,7 @@ import no.nav.oppgave.models.Oppgave
 import no.nav.oppgave.models.OpprettOppgaveRequest
 import no.nav.oppgave.models.OpprettOppgaveRequest.Prioritet
 import no.nav.oppgave.models.PatchOppgaveRequest
-import no.nav.sokos.okosynk.config.PropertiesConfig
+import no.nav.sokos.okosynk.config.PropertiesConfig.configuration
 import no.nav.sokos.okosynk.config.TEAM_LOGS_MARKER
 import no.nav.sokos.okosynk.domain.BatchType
 import no.nav.sokos.okosynk.domain.MeldingOppgave
@@ -65,7 +65,7 @@ class BehandleOppgaveProcessService(
             offset += BATCH_SIZE
         }
 
-        val filteredOppgaveSet = oppgaveSet.filter { it.opprettetAv == batchType.opprettetAv || it.opprettetAv == PropertiesConfig.Configuration().naisAppName }.toSet()
+        val filteredOppgaveSet = oppgaveSet.filter { it.opprettetAv == batchType.opprettetAv || it.opprettetAv == configuration.naisAppName }.toSet()
         logger.info { "Total: ${filteredOppgaveSet.size} oppgaver av type: ${batchType.oppgaveType} funnet" }
         logger.info { "Antall duplikater oppgaver: ${findDuplicateOppgave(oppgaveSet)}" }
 
@@ -188,7 +188,7 @@ class BehandleOppgaveProcessService(
         opprettCounter.set(0)
     }
 
-    private fun updateBeskrivelseMedKode(
+    internal fun updateBeskrivelseMedKode(
         beskrivelseFromOppgave: String,
         beskrivelseFromMeldingOppgave: String,
     ): String {

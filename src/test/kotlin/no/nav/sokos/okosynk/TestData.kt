@@ -85,7 +85,7 @@ object TestData {
             orgnr = null,
         )
 
-    val medlingOppgaveMedOrgnr =
+    val meldingOppgaveMedOrgnr =
         MeldingOppgave(
             behandlingstema = "ab0270",
             behandlingstype = "ae0216",

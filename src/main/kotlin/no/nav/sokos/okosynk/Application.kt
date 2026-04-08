@@ -6,7 +6,7 @@ import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 
 import no.nav.sokos.okosynk.config.ApplicationState
-import no.nav.sokos.okosynk.config.PropertiesConfig
+import no.nav.sokos.okosynk.config.PropertiesConfig.schedulerProperties
 import no.nav.sokos.okosynk.config.applicationLifecycleConfig
 import no.nav.sokos.okosynk.config.commonConfig
 import no.nav.sokos.okosynk.config.routingConfig
@@ -25,9 +25,9 @@ fun Application.module() {
     routingConfig(applicationState)
     initMetrics()
 
-    if (PropertiesConfig.SchedulerProperties().enabled) {
+    if (schedulerProperties.enabled) {
         val scheduler = SchedulerService()
-        scheduler.scheduleWithCronExpression(PropertiesConfig.SchedulerProperties().cronExpression)
+        scheduler.scheduleWithCronExpression(schedulerProperties.cronExpression)
 
         this.monitor.subscribe(ApplicationStopping) {
             scheduler.stop()

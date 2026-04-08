@@ -5,6 +5,7 @@ import java.util.concurrent.TimeUnit
 
 import mu.KotlinLogging
 
+import no.nav.sokos.okosynk.config.PropertiesConfig
 import no.nav.sokos.okosynk.domain.BatchType
 import no.nav.sokos.okosynk.integration.Directories
 import no.nav.sokos.okosynk.integration.FtpService
@@ -25,13 +26,14 @@ class BatchService(
     private val behandleOppgaveProcessService: BehandleOppgaveProcessService = BehandleOppgaveProcessService(),
 ) {
     suspend fun run() {
-        val batchTypeList = BatchType.entries.filter { it != BatchType.UNKOWN }
+        val profile = PropertiesConfig.configuration.profile
+        val batchTypeList = BatchType.entries.filter { it != BatchType.UNKNOWN }
 
         runCatching {
             batchTypeList.forEach { batchType ->
                 TraceUtils.withTracerId {
                     val startNanos = System.nanoTime()
-                    processBatch(batchType)
+                    processBatch(batchType, profile)
                     Metrics
                         .timer("batch_${batchType.opprettetAv}")
                         .record(System.nanoTime() - startNanos, TimeUnit.NANOSECONDS)
@@ -42,15 +44,25 @@ class BatchService(
         }
     }
 
-    private suspend fun processBatch(batchType: BatchType) {
-        logger.info { "Starter nedlasting av filnavn: ${batchType.fileName}" }
-        val meldingFile = ftpService.downloadFiles(fileName = batchType.fileName)
+    private suspend fun processBatch(
+        batchType: BatchType,
+        profile: PropertiesConfig.Profile,
+    ) {
+        val fileName = batchType.getFileName(profile)
+        logger.info { "Starter nedlasting av filnavn: $fileName" }
+        val meldingFile = ftpService.downloadFiles(fileName = fileName)
 
         when {
-            meldingFile.isEmpty() -> logger.info { "Ingen fil med filnavn: ${batchType.fileName} fins til behandling, synking avsluttes" }
-            meldingFile.size > MAX_ANTALL_LINJER -> logger.error { "Fil ${batchType.fileName} overskrider maks antall linjer: ($MAX_ANTALL_LINJER)" }
+            meldingFile.isEmpty() -> {
+                logger.info { "Ingen fil med filnavn: $fileName fins til behandling, synking avsluttes" }
+            }
+
+            meldingFile.size > MAX_ANTALL_LINJER -> {
+                logger.error { "Fil $fileName overskrider maks antall linjer: ($MAX_ANTALL_LINJER)" }
+            }
+
             else -> {
-                logger.info { "Start synk ${batchType.fileName} med Oppgave" }
+                logger.info { "Start synk $fileName med Oppgave" }
 
                 meldingFile
                     .run { fileProcessService.process(batchType, this) }
@@ -58,11 +70,11 @@ class BatchService(
                     .run { behandleOppgaveProcessService.process(batchType, this) }
 
                 ftpService.renameFile(
-                    oldFilename = "${Directories.INBOUND.value}/${batchType.fileName}",
-                    newFilename = "${Directories.INBOUND.value}/${batchType.fileName}.${LocalDateTime.now().toISO()}",
+                    oldFilename = "${Directories.INBOUND.value}/$fileName",
+                    newFilename = "${Directories.INBOUND.value}/$fileName.${LocalDateTime.now().toISO()}",
                 )
 
-                logger.info { "Ferdig synk ${batchType.fileName} med Oppgave" }
+                logger.info { "Ferdig synk $fileName med Oppgave" }
             }
         }
     }
