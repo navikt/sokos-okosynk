@@ -33,7 +33,7 @@ val graphqlClientVersion = "9.1.0"
 val kotlinLoggingVersion = "3.0.5"
 val janionVersion = "3.1.12"
 val natpryceVersion = "1.6.10.0"
-val kotestVersion = "6.1.10"
+val kotestVersion = "6.1.11"
 val kotlinxSerializationVersion = "1.10.0"
 val cronUtilsVersion = "9.2.1"
 
@@ -104,8 +104,8 @@ configurations.all {
     resolutionStrategy {
         eachDependency {
             if (requested.group == "tools.jackson.core" && requested.name == "jackson-core") {
-                useVersion("3.1.0")
-                because("jackson-core has Nesting Depth Constraint Bypass in `UTF8DataInputJsonParser` potentially allowing Resource Exhaustion. Affected version >= 3.0.0, < 3.1.0")
+                useVersion("3.1.1")
+                because("Jackson Core: Document length constraint bypass in blocking, async, and DataInput parsers. Affected version >= 3.0.0, <= 3.1.0")
             }
             if (requested.group == "com.fasterxml.jackson.core" && requested.name == "jackson-core") {
                 useVersion("2.21.1")
