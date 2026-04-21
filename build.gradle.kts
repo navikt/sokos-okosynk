@@ -27,7 +27,7 @@ val ktorVersion = "3.4.2"
 val jschVersion = "2.28.0"
 val logbackVersion = "1.5.32"
 val logstashVersion = "9.0"
-val micrometerVersion = "1.16.4"
+val micrometerVersion = "1.16.5"
 val graphqlClientVersion = "9.1.0"
 
 val kotlinLoggingVersion = "3.0.5"
