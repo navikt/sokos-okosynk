@@ -64,7 +64,7 @@ spec:
 
     # OPPGAVE
     - name: OPPGAVE_URL
-      value: "https://oppgave.nais.adeo.no"
+      value: "https://oppgave.intern.nav.no"
     - name: OPPGAVE_SCOPE
       value: "api://prod-fss.oppgavehandtering.oppgave/.default"
 
