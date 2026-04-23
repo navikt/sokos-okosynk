@@ -9,7 +9,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     kotlin("jvm") version "2.3.20"
     kotlin("plugin.serialization") version "2.3.20"
-    id("com.expediagroup.graphql") version "9.1.0"
+    id("com.expediagroup.graphql") version "9.2.0"
     id("org.jlleitschuh.gradle.ktlint") version "14.2.0"
     id("org.jetbrains.kotlinx.kover") version "0.9.8"
     id("org.openapi.generator") version "7.21.0"
@@ -28,7 +28,7 @@ val jschVersion = "2.28.0"
 val logbackVersion = "1.5.32"
 val logstashVersion = "9.0"
 val micrometerVersion = "1.16.5"
-val graphqlClientVersion = "9.1.0"
+val graphqlClientVersion = "9.2.0"
 
 val kotlinLoggingVersion = "3.0.5"
 val janionVersion = "3.1.12"
