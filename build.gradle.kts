@@ -23,7 +23,7 @@ repositories {
     mavenCentral()
 }
 
-val ktorVersion = "3.4.2"
+val ktorVersion = "3.4.3"
 val jschVersion = "2.28.0"
 val logbackVersion = "1.5.32"
 val logstashVersion = "9.0"
@@ -41,7 +41,7 @@ val mockOAuth2ServerVersion = "3.0.1"
 val mockkVersion = "1.14.9"
 val wiremockVersion = "3.13.2"
 val testcontainersVersion = "2.0.5"
-val opentelemetryVersion = "2.26.1-alpha"
+val opentelemetryVersion = "2.27.0-alpha"
 
 dependencies {
 
