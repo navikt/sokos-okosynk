@@ -12,7 +12,7 @@ plugins {
     id("com.expediagroup.graphql") version "9.2.0"
     id("org.jlleitschuh.gradle.ktlint") version "14.2.0"
     id("org.jetbrains.kotlinx.kover") version "0.9.8"
-    id("org.openapi.generator") version "7.21.0"
+    id("org.openapi.generator") version "7.22.0"
 
     application
 }
@@ -23,8 +23,8 @@ repositories {
     mavenCentral()
 }
 
-val ktorVersion = "3.4.2"
-val jschVersion = "2.28.0"
+val ktorVersion = "3.4.3"
+val jschVersion = "2.28.2"
 val logbackVersion = "1.5.32"
 val logstashVersion = "9.0"
 val micrometerVersion = "1.16.5"
@@ -41,7 +41,7 @@ val mockOAuth2ServerVersion = "3.0.1"
 val mockkVersion = "1.14.9"
 val wiremockVersion = "3.13.2"
 val testcontainersVersion = "2.0.5"
-val opentelemetryVersion = "2.26.1-alpha"
+val opentelemetryVersion = "2.27.0-alpha"
 
 dependencies {
 
