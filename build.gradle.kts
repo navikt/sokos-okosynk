@@ -119,6 +119,10 @@ configurations.all {
                 useVersion("4.2.13.Final")
                 because("Netty: HttpContentDecompressor maxAllocation bypass when Content-Encoding set to br/zstd/snappy leads to decompression bomb DoS >= 4.2.0.Alpha1, <= 4.2.12.Final")
             }
+            if (requested.group == "io.netty" && requested.name == "netty-transport-native-epoll") {
+                useVersion("4.2.13.Final")
+                because("CVE-2026-42577 >= 4.2.0.Alpha1, <= 4.2.12.Final")
+            }
             if (requested.group == "org.bouncycastle" && requested.name == "bcprov-jdk18on") {
                 useVersion("1.84")
                 because("Bouncy Castle Has Covert Timing Channel Vulnerability. Affected version >= 1.71, < 1.84")
