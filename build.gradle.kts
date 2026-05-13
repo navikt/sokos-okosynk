@@ -103,6 +103,10 @@ dependencies {
 configurations.all {
     resolutionStrategy {
         eachDependency {
+            if (requested.group == "ch.qos.logback" && requested.name == "logback-core") {
+                useVersion("1.3.15")
+                because("CVE-2024-12798: Affected: version < 1.3.15")
+            }
             if (requested.group == "tools.jackson.core" && requested.name == "jackson-core") {
                 useVersion("3.1.1")
                 because("Jackson Core: Document length constraint bypass in blocking, async, and DataInput parsers. Affected version >= 3.0.0, <= 3.1.0")
@@ -122,6 +126,10 @@ configurations.all {
             if (requested.group == "io.netty" && requested.name == "netty-transport-native-epoll") {
                 useVersion("4.2.13.Final")
                 because("CVE-2026-42577 >= 4.2.0.Alpha1, <= 4.2.12.Final")
+            }
+            if (requested.group == "org.bouncycastle" && requested.name == "bcpkix-jdk18on") {
+                useVersion("1.84")
+                because("CVE-2026-5588: Use of a Broken or Risky Cryptographic Algorithm vulnerability in Legion of the Bouncy Castle Inc. BC-JAVA bcpkix on all (pkix modules). >= 1.49, < 1.84")
             }
             if (requested.group == "org.bouncycastle" && requested.name == "bcprov-jdk18on") {
                 useVersion("1.84")
