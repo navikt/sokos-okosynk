@@ -123,6 +123,10 @@ configurations.all {
                 useVersion("4.2.13.Final")
                 because("CVE-2026-42577 >= 4.2.0.Alpha1, <= 4.2.12.Final")
             }
+            if (requested.group == "io.opentelemetry" && requested.name == "opentelemetry-api") {
+                useVersion("1.62.0")
+                because("OpenTelemetry Java SDK has Unbounded Memory Allocation in W3C Baggage Propagation. Affected version <= 1.61.0")
+            }
         }
     }
 }
