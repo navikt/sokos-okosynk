@@ -63,6 +63,8 @@ object CopyBookParseUtil {
             } else {
                 LocalDate.parse(input, dateFormatter)
             }
+        }.onFailure { exception ->
+            logger.error(exception) { "Ugyldig datoformat: $input. Forventet format er enten 'yyyy-MM-dd' eller 'yyyy-MM-dd'T'HH:mm:ss'." }
         }.getOrNull()
     }
 }
