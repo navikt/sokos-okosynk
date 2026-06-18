@@ -9,7 +9,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     kotlin("jvm") version "2.3.21"
     kotlin("plugin.serialization") version "2.3.21"
-    id("com.expediagroup.graphql") version "9.2.0"
+    id("com.expediagroup.graphql") version "10.0.0"
     id("org.jlleitschuh.gradle.ktlint") version "14.2.0"
     id("org.jetbrains.kotlinx.kover") version "0.9.8"
     id("org.openapi.generator") version "7.23.0"
