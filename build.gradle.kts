@@ -111,13 +111,9 @@ configurations.all {
                 useVersion("2.21.1")
                 because("jackson-core: Number Length Constraint Bypass in Async Parser Leads to Potential DoS Condition. Affected version >= 2.19.0, < 2.21.1")
             }
-            if (
-                requested.group == "io.netty" &&
-                requested.name in
-                setOf("netty-codec-http", "netty-codec-http2", "netty-handler", "netty-transport-native-epoll")
-            ) {
+            if (requested.group == "io.netty") {
                 useVersion("4.2.15.Final")
-                because("Netty CVE remediation: CVE-2026-42577, CVE-2026-44249 and CVE-2026-45416")
+                because("Netty CVE remediation: CVE-2026-45536, CVE-2026-44249, CVE-2026-45416 and CVE-2026-48043")
             }
             if (requested.group == "io.opentelemetry" && requested.name == "opentelemetry-api") {
                 useVersion("1.62.0")
