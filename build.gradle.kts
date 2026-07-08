@@ -104,12 +104,12 @@ configurations.all {
     resolutionStrategy {
         eachDependency {
             if (requested.group == "tools.jackson.core" && requested.name == "jackson-core") {
-                useVersion("3.1.1")
-                because("Jackson Core: Document length constraint bypass in blocking, async, and DataInput parsers. Affected version >= 3.0.0, <= 3.1.0")
+                useVersion("3.1.4")
+                because("CVE-2026-54515:  Affected >= 3.0.0, < 3.1.4")
             }
             if (requested.group == "com.fasterxml.jackson.core" && requested.name == "jackson-core") {
-                useVersion("2.21.1")
-                because("jackson-core: Number Length Constraint Bypass in Async Parser Leads to Potential DoS Condition. Affected version >= 2.19.0, < 2.21.1")
+                useVersion("2.21.5")
+                because("CVE-2026-54515   Affected >= 2.19.0, < 2.21.5")
             }
             if (requested.group == "io.netty") {
                 useVersion("4.2.15.Final")
