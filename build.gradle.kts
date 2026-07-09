@@ -31,7 +31,6 @@ val micrometerVersion = "1.17.0"
 val graphqlClientVersion = "10.0.0"
 
 val kotlinLoggingVersion = "3.0.5"
-val janionVersion = "3.1.12"
 val natpryceVersion = "1.6.10.0"
 val kotestVersion = "6.1.11"
 val kotlinxSerializationVersion = "1.11.0"
@@ -69,7 +68,6 @@ dependencies {
 
     // Logging
     implementation("io.github.microutils:kotlin-logging-jvm:$kotlinLoggingVersion")
-    runtimeOnly("org.codehaus.janino:janino:$janionVersion")
     runtimeOnly("ch.qos.logback:logback-classic:$logbackVersion")
     runtimeOnly("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
 
