@@ -102,11 +102,11 @@ configurations.all {
     resolutionStrategy {
         eachDependency {
             if (requested.group == "tools.jackson.core" && requested.name == "jackson-core") {
-                useVersion("3.1.4")
+                useVersion("3.2.1")
                 because("CVE-2026-54515:  Affected >= 3.0.0, < 3.1.4")
             }
             if (requested.group == "com.fasterxml.jackson.core" && requested.name == "jackson-core") {
-                useVersion("2.21.5")
+                useVersion("2.22.1")
                 because("CVE-2026-54515   Affected >= 2.19.0, < 2.21.5")
             }
             if (requested.group == "io.netty") {
