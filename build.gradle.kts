@@ -110,7 +110,7 @@ configurations.all {
                 because("CVE-2026-54515   Affected >= 2.19.0, < 2.21.5")
             }
             if (requested.group == "io.netty") {
-                useVersion("4.2.15.Final")
+                useVersion("4.2.16.Final")
                 because("Netty CVE remediation: CVE-2026-45536, CVE-2026-44249, CVE-2026-45416 and CVE-2026-48043")
             }
             if (requested.group == "io.opentelemetry" && requested.name == "opentelemetry-api") {
