@@ -113,10 +113,6 @@ configurations.all {
                 useVersion("4.2.16.Final")
                 because("Netty CVE remediation: CVE-2026-45536, CVE-2026-44249, CVE-2026-45416 and CVE-2026-48043")
             }
-            if (requested.group == "io.opentelemetry" && requested.name == "opentelemetry-api") {
-                useVersion("1.62.0")
-                because("OpenTelemetry Java SDK has Unbounded Memory Allocation in W3C Baggage Propagation. Affected version <= 1.61.0")
-            }
         }
     }
 }
