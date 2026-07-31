@@ -101,17 +101,17 @@ dependencies {
 configurations.all {
     resolutionStrategy {
         eachDependency {
+            if (requested.group == "io.netty") {
+                useVersion("4.2.16.Final")
+                because("Multiple versions of netty has vulnerable dependencies. Affected version < 4.2.15.Final")
+            }
             if (requested.group == "tools.jackson.core" && requested.name == "jackson-core") {
                 useVersion("3.2.1")
-                because("CVE-2026-54515:  Affected >= 3.0.0, < 3.1.4")
+                because("Multiple versions of jackson-core has vulnerable dependencies. Affected version >= 3.0.0, <= 3.1.0")
             }
             if (requested.group == "com.fasterxml.jackson.core" && requested.name == "jackson-core") {
                 useVersion("2.22.1")
-                because("CVE-2026-54515   Affected >= 2.19.0, < 2.21.5")
-            }
-            if (requested.group == "io.netty") {
-                useVersion("4.2.16.Final")
-                because("Netty CVE remediation: CVE-2026-45536, CVE-2026-44249, CVE-2026-45416 and CVE-2026-48043")
+                because("Multiple versions of jackson-core has vulnerable dependencies.. Affected version >= 2.19.0, <= 2.21.1")
             }
         }
     }
