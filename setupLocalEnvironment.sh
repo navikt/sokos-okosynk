@@ -7,7 +7,7 @@ if [ $? -gt 0 ]; then
 fi
 
 # Suppress kubectl config output
-kubectl config use-context dev-fss
+kubectl config use-context prod-fss
 kubectl config set-context --current --namespace=okonomi
 
 # Get pod name
