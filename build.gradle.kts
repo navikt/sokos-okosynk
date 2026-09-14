@@ -40,7 +40,7 @@ val mockOAuth2ServerVersion = "6.0.2"
 val mockkVersion = "1.14.11"
 val wiremockVersion = "3.13.2"
 val testcontainersVersion = "2.0.5"
-val opentelemetryVersion = "2.31.1-alpha"
+val opentelemetryVersion = "1.65.0"
 
 dependencies {
 
@@ -86,7 +86,8 @@ dependencies {
     }
 
     // Opentelemetry
-    implementation("io.opentelemetry.instrumentation:opentelemetry-ktor-3.0:$opentelemetryVersion")
+    implementation("io.opentelemetry:opentelemetry-api:$opentelemetryVersion")
+    implementation("io.opentelemetry:opentelemetry-context:$opentelemetryVersion")
 
     // Test
     testImplementation("io.ktor:ktor-server-test-host-jvm:$ktorVersion")
