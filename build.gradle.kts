@@ -32,7 +32,7 @@ val graphqlClientVersion = "10.2.2"
 
 val kotlinLoggingVersion = "3.0.5"
 val natpryceVersion = "1.6.10.0"
-val kotestVersion = "6.2.4"
+val kotestVersion = "6.2.5"
 val kotlinxSerializationVersion = "1.11.0"
 val cronUtilsVersion = "9.2.1"
 
@@ -40,7 +40,7 @@ val mockOAuth2ServerVersion = "6.0.2"
 val mockkVersion = "1.14.11"
 val wiremockVersion = "3.13.2"
 val testcontainersVersion = "2.0.5"
-val opentelemetryVersion = "1.65.0"
+val opentelemetryVersion = "1.66.0"
 
 dependencies {
 
