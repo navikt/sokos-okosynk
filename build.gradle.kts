@@ -11,7 +11,7 @@ plugins {
     kotlin("plugin.serialization") version "2.4.20"
     id("com.expediagroup.graphql") version "10.2.2"
     id("org.jlleitschuh.gradle.ktlint") version "14.2.0"
-    id("org.jetbrains.kotlinx.kover") version "0.9.9"
+    id("org.jetbrains.kotlinx.kover") version "0.9.10"
     id("org.openapi.generator") version "7.25.0"
 
     application
@@ -25,7 +25,7 @@ repositories {
 
 val ktorVersion = "3.5.2"
 val jschVersion = "2.28.7"
-val logbackVersion = "1.6.3"
+val logbackVersion = "1.6.4"
 val logstashVersion = "9.0"
 val micrometerVersion = "1.17.1"
 val graphqlClientVersion = "10.2.2"
@@ -36,7 +36,7 @@ val kotestVersion = "6.2.5"
 val kotlinxSerializationVersion = "1.11.0"
 val cronUtilsVersion = "9.2.1"
 
-val mockOAuth2ServerVersion = "6.0.2"
+val mockOAuth2ServerVersion = "6.0.3"
 val mockkVersion = "1.14.11"
 val wiremockVersion = "3.13.2"
 val testcontainersVersion = "2.0.5"
