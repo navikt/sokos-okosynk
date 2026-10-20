@@ -28,7 +28,7 @@ val jschVersion = "2.28.7"
 val logbackVersion = "1.6.5"
 val logstashVersion = "9.0"
 val micrometerVersion = "1.17.1"
-val graphqlClientVersion = "10.2.2"
+val graphqlClientVersion = "11.0.0"
 
 val kotlinLoggingVersion = "3.0.5"
 val natpryceVersion = "1.6.10.0"
