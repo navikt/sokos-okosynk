@@ -24,7 +24,7 @@ repositories {
 }
 
 val ktorVersion = "3.6.0"
-val jschVersion = "2.28.7"
+val jschVersion = "2.28.8"
 val logbackVersion = "1.6.5"
 val logstashVersion = "9.0"
 val micrometerVersion = "1.17.1"
@@ -36,11 +36,11 @@ val kotestVersion = "6.2.5"
 val kotlinxSerializationVersion = "1.11.0"
 val cronUtilsVersion = "9.2.1"
 
-val mockOAuth2ServerVersion = "6.0.4"
+val mockOAuth2ServerVersion = "6.0.6"
 val mockkVersion = "1.14.11"
 val wiremockVersion = "3.13.2"
 val testcontainersVersion = "2.0.5"
-val opentelemetryVersion = "1.66.0"
+val opentelemetryVersion = "1.67.0"
 
 dependencies {
 
