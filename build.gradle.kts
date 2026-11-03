@@ -25,18 +25,18 @@ repositories {
 
 val ktorVersion = "3.6.0"
 val jschVersion = "2.28.8"
-val logbackVersion = "1.6.5"
+val logbackVersion = "1.6.6"
 val logstashVersion = "9.0"
-val micrometerVersion = "1.17.1"
+val micrometerVersion = "1.17.2"
 val graphqlClientVersion = "11.0.0"
 
 val kotlinLoggingVersion = "3.0.5"
 val natpryceVersion = "1.6.10.0"
-val kotestVersion = "6.2.5"
-val kotlinxSerializationVersion = "1.11.0"
+val kotestVersion = "6.2.6"
+val kotlinxSerializationVersion = "1.12.0"
 val cronUtilsVersion = "9.2.1"
 
-val mockOAuth2ServerVersion = "6.0.6"
+val mockOAuth2ServerVersion = "6.1.3"
 val mockkVersion = "1.14.11"
 val wiremockVersion = "3.13.2"
 val testcontainersVersion = "2.0.5"
