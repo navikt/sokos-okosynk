@@ -2,6 +2,7 @@ package no.nav.sokos.okosynk.process
 
 import java.time.LocalDate
 import java.util.concurrent.atomic.AtomicInteger
+
 import kotlin.coroutines.cancellation.CancellationException
 
 import mu.KLogger
@@ -161,11 +162,11 @@ class BehandleOppgaveProcessService(
 
     fun Oppgave.matches(meldingOppgave: MeldingOppgave): Boolean =
         this.behandlingstema == meldingOppgave.behandlingstema &&
-                this.behandlingstype == meldingOppgave.behandlingstype &&
-                this.tildeltEnhetsnr == meldingOppgave.tildeltEnhetsnr &&
-                this.opprettetAvEnhetsnr == meldingOppgave.opprettetAvEnhetsnr &&
-                this.matchesBrukerOrAktoerId(meldingOppgave) &&
-                this.orgnr == meldingOppgave.orgnr
+            this.behandlingstype == meldingOppgave.behandlingstype &&
+            this.tildeltEnhetsnr == meldingOppgave.tildeltEnhetsnr &&
+            this.opprettetAvEnhetsnr == meldingOppgave.opprettetAvEnhetsnr &&
+            this.matchesBrukerOrAktoerId(meldingOppgave) &&
+            this.orgnr == meldingOppgave.orgnr
 
     fun findDuplicateOppgave(oppgaveSet: Set<Oppgave>): Int {
         val duplicates =

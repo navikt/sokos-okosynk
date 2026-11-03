@@ -2,8 +2,11 @@ package no.nav.sokos.okosynk.service
 
 import java.time.LocalDateTime
 import java.util.concurrent.TimeUnit
+
 import kotlin.coroutines.cancellation.CancellationException
+
 import mu.KotlinLogging
+
 import no.nav.sokos.okosynk.config.PropertiesConfig
 import no.nav.sokos.okosynk.domain.BatchType
 import no.nav.sokos.okosynk.integration.Directories
