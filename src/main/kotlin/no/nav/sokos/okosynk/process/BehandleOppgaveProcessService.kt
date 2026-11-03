@@ -2,6 +2,7 @@ package no.nav.sokos.okosynk.process
 
 import java.time.LocalDate
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.coroutines.cancellation.CancellationException
 
 import mu.KLogger
 import mu.KotlinLogging
@@ -46,6 +47,7 @@ class BehandleOppgaveProcessService(
 
             logger.info { "Oppretter: ${opprettCounter.get()}, Oppdater: ${oppdaterCounter.get()}, Ferdigstilt: ${ferdigstiltCounter.get()} oppgaver" }
         }.onFailure { exception ->
+            if (exception is CancellationException) throw exception
             logger.error(exception) { "Feil ved behandling av oppgaver av type: ${batchType.oppgaveType}" }
         }
     }
@@ -100,10 +102,13 @@ class BehandleOppgaveProcessService(
 
                 runCatching {
                     oppgaveClientService.opprettOppgave(request)
-
                     opprettCounter.incrementAndGet()
                     Metrics.counter("opprett_oppgave_${batchType.opprettetAv}").inc()
                 }.onFailure { exception ->
+                    if (exception is CancellationException) {
+                        logger.error(exception) { "Feil ved opprettelse av oppgave. Oppgaven ble avbrutt." }
+                        throw exception
+                    }
                     logger.error(exception) { "Feil ved opprettelse av oppgave, sjekk secureLogger" }
                     logger.error(marker = TEAM_LOGS_MARKER, exception) { "Feil ved opprettelse av oppgave: $request" }
                 }
@@ -144,19 +149,23 @@ class BehandleOppgaveProcessService(
                     Metrics.counter("oppdater_oppgave_${batchType.opprettetAv}").inc()
                 }
             }.onFailure { exception ->
-                logger.error(exception) { "Feil ved oppdatering av oppgaveId: ${oppgave.id}, sjekk secureLogger" }
+                if (exception is CancellationException) {
+                    logger.error(exception) { "Feil ved oppdatering av oppgaveId: ${oppgave.id}. Oppgaven ble avbrutt!" }
+                    throw exception
+                }
                 logger.error(marker = TEAM_LOGS_MARKER, exception) { "Feil ved oppdatering av oppgaveId: ${oppgave.id}, request: $request" }
+                logger.error(exception) { "Feil ved oppdatering av oppgaveId: ${oppgave.id}, sjekk secureLogger" }
             }
         }
     }
 
     fun Oppgave.matches(meldingOppgave: MeldingOppgave): Boolean =
         this.behandlingstema == meldingOppgave.behandlingstema &&
-            this.behandlingstype == meldingOppgave.behandlingstype &&
-            this.tildeltEnhetsnr == meldingOppgave.tildeltEnhetsnr &&
-            this.opprettetAvEnhetsnr == meldingOppgave.opprettetAvEnhetsnr &&
-            this.matchesBrukerOrAktoerId(meldingOppgave) &&
-            this.orgnr == meldingOppgave.orgnr
+                this.behandlingstype == meldingOppgave.behandlingstype &&
+                this.tildeltEnhetsnr == meldingOppgave.tildeltEnhetsnr &&
+                this.opprettetAvEnhetsnr == meldingOppgave.opprettetAvEnhetsnr &&
+                this.matchesBrukerOrAktoerId(meldingOppgave) &&
+                this.orgnr == meldingOppgave.orgnr
 
     fun findDuplicateOppgave(oppgaveSet: Set<Oppgave>): Int {
         val duplicates =
