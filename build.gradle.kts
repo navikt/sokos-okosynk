@@ -97,35 +97,23 @@ dependencies {
     testImplementation("no.nav.security:mock-oauth2-server:$mockOAuth2ServerVersion")
     testImplementation("org.testcontainers:testcontainers:$testcontainersVersion")
     testImplementation("org.wiremock:wiremock:$wiremockVersion")
-}
 
-configurations.all {
-    resolutionStrategy {
-        eachDependency {
-            if (requested.group == "io.netty") {
-                useVersion("4.2.17.Final")
-                because("Multiple versions of netty has vulnerable dependencies. Affected version < 4.2.15.Final")
+    // Sårbarheter
+    implementation(platform("io.netty:netty-bom:4.2.19.Final")) {
+        because("Align Netty modules on a patched release")
+    }
+
+    constraints {
+        implementation("com.google.guava:guava:33.7.2-jre") {
+            because("GHSA-xxph-c9ww-hj94 affects Guava versions before 33.7.2")
+        }
+        listOf("implementation", "graphqlClient", "graphqlGraalVM", "graphqlSDL").forEach { configuration ->
+            add(configuration, "tools.jackson.core:jackson-databind:3.2.3") {
+                because("Avoid vulnerable Jackson 3 versions in application and code generation dependencies")
             }
-            if (requested.group == "tools.jackson.core" && requested.name == "jackson-databind") {
-                useVersion("3.2.3")
-                because("Multiple versions of jackson-databind has vulnerable dependencies. Affected version < >= 3.0.0, <= 3.1.3")
-            }
-            if (requested.group == "tools.jackson.core" && requested.name == "jackson-core") {
-                useVersion("3.2.3")
-                because("Multiple versions of jackson-core has vulnerable dependencies. Affected version >= 3.0.0, <= 3.1.0")
-            }
-            if (requested.group == "com.fasterxml.jackson.core" && requested.name == "jackson-databind") {
-                useVersion("2.22.3")
-                because("Multiple versions of jackson-databind has vulnerable dependencies. Affected version >= 2.19.0, <= 2.21.3")
-            }
-            if (requested.group == "com.fasterxml.jackson.core" && requested.name == "jackson-core") {
-                useVersion("2.22.3")
-                because("Multiple versions of jackson-core has vulnerable dependencies.. Affected version >= 2.19.0, <= 2.21.1")
-            }
-            if (requested.group == "org.apache.httpcomponents.client5" && requested.name == "httpclient5") {
-                useVersion("5.6.3")
-                because("Multiple versions of httpclient5 has vulnerable dependencies. Affected version >= 5.0-alpha1, < 5.6.3")
-            }
+        }
+        implementation("com.fasterxml.jackson.core:jackson-databind:2.22.3") {
+            because("Multiple versions of jackson-databind has vulnerable dependencies. Affected version >= 2.19.0, <= 2.21.3")
         }
     }
 }
