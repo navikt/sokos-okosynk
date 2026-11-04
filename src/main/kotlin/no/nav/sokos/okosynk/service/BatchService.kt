@@ -3,6 +3,8 @@ package no.nav.sokos.okosynk.service
 import java.time.LocalDateTime
 import java.util.concurrent.TimeUnit
 
+import kotlin.coroutines.cancellation.CancellationException
+
 import mu.KotlinLogging
 
 import no.nav.sokos.okosynk.config.PropertiesConfig
@@ -40,6 +42,7 @@ class BatchService(
                 }
             }
         }.onFailure { exception ->
+            if (exception is CancellationException) throw exception
             logger.error(exception) { "Feil ved behandling fil fra OS/UR" }
         }
     }
