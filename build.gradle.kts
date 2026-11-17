@@ -36,11 +36,11 @@ val kotestVersion = "6.2.6"
 val kotlinxSerializationVersion = "1.12.0"
 val cronUtilsVersion = "9.2.1"
 
-val mockOAuth2ServerVersion = "6.1.4"
-val mockkVersion = "1.14.11"
+val mockOAuth2ServerVersion = "6.1.5"
+val mockkVersion = "1.14.12"
 val wiremockVersion = "3.13.2"
 val testcontainersVersion = "2.0.5"
-val opentelemetryVersion = "1.67.0"
+val opentelemetryVersion = "1.68.0"
 
 dependencies {
 
@@ -108,11 +108,11 @@ dependencies {
             because("GHSA-xxph-c9ww-hj94 affects Guava versions before 33.7.2")
         }
         listOf("implementation", "graphqlClient", "graphqlGraalVM", "graphqlSDL").forEach { configuration ->
-            add(configuration, "tools.jackson.core:jackson-databind:3.2.4") {
+            add(configuration, "tools.jackson.core:jackson-databind:3.3.0") {
                 because("Avoid vulnerable Jackson 3 versions in application and code generation dependencies")
             }
         }
-        implementation("com.fasterxml.jackson.core:jackson-databind:2.22.4") {
+        implementation("com.fasterxml.jackson.core:jackson-databind:2.23.0") {
             because("Multiple versions of jackson-databind has vulnerable dependencies. Affected version >= 2.19.0, <= 2.21.3")
         }
     }
