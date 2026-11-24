@@ -36,7 +36,7 @@ val kotestVersion = "6.2.6"
 val kotlinxSerializationVersion = "1.12.0"
 val cronUtilsVersion = "9.2.1"
 
-val mockOAuth2ServerVersion = "6.1.5"
+val mockOAuth2ServerVersion = "7.0.1"
 val mockkVersion = "1.14.12"
 val wiremockVersion = "3.13.2"
 val testcontainersVersion = "2.0.5"
