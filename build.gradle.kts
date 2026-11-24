@@ -25,15 +25,15 @@ repositories {
 
 val ktorVersion = "3.6.1"
 val jschVersion = "2.28.8"
-val logbackVersion = "1.6.6"
+val logbackVersion = "1.6.7"
 val logstashVersion = "9.0"
 val micrometerVersion = "1.17.2"
 val graphqlClientVersion = "11.0.0"
 
 val kotlinLoggingVersion = "3.0.5"
 val natpryceVersion = "1.6.10.0"
-val kotestVersion = "6.2.6"
-val kotlinxSerializationVersion = "1.12.0"
+val kotestVersion = "6.2.7"
+val kotlinxSerializationVersion = "1.13.0"
 val cronUtilsVersion = "9.2.1"
 
 val mockOAuth2ServerVersion = "6.1.5"
@@ -99,7 +99,7 @@ dependencies {
     testImplementation("org.wiremock:wiremock:$wiremockVersion")
 
     // Sårbarheter
-    implementation(platform("io.netty:netty-bom:4.2.20.Final")) {
+    implementation(platform("io.netty:netty-bom:4.2.21.Final")) {
         because("Align Netty modules on a patched release")
     }
 
